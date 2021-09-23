@@ -1,0 +1,52 @@
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setActiveToken, setTokenTo, setAction } from '@redux/actions'
+import { Col, Row, Container } from 'react-bootstrap'
+import {
+  TokenAbout,
+  TokenComponents,
+  TokenHeader,
+  TokenStats,
+  Swap,
+} from '@components'
+import { selectTokensList } from '@redux/slices/tokens'
+
+const token = () => {
+  const tokensProduct = useSelector(selectTokensList)
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (router?.query?.id) {
+      dispatch(setActiveToken(Number(router?.query?.id)))
+      dispatch(setAction(router.query.action))
+      dispatch(setTokenTo(tokensProduct[Number(router?.query?.id)]))
+    }
+  }, [router?.query?.id])
+
+  return (
+    <>
+      <div className="text-white" style={{ backgroundColor: '#282c34' }}>
+        <Container className="py-4">
+          <TokenHeader />
+        </Container>
+      </div>
+      <Container className="py-5">
+        <Row className="pb-5">
+          <Col className="col-8">
+            <TokenStats />
+            <TokenAbout />
+            <TokenComponents />
+            {/* <TokenTransactions /> */}
+          </Col>
+          <Col>
+            <Swap />
+          </Col>
+        </Row>
+      </Container>
+    </>
+  )
+}
+
+export default token
