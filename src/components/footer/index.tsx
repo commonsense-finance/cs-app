@@ -11,7 +11,7 @@ export const Footer = () => {
       
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">
         <li className="mx-2">
-          <Image
+          <img
             src="/icons/github-icon.svg"
             alt="github"
             width={widthIcons}
@@ -19,7 +19,7 @@ export const Footer = () => {
           />
         </li>
         <li className="mx-2">
-          <Image
+          <img
             src="/icons/twitter-icon.svg"
             alt="twitter"
             width={widthIcons}
@@ -27,7 +27,7 @@ export const Footer = () => {
           />
         </li>
         <li className="mx-2">
-          <Image
+          <img
             src="/icons/youtube-icon.svg"
             alt="youtube"
             width={widthIcons}
@@ -35,7 +35,7 @@ export const Footer = () => {
           />
         </li>
         <li className="mx-2">
-          <Image
+          <img
             src="/icons/linkedin-icon.svg"
             alt="linkedin"
             width={widthIcons}
