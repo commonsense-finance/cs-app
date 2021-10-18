@@ -11,10 +11,11 @@ import {
   GroupInputTo,
   GroupSelectFrom,
   GroupSelectTo,
+  ShowResponse,
 } from './controls'
 
 export const Swap = () => {
-  const { token, result } = useSelector(selectSwap)
+  const { token, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export const Swap = () => {
       <Nav
         className="mb-2 border-bottom-0"
         variant="tabs"
-        activeKey={result.action}
+        activeKey={status.action}
         onSelect={(selectedKey) =>
           dispatch(setAction(selectedKey))
         }
@@ -41,7 +42,7 @@ export const Swap = () => {
 
       <Form>
         <Row className="g-2 p-3 border rounded">
-          {result.action === 'Invest' ? (
+          {status.action === 'Invest' ? (
             <>
               <Col className="col-5">
                 <GroupSelectFrom />
@@ -78,6 +79,7 @@ export const Swap = () => {
           </Col>
         </Row>
       </Form>
+      <ShowResponse />
     </div>
   )
 }

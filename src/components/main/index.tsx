@@ -13,7 +13,7 @@ export const Main = () => {
   const handleShow = () => setShowModal(true)
 
   return (
-    <div className="text-center py-5" style={{ backgroundColor: '#282c34' }}>
+    <div className="text-center py-5" style={{ backgroundColor: '#3A3B59' }}>
       <Container>
         <h1 className="text-white">
           Investing in crypto, simplified

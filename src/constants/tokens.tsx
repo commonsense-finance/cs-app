@@ -17,24 +17,24 @@ export const productTokens = [
     totalSupply: 0,
     components: [],
   },
-  // {
-  //   id: 1,
-  //   name: 'Tmatic & Teth',
-  //   symbol: 'TST',
-  //   image: '',
-  //   fee: '0%',
-  //   contractPolygon: '0x04A250E193571A5621998F61bb258701c8a6034d',
-  //   contract: '',
-  //   decimals: '18',
-  //   price: 0,
-  //   balance: 0,
-  //   total: 0,
-  //   about:
-  //     "The TST 'All in One' Token aims to replicate the profitability of an index composed of the Top 10 cryptocurrencies in the Ethereum Network (ERC20) with a market capitalization of over 1 billion. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
-  //   marketCap: 0,
-  //   totalSupply: 0,
-  //   components: [],
-  // },
+  {
+    id: 1,
+    name: 'Tmatic & Teth',
+    symbol: 'TST',
+    image: '',
+    fee: '0%',
+    contractPolygon: '0x04A250E193571A5621998F61bb258701c8a6034d',
+    contract: '',
+    decimals: '18',
+    price: 0,
+    balance: 0,
+    total: 0,
+    about:
+      "The TST 'All in One' Token aims to replicate the profitability of an index composed of the Top 10 cryptocurrencies in the Ethereum Network (ERC20) with a market capitalization of over 1 billion. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
+    marketCap: 0,
+    totalSupply: 0,
+    components: [],
+  },
 ]
 
 export const tokensList = [

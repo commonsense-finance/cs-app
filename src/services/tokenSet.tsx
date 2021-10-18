@@ -9,8 +9,10 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 import erc20ABI from '../services/ABI/erc20.json'
 import tokenSetABI from '../services/ABI/tokenSet.json'
 import exchangeIssuanceV2ABI from '../services/ABI/exchangeIssuanceV2.json'
-import { formatUnits } from '@ethersproject/units'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import { IComponents } from '@redux/types'
+import { setError } from '@redux/actions'
+import { useDispatch } from 'react-redux'
 
 
 
@@ -86,8 +88,6 @@ export const getTokenDecimals = async (contractAddress: string, web3: any ): Pro
 }
 
 
-
-
 export const getTokenPrice = async (contractAddress: string, web3: any ): Promise<BigNumber> => {
   const { library, chainId } = web3
   const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
@@ -155,16 +155,24 @@ export const getTokenComponents = async (contractAddress: string, web3: any): Pr
 
 export const getEstimatedIssueSetAmount = async (contractAddressTo: string, contractAddressFrom: string, amountFrom: BigNumberish, web3: any): Promise<BigNumber> => {
   const { library, chainId } = web3
-  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
-  const amountTo = await contract?.getEstimatedIssueSetAmount(contractAddressTo, contractAddressFrom, amountFrom)
-  return amountTo
+  let contract = null
+  let amountTo = null
+  if (amountFrom.toString() !== '0') {
+    contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+    amountTo = await contract?.getEstimatedIssueSetAmount(contractAddressTo, contractAddressFrom, amountFrom)
+  }
+  return amountTo ? amountTo : 0
 }
 
 export const getAmountInToIssueExactSet = async (contractAddressTo: string, contractAddressFrom: string, amountTo: BigNumberish, web3: any): Promise<BigNumber> => {
   const { library, chainId } = web3
-  const contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
-  const amountFrom = await contract?.getAmountInToIssueExactSet(contractAddressTo, contractAddressFrom, amountTo )
-  return amountFrom
+  let contract = null
+  let amountFrom = null
+  if (amountTo.toString() !== '0') {
+    contract = getContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon)
+    amountFrom = await contract?.getAmountInToIssueExactSet(contractAddressTo, contractAddressFrom, amountTo )
+  }
+  return amountFrom ? amountFrom : 0
 }
 
 export const getAmountOutOnRedeemSet = async (
@@ -181,17 +189,29 @@ export const getAmountOutOnRedeemSet = async (
 
 export const issueExactSetFromToken = async (contractAddressTo: string, contractAddressFrom: string, amountTo: BigNumberish, amountFrom: BigNumberish, web3: any): Promise<BigNumber> => {
   const { library, chainId, account } = web3
-  const contract = getSignerContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon, account)
-  const result = await contract?.issueExactSetFromToken(contractAddressTo, contractAddressFrom, amountTo, amountFrom )
-  
+  let result: any = 0
+  try {  
+    const contract = getSignerContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon, account)
+    console.log(formatUnits(amountFrom.toString(),18))
+    result = await contract?.issueExactSetFromToken(contractAddressTo, contractAddressFrom, amountTo, amountFrom )
+    
+  } catch (e: any) {
+     result = e
+  }
   return result
 }
 
 export const redeemExactSetForToken = async (contractAddressTo: string, contractAddressFrom: string, amountTo: BigNumberish, amountFrom: BigNumberish, web3: any): Promise<BigNumber> => {
   const { library, chainId, account } = web3
-  console.log('Vender!!!!')
-  const contract = getSignerContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon, account)
-  const result = await contract?.redeemExactSetForToken(contractAddressTo, contractAddressFrom, amountTo, amountFrom )
+  let result: any = 0
+  try {
+    const contract = getSignerContract(library, exchangeIssuanceV2ABI, exchangeIssuanceV2.contractPolygon, account)
+    console.log(amountFrom.toString())
+    result = await contract?.redeemExactSetForToken(contractAddressTo, contractAddressFrom, amountTo, amountFrom )
+    
+  } catch (e: any) {
+      result = e
+  }
   return result
 }
 

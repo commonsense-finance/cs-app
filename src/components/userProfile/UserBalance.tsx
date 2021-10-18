@@ -9,7 +9,7 @@ export const UserBalance = () => {
   return (
     <div
       className="text-center py-5 text-white"
-      style={{ backgroundColor: '#282c34' }}
+      style={{ backgroundColor: '#3A3B59' }}
     >
       <p>My Total Balance</p>
       

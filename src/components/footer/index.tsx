@@ -6,7 +6,7 @@ export const Footer = () => {
   return (
     <div
       className="fixed-bottom text-center py-2"
-      style={{ backgroundColor: '#282c34' }}
+      style={{ backgroundColor: '#3A3B59' }}
     >
       
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">
