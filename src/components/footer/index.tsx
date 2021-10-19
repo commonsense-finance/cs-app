@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { primaryColor } from 'src/constants/styles'
 
 export const Footer = () => {
   const widthIcons = '18'
@@ -6,7 +7,7 @@ export const Footer = () => {
   return (
     <div
       className="fixed-bottom text-center py-2"
-      style={{ backgroundColor: '#3A3B59' }}
+      style={{ backgroundColor: primaryColor }}
     >
       
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">

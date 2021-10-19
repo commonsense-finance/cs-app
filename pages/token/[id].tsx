@@ -11,6 +11,7 @@ import {
   Swap,
 } from '@components'
 import { selectTokensList } from '@redux/slices/tokens'
+import { primaryColor } from 'src/constants/styles'
 
 const token = () => {
   const tokensProduct = useSelector(selectTokensList)
@@ -27,7 +28,7 @@ const token = () => {
 
   return (
     <>
-      <div className="text-white" style={{ backgroundColor: '#282c34' }}>
+      <div className="text-white" style={{ backgroundColor: primaryColor }}>
         <Container className="py-4">
           <TokenHeader />
         </Container>

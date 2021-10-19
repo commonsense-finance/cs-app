@@ -5,6 +5,7 @@ import { ArrowUpRight } from 'react-bootstrap-icons';
 
 import { Button } from '@components'
 import { WalletModal } from '@components/wallet/controls';
+import { primaryColor } from 'src/constants/styles';
 
 export const Main = () => {
   const [showModal, setShowModal] = useState(false)
@@ -13,7 +14,7 @@ export const Main = () => {
   const handleShow = () => setShowModal(true)
 
   return (
-    <div className="text-center py-5" style={{ backgroundColor: '#3A3B59' }}>
+    <div className="text-center py-5" style={{ backgroundColor: primaryColor }}>
       <Container>
         <h1 className="text-white">
           Investing in crypto, simplified

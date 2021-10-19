@@ -3,13 +3,14 @@
 import { formatUnits } from '@ethersproject/units'
 import { RootState } from '@redux/store'
 import { useSelector } from 'react-redux'
+import { primaryColor } from 'src/constants/styles'
 
 export const UserBalance = () => {
   const balance = useSelector((state: RootState) => state.tokens.totalBalance)
   return (
     <div
       className="text-center py-5 text-white"
-      style={{ backgroundColor: '#3A3B59' }}
+      style={{ backgroundColor: primaryColor }}
     >
       <p>My Total Balance</p>
       
