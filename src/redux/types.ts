@@ -14,6 +14,7 @@ export interface IToken {
     price: BigNumberish
     balance: BigNumberish
     total: BigNumberish
+    allowance: BigNumberish,
     about: string
     marketCap: BigNumberish
     totalSupply: BigNumberish

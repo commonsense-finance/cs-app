@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Modal } from 'react-bootstrap'
-import { selectSwap, swapRedeemExactSetForToken } from '@redux/slices/swap'
+import { cleanResponse, selectSwap, swapApprove, swapRedeemExactSetForToken, updateTokenProduct } from '@redux/slices/swap'
 import {
   setTokenFrom,
   setTokenTo,
@@ -76,6 +76,7 @@ export const SelectTokensTo = () => {
       key={tokenProduct.id}
       value={tokenProduct.id}
       onChange={(e) => {
+        dispatch(updateTokenProduct(parseInt(e.currentTarget.value)))
         dispatch(setTokenTo(tokensProduct[parseInt(e.currentTarget.value)]))
         if (status.action == 'Invest')
           dispatch(
@@ -150,29 +151,29 @@ export const MaxButton = () => {
     if (status.action === 'Invest') {
       dispatch(
         setAmoutFrom(
-          Number(formatUnits(token.balance, token.decimals)).toFixed(4),
+          (Number(formatUnits(token.balance, token.decimals)) / 1.006).toFixed(4),
         ),
       )
       dispatch(
         swapGetEstimatedIssueSetAmount({
           contractAddressTo: tokenProduct.contractPolygon,
           contractAddressFrom: token.contractPolygon,
-          amountFrom: token.balance,
+          amountFrom: parseUnits((Number(formatUnits(token.balance, token.decimals)) / 1.006).toFixed(4),token.decimals)
+          //amountFrom: token.balance,
         }),
       )
     } else {
       dispatch(
         setAmoutTo(
-          Number(
-            formatUnits(tokenProduct.balance, tokenProduct.decimals),
-          ).toFixed(4),
+          (Number(formatUnits(tokenProduct.balance, tokenProduct.decimals)) / 1.00001).toFixed(4),
         ),
       )
       dispatch(
         swapGetAmountInToIssueExactSet({
           contractAddressTo: tokenProduct.contractPolygon,
           contractAddressFrom: token.contractPolygon,
-          amountTo: tokenProduct.balance,
+          amountTo: parseUnits((Number(formatUnits(tokenProduct.balance, tokenProduct.decimals)) / 1.00001).toFixed(4),tokenProduct.decimals)
+          //amountTo: tokenProduct.balance,
         }),
       )
     }
@@ -294,41 +295,73 @@ export const GroupInputTo = () => {
 export const GroupButtons = () => {
   const { token, tokenProduct, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
+
+  const isDisable = () => {
+    return false
+  }
+
+  const handleApprove = (address: string) => {
+    dispatch(
+      swapApprove({
+        contractAddress: address,
+        amount: parseUnits('10')
+      }),
+    )
+  }
+
+  const handleInvest = () => {
+    dispatch(
+      swapIssueExactSetFromToken({
+        contractAddressTo: tokenProduct.contractPolygon,
+        contractAddressFrom: token.contractPolygon,
+        amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
+        amountFrom: parseUnits(
+          (Number(status.amountFrom) * 1.005).toString(),
+          token.decimals,
+        ),
+      }),
+    )
+  }
+
+  const handleWithdraw = () => {
+    dispatch(
+      swapRedeemExactSetForToken({
+        contractAddressTo: tokenProduct.contractPolygon,
+        contractAddressFrom: token.contractPolygon,
+        amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
+        amountFrom: parseUnits(
+          (Number(status.amountFrom) * 0.005).toString(),
+          token.decimals,
+        ),
+      }),
+    )
+  }
+
+  const handleClick = () => {
+    if (status.action === 'Invest') {
+      if (Number(token.allowance).toFixed(0) === '0')
+        handleApprove(token.contractPolygon)
+      else
+        handleInvest()
+    }
+    else {
+        if (Number(tokenProduct.allowance).toFixed(0) === '0')
+          handleApprove(tokenProduct.contractPolygon)
+        else
+          handleWithdraw()
+    }
+  }
+
   return (
     <Form.Group className="mb-3">
       <Form.Control
         className="btn btn-primary"
         type="button"
-        value={status.action}
+        value={status.buttonValue}
         disabled={!status.enoughBalance}
-        onClick={() =>
-          status.action === 'Invest'
-            ? dispatch(
-                swapIssueExactSetFromToken({
-                  contractAddressTo: tokenProduct.contractPolygon,
-                  contractAddressFrom: token.contractPolygon,
-                  amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-                  amountFrom: parseUnits(
-                    (Number(status.amountFrom) * 1.005).toString(),
-                    token.decimals,
-                  ),
-                }),
-              )
-            : dispatch(
-                swapRedeemExactSetForToken({
-                  contractAddressTo: tokenProduct.contractPolygon,
-                  contractAddressFrom: token.contractPolygon,
-                  amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-                  amountFrom: parseUnits(
-                    (Number(status.amountFrom) * 0.005).toString(),
-                    token.decimals,
-                  ),
-                }),
-              )
-        }
+        onClick={() => handleClick()}
       />
-      {!status.enoughBalance && <Form.Label className="pt-1">Enough Balance</Form.Label>}
-      
+      {!status.enoughBalance && <Form.Label className="pt-1">Enough Balance</Form.Label>}      
     </Form.Group>
   )
 }
@@ -336,8 +369,13 @@ export const GroupButtons = () => {
 export const ShowResponse = () => {
   const { status } = useSelector(selectSwap)
   const [show, setShow] = useState(false);
+  const dispatch = useDispatch()
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    dispatch(cleanResponse())
+    setShow(false);
+  }
+
   const handleShow = () => setShow(true);
 
   useEffect(() => {
@@ -346,9 +384,6 @@ export const ShowResponse = () => {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
-        Open
-      </Button>
       <Modal size={status.response?.hash && "lg"} show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>{status.response?.code ? 'Error Status' : 'Transaction Status'}</Modal.Title>

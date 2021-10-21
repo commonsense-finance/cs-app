@@ -10,9 +10,7 @@ interface ITokens {
   list: IToken[]
   listStatus: string
   active: IToken
-  count: number
   totalBalance: BigNumberish
-  users: []
   status: string
 }
 
@@ -21,8 +19,6 @@ const initialState: ITokens = {
   listStatus: '',
   active: productTokens[0],
   totalBalance: 0,
-  count: 0,
-  users: [],
   status: ''
 }
 
@@ -84,25 +80,8 @@ const tokensSlice = createSlice({
     setActiveToken: (state, action: PayloadAction<number>) => {
       state.active = state.list[action.payload];
     },
-    add: (state) => {
-      state.count++
-    },
-    del: (state) => {
-      state.count--
-    },
   },
   extraReducers: (builder) => {
-    // USERS
-    builder.addCase(getUsers.pending, (state, action) => {
-      state.status = 'Pending'
-    }),
-    builder.addCase(getUsers.fulfilled, (state, action) => {
-      state.users = action.payload
-      state.status = 'Succsess'
-    })
-    builder.addCase(getUsers.rejected, (state, action) => {
-      state.status = 'Failed'
-    })
     // LISTS
     builder.addCase(updateTokensList.pending, (state, action) => {
       state.listStatus = 'Pending'
@@ -122,6 +101,5 @@ export const { setActiveToken } = tokensSlice.actions
 
 export const selectTokensList = (state: RootState) => state.tokens.list
 export const selectTokensActive = (state: RootState) => state.tokens.active
-export const selectTokensUsers = (state: RootState) => state.tokens.users
 
 export default tokensSlice.reducer
