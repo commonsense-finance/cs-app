@@ -1,12 +1,14 @@
-import { UserBalance } from "./UserBalance"
-import { UserTokens } from "./UserTokens"
-
+import { Container } from 'react-bootstrap'
+import { UserBalance } from './UserBalance'
+import { UserTokensProduct } from './UserTokensProduct'
 
 export const UserProfile = () => {
-    return (
-        <div>
-            <UserBalance />
-            <UserTokens />
-        </div>
-    )
+  return (
+    <>
+      <UserBalance />
+      <Container>
+        <UserTokensProduct />
+      </Container>
+    </>
+  )
 }

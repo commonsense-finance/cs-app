@@ -208,6 +208,10 @@ const swapSlice = createSlice({
           (Number(state.token.allowance) > 0) :
           (Number(state.tokenProduct.allowance) > 0)
       state.status.buttonValue = state.status.enoughAllowance ? state.status.action : 'Approve'
+      state.status.enoughBalance = 
+        state.status.action === 'Invest' ?
+          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
+          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
       state.tokenListStatus = 'Succsess'
     })
     builder.addCase(updateToken.rejected, (state, action) => {
@@ -259,11 +263,11 @@ const swapSlice = createSlice({
       state.tokenListStatus = 'Pending'
     }),
     builder.addCase(swapGetEstimatedIssueSetAmount.fulfilled, (state, action) => {
-      state.status.amountTo = Number(formatUnits(action.payload.auxAmount)).toFixed(4)
+      state.status.amountTo = Number(formatUnits(action.payload.auxAmount, state.tokenProduct.decimals)).toFixed(4)
       state.status.enoughBalance = 
         state.status.action === 'Invest' ?
-          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0'))) :
-          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0')))
+          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
+          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
       state.tokenListStatus = 'Succsess'
     })
     builder.addCase(swapGetEstimatedIssueSetAmount.rejected, (state, action) => {
@@ -274,11 +278,11 @@ const swapSlice = createSlice({
       state.tokenListStatus = 'Pending'
     }),
     builder.addCase(swapGetAmountInToIssueExactSet.fulfilled, (state, action) => {
-      state.status.amountFrom = Number(formatUnits(action.payload.auxAmount)).toFixed(4)
+      state.status.amountFrom = Number(formatUnits(action.payload.auxAmount, state.token.decimals)).toFixed(4)
       state.status.enoughBalance = 
         state.status.action === 'Invest' ?
-          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0'))) :
-          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0')))
+          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
+          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
       state.tokenListStatus = 'Succsess'
     })
     builder.addCase(swapGetAmountInToIssueExactSet.rejected, (state, action) => {

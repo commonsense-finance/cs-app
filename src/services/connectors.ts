@@ -11,21 +11,21 @@ const RPC_URLS: { [chainId: number]: string } = {
 }
 
 export const network = new NetworkConnector({
-    urls: { 1: RPC_URLS[1], 137: RPC_URLS[137], },
+    urls: { 137: RPC_URLS[137] },
     defaultChainId: 137
-  })
+})
 
 export const injected = new InjectedConnector({
   supportedChainIds: [137]
 })
 
 export const walletconnect = new WalletConnectConnector({
-  rpc: { 1: RPC_URLS[1] },
+  rpc: { 1: RPC_URLS[137] },
   qrcode: true
 })
 
 export const walletlink = new WalletLinkConnector({
   url: RPC_URLS[1],
   appName: 'Common Sense Finance',
-  supportedChainIds: [1, 137]
+  supportedChainIds: [137]
 })

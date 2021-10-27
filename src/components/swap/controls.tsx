@@ -316,7 +316,7 @@ export const GroupButtons = () => {
         contractAddressFrom: token.contractPolygon,
         amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
         amountFrom: parseUnits(
-          (Number(status.amountFrom) * 1.005).toString(),
+          (Number(status.amountFrom) * 1.005).toFixed(4),
           token.decimals,
         ),
       }),
@@ -330,7 +330,7 @@ export const GroupButtons = () => {
         contractAddressFrom: token.contractPolygon,
         amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
         amountFrom: parseUnits(
-          (Number(status.amountFrom) * 0.005).toString(),
+          (Number(status.amountFrom) * 0.005).toFixed(4),
           token.decimals,
         ),
       }),
@@ -355,10 +355,10 @@ export const GroupButtons = () => {
   return (
     <Form.Group className="mb-3">
       <Form.Control
-        className="btn btn-primary"
+        className="btn-lg btn-primary bg-gradient"
         type="button"
         value={status.buttonValue}
-        disabled={!status.enoughBalance}
+        disabled={status.enoughAllowance && !status.enoughBalance}
         onClick={() => handleClick()}
       />
       {!status.enoughBalance && <Form.Label className="pt-1">Enough Balance</Form.Label>}      

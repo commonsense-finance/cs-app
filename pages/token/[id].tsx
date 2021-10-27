@@ -1,7 +1,12 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setActiveToken, setTokenTo, setAction, updateToken } from '@redux/actions'
+import {
+  setActiveToken,
+  setTokenTo,
+  setAction,
+  updateToken,
+} from '@redux/actions'
 import { Col, Row, Container } from 'react-bootstrap'
 import {
   TokenAbout,
@@ -11,12 +16,13 @@ import {
   Swap,
 } from '@components'
 import { selectTokensList } from '@redux/slices/tokens'
-import { primaryColor } from 'src/constants/styles'
 import { selectSwap, updateTokenProduct } from '@redux/slices/swap'
+import { selectTheme } from '@redux/slices/theme'
 
 const token = () => {
   const tokensProduct = useSelector(selectTokensList)
   const { token } = useSelector(selectSwap)
+  const theme = useSelector(selectTheme)
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -36,12 +42,10 @@ const token = () => {
 
   return (
     <>
-      <div className="text-white" style={{ backgroundColor: primaryColor }}>
-        <Container className="py-4">
-          <TokenHeader />
-        </Container>
-      </div>
-      <Container className="py-5">
+      <Container className={`text-${theme.textMode} py-4`}>
+        <TokenHeader />
+      </Container>
+      <Container className={`text-${theme.textMode} pb-5`}>
         <Row className="pb-5">
           <Col className="col-8">
             <TokenStats />

@@ -1,50 +1,32 @@
-import Image from 'next/image'
-import { primaryColor } from 'src/constants/styles'
+import {
+  GitHubIcon,
+  LinkedinIcon,
+  TwitterIcon,
+} from '@components/Icons/'
+import { selectTheme } from '@redux/slices/theme'
+import { useSelector } from 'react-redux'
 
 export const Footer = () => {
   const widthIcons = '18'
-
+  const theme = useSelector(selectTheme)
   return (
     <div
-      className="fixed-bottom text-center py-2"
-      style={{ backgroundColor: primaryColor }}
+      className={`fixed-bottom text-center py-2 text-${theme.textMode}`}
     >
-      
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">
-        <li className="mx-2">
-          <img
-            src="/icons/github-icon.svg"
-            alt="github"
-            width={widthIcons}
-            height="29"
-          />
+        <li className={`mx-2 `}>
+          <GitHubIcon />
         </li>
         <li className="mx-2">
-          <img
-            src="/icons/twitter-icon.svg"
-            alt="twitter"
-            width={widthIcons}
-            height="28"
-          />
+          <TwitterIcon />
         </li>
         <li className="mx-2">
-          <img
-            src="/icons/youtube-icon.svg"
-            alt="youtube"
-            width={widthIcons}
-            height="29"
-          />
-        </li>
-        <li className="mx-2">
-          <img
-            src="/icons/linkedin-icon.svg"
-            alt="linkedin"
-            width={widthIcons}
-            height="32"
-          />
+          <LinkedinIcon />
         </li>
       </ul>
-      <div className='text-light pb-1'>© 2021 Common Sense, Inc</div>
+      <div >
+        © 2021 Common Sense, Inc
+      </div>
     </div>
   )
 }

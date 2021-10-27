@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
-import { injected, network } from '../services/connectors'
+import { injected } from '../services/connectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { updateTokensList, updateWeb3 } from '@redux/actions'
 import { selectWeb3 } from '@redux/slices/web3'
@@ -13,11 +13,7 @@ export function useEagerConnect() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!active) {
-      activate(network, undefined, true).catch(() => {
-        setTried(true)
-      })
-    }
+
     if (account !== undefined)
       dispatch(updateWeb3({library, chainId, account}))
   }, [library]) 
@@ -33,11 +29,7 @@ export function useEagerConnect() {
         activate(injected, undefined, true).catch(() => {
           setTried(true)
         })
-      } else {
-        activate(network, undefined, true).catch(() => {
-          setTried(true)
-        })
-      }
+      } 
     })
   }, []) // intentionally only running on mount (make sure it's only mounted once :))
 
@@ -76,16 +68,22 @@ export function useInactiveListener(suppress: boolean = false) {
         console.log("Handling 'disconnect' event with payload", networkId)
         //activate(network)
       }
-      // const handleNetworkChanged = (networkId: string | number) => {
-      //   console.log("Handling 'networkChanged' event with payload", networkId)
-      //   activate(injected)
-      // }
+      
+      const handleNetworkChanged = (networkId: string | number) => {
+        console.log("Handling 'networkChanged' event with payload", networkId)
+        activate(injected)
+      }
+
+      const handleMessage = () => {
+        console.log("Message ->")
+      }
 
       ethereum.on('connect', handleConnect)
       ethereum.on('chainChanged', handleChainChanged)
       ethereum.on('accountsChanged', handleAccountsChanged)
       ethereum.on('disconnect', handleDisconnectChanged)
-      //ethereum.on('networkChanged', handleNetworkChanged)
+      ethereum.on('networkChanged', handleNetworkChanged)
+      ethereum.on('message', handleMessage);
 
       return () => {
         if (ethereum.removeListener) {
@@ -93,7 +91,8 @@ export function useInactiveListener(suppress: boolean = false) {
           ethereum.removeListener('chainChanged', handleChainChanged)
           ethereum.removeListener('accountsChanged', handleAccountsChanged)
           ethereum.removeListener('disconnect', handleDisconnectChanged)
-          //ethereum.removeListener('networkChanged', handleNetworkChanged)
+          ethereum.removeListener('networkChanged', handleNetworkChanged)
+          ethereum.removeListener('message', handleMessage)
         }
       }
     }

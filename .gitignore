@@ -2,6 +2,9 @@
 node_modules
 # next.js build files
 .next
+
+src/example
+
 # environment variables
 .env
 .env.*

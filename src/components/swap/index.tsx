@@ -1,5 +1,6 @@
 
 import { selectSwap } from '@redux/slices/swap'
+import { selectTheme } from '@redux/slices/theme'
 import { useEffect } from 'react'
 import { Col, Form, Nav, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -17,31 +18,32 @@ import {
 export const Swap = () => {
   const { token, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
+  const theme = useSelector(selectTheme)
 
   useEffect(() => {
     dispatch(updateToken(token.id))
   }, [])
 
   return (
-    <div>
+    <div >
       <Nav
-        className="mb-2 border-bottom-0"
+        className={`mb-2 border-bottom-0 text-${theme.textMode} `}
         variant="tabs"
         activeKey={status.action}
         onSelect={(selectedKey) =>
           dispatch(setAction(selectedKey))
         }
       >
-        <Nav.Item>
-          <Nav.Link eventKey="Invest">Invest</Nav.Link>
+        <Nav.Item >
+          <Nav.Link className={`text-${theme.textMode} `} eventKey="Invest">Invest</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link eventKey="Withdraw">Withdraw</Nav.Link>
         </Nav.Item>
       </Nav>
 
-      <Form>
-        <Row className="g-2 p-3 border rounded">
+      <Form >
+        <Row className={`g-2 p-3 ${theme.darkMode ? 'borderless' : 'border'}  rounded shadow-sm text-${theme.textMode} bg-${theme.bgMode}`}>
           {status.action === 'Invest' ? (
             <>
               <Col className="col-5">

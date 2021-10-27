@@ -10,8 +10,6 @@ import tokenSetABI from '../services/ABI/tokenSet.json'
 import exchangeIssuanceV2ABI from '../services/ABI/exchangeIssuanceV2.json'
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { IComponents } from '@redux/types'
-import { setError } from '@redux/actions'
-import { useDispatch } from 'react-redux'
 
 export function useContract(
   address?: string,

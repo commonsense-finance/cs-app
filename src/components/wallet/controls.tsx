@@ -1,5 +1,7 @@
+import { selectTheme } from '@redux/slices/theme'
 import { useWeb3React } from '@web3-react/core'
 import { Card, Dropdown, Image, Button, Modal } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 import { Balance, formatAccount, getNetworkName } from 'src/services/web3Utils'
 import {
   injected,
@@ -11,12 +13,13 @@ import {
 export const ConnectedWalletButton = () => {
   const { chainId, account, deactivate } = useWeb3React()
   const walletButtonText = formatAccount(account)
+  const theme = useSelector(selectTheme)
   return (
     <>
       <Dropdown align="end">
         <Dropdown.Toggle
           className="border rounded-pill"
-          variant="light"
+          variant={theme.bgMode}
           id="dropdown-basic"
         >
           <Image
@@ -29,8 +32,8 @@ export const ConnectedWalletButton = () => {
           {walletButtonText}
         </Dropdown.Toggle>
 
-        <Dropdown.Menu className="border-0">
-          <Card className="border-1" style={{ width: '18rem' }}>
+        <Dropdown.Menu className={`border-0 bg-transparent`}>
+          <Card className={`border-1 text-${theme.textMode} bg-${theme.bgMode}`} style={{ width: '18rem' }}>
             <Card.Header>
               <span className="float-start">
                 <strong>Account</strong>
@@ -45,7 +48,7 @@ export const ConnectedWalletButton = () => {
                 Disconnect
               </Button>
             </Card.Header>
-            <Card.Body>
+            <Card.Body  style={{ backgroundColor: theme.bgSoftColor }}>
               <Image
                 className="me-2"
                 style={{ width: '40px' }}
@@ -75,8 +78,9 @@ export const ConnectedWalletButton = () => {
 }
 
 export const DisconnectedWalletBotton = (props: { handleShow: any }) => {
+  const theme = useSelector(selectTheme)
   return (
-    <Button variant="primary" onClick={() => props.handleShow()}>
+    <Button variant="primary" onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
       Connect Wallet
     </Button>
   )
@@ -87,6 +91,7 @@ export const WalletModal = (props: {
   handleClose: any
 }) => {
   const { activate } = useWeb3React()
+  const theme = useSelector(selectTheme)
   return (
     <Modal show={props.showModal} onHide={props.handleClose}>
       <Modal.Header closeButton>
@@ -94,7 +99,7 @@ export const WalletModal = (props: {
       </Modal.Header>
       <Modal.Body className="text-center">
         <Button
-          className="me-2"
+          className={`me-2 bg-${theme.bgMode} text-${theme.textMode}`}
           variant="light"
           onClick={() => {
             activate(injected)

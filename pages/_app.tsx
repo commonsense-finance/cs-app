@@ -1,4 +1,3 @@
-
 import { AppProps } from 'next/app'
 import '@styles/app.scss'
 import '@styles/global.scss'
@@ -9,14 +8,16 @@ import { Provider } from 'react-redux'
 import store from '@redux/store'
 
 import Layout from './layout'
+
 //import { appWithTranslation } from '@i18n'
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
       <Provider store={store}>
         <Layout>
-          <Component {...pageProps} />
+            <Component {...pageProps} />
         </Layout>
       </Provider>
     </Web3ReactProvider>

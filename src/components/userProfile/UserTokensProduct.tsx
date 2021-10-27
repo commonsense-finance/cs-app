@@ -1,21 +1,19 @@
 import React from 'react'
-import { Container, Card, Table } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import { selectTokensList } from '@redux/slices/tokens'
+import { selectTheme } from '@redux/slices/theme'
 import { formatUnits } from '@ethersproject/units'
 import Link from 'next/link'
+import { Button, Card, Table } from '@components/csComponents'
 
-//import { SwapOffcanvas } from '../Swap/SwapOffcanvas'
-
-export const UserTokens = () => {
-  
+export const UserTokensProduct = () => {
   const tokens = useSelector(selectTokensList)
+  const theme = useSelector(selectTheme)
   return (
-    <Container className="pt-5">
-      <h4 className="pb-2">My Investments</h4>
-      <Card className="rounded">
-        <Card.Body>
-          <Table className="table-borderless">
+    <div className={`pb-5`} >
+      <h4 className={`pb-2 text-${theme.textMode}`}>My Investments</h4>
+      <Card >
+          <Table >
             <thead>
               <tr>
                 <th>#</th>
@@ -47,15 +45,14 @@ export const UserTokens = () => {
                       <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td>
                       <td className='text-end'>${Number(formatUnits(token.total)).toFixed(2)}</td>
                       <td className='text-center'>
-                        <Link href={"/token/" + token.id + '?action=Withdraw'}><a className="btn btn-primary btn-sm">Withdraw</a></Link>
+                        <Link href={"/token/" + token.id + '?action=Withdraw'}><Button className="btn-sm">Withdraw</Button></Link>
                       </td>
                     </tr>
                   )
               )}
             </tbody>
           </Table>
-        </Card.Body>
       </Card>
-    </Container>
+    </div>
   )
 }
