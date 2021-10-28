@@ -18,11 +18,11 @@ export const UserTokensProduct = () => {
               <tr>
                 <th>#</th>
                 <th>Symbol</th>
-                <th>Name</th>
+                <th className="d-none d-md-table-cell">Name</th>
                 <th className='text-end'>Price</th>
                 <th className='text-end'>Balance</th>
-                <th className='text-end'>Total</th>
-                <th className='text-center'>Actions</th>
+                <th className='text-end d-none d-sm-table-cell'>Total</th>
+                <th className='text-center d-md-block'>Actions</th>
               </tr>
             </thead>
 
@@ -40,10 +40,10 @@ export const UserTokensProduct = () => {
                         ></img>
                       </td>
                       <td>{token.symbol}</td>
-                      <td>{token.name}</td>
+                      <td className="d-none d-md-table-cell">{token.name}</td>
                       <td className='text-end'>${Number(formatUnits(token.price)).toFixed(2)}</td>
                       <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td>
-                      <td className='text-end'>${Number(formatUnits(token.total)).toFixed(2)}</td>
+                      <td className='text-end d-none d-sm-table-cell'>${Number(formatUnits(token.total)).toFixed(2)}</td>
                       <td className='text-center'>
                         <Link href={"/token/" + token.id + '?action=Withdraw'}><Button className="btn-sm">Withdraw</Button></Link>
                       </td>

@@ -1,8 +1,10 @@
-
 import {
-  Button as BaseButton, ButtonProps,
-  Card as BaseCard, CardProps,
-  Table as BaseTable, TableProps,
+  Button as BaseButton,
+  ButtonProps,
+  Card as BaseCard,
+  CardProps,
+  Table as BaseTable,
+  TableProps,
 } from 'react-bootstrap'
 
 import { useSelector } from 'react-redux'
@@ -37,9 +39,11 @@ export const Card = (props: CardProps) => {
 export const Table = (props: TableProps) => {
   const theme = useSelector(selectTheme)
   return (
-    <BaseTable
-      className={`table-borderless text-${theme.textMode}`}
-      {...props}
-    />
+    <div className="table-responsive-lg">
+      <BaseTable
+        className={`table-borderless text-${theme.textMode}`}
+        {...props}
+      />
+    </div>
   )
 }

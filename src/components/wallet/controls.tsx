@@ -40,7 +40,7 @@ export const ConnectedWalletButton = () => {
               </span>
               <Button
                 className="btn-sm float-end"
-                variant="secondary"
+                variant="info"
                 onClick={() => {
                   deactivate()
                 }}

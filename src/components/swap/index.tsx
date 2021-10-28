@@ -27,7 +27,7 @@ export const Swap = () => {
   return (
     <div >
       <Nav
-        className={`mb-2 border-bottom-0 text-${theme.textMode} `}
+        className={`mb-2 border-0 `}
         variant="tabs"
         activeKey={status.action}
         onSelect={(selectedKey) =>
@@ -35,15 +35,19 @@ export const Swap = () => {
         }
       >
         <Nav.Item >
-          <Nav.Link className={`text-${theme.textMode} `} eventKey="Invest">Invest</Nav.Link>
+          <Nav.Link  
+            className={`bg-${status.action === "Invest" && theme.bgMode} 
+              text-${status.action === "Invest" && theme.textMode} 
+              border-${theme.darkMode ? "0" : "1"}`} eventKey="Invest">Invest</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="Withdraw">Withdraw</Nav.Link>
+          <Nav.Link className={`bg-${status.action === "Withdraw" && theme.bgMode} 
+              text-${status.action === "Withdraw" && theme.textMode} border-${theme.darkMode ? "0" : "1"}`} eventKey="Withdraw">Withdraw</Nav.Link>
         </Nav.Item>
       </Nav>
 
       <Form >
-        <Row className={`g-2 p-3 ${theme.darkMode ? 'borderless' : 'border'}  rounded shadow-sm text-${theme.textMode} bg-${theme.bgMode}`}>
+        <Row className={`g-2 p-3 rounded shadow-sm bg-${theme.bgMode} ${!theme.darkMode && 'border'}`}>
           {status.action === 'Invest' ? (
             <>
               <Col className="col-5">

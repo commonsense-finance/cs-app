@@ -9,12 +9,13 @@ const Home = () => {
   const theme = useSelector(selectTheme)
   return (
     <div>
-      {account ? <UserProfile /> : <Hero />}
+      <Container >
+        {account ? <UserProfile /> : <Hero />}
+      </Container>
       <Container >
         <Tokens />
       </Container>
     </div>
   )
 }
-
 export default Home

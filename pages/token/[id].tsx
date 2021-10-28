@@ -18,6 +18,7 @@ import {
 import { selectTokensList } from '@redux/slices/tokens'
 import { selectSwap, updateTokenProduct } from '@redux/slices/swap'
 import { selectTheme } from '@redux/slices/theme'
+import { Default, Desktop, Mobile } from '@components/mediaQuery'
 
 const token = () => {
   const tokensProduct = useSelector(selectTokensList)
@@ -42,24 +43,49 @@ const token = () => {
 
   return (
     <>
-      <Container className={`text-${theme.textMode} py-4`}>
-        <TokenHeader />
-      </Container>
-      <Container className={`text-${theme.textMode} pb-5`}>
-        <Row className="pb-5">
-          <Col className="col-8">
-            <TokenStats />
-            <TokenAbout />
-            <TokenComponents />
-            {/* <TokenTransactions /> */}
-          </Col>
-          <Col>
+      <Desktop>
+        <Container className={`text-${theme.textMode} py-4`}>
+          <TokenHeader />
+        </Container>
+        <Container className={`text-${theme.textMode} pb-5`}>
+          <Row className="pb-5">
+            <Col className="col-md-7 col-xl-8">
+              <TokenStats />
+              <TokenAbout />
+              <TokenComponents />
+              {/* <TokenTransactions /> */}
+            </Col>
+            <Col>
+              <Swap />
+            </Col>
+          </Row>
+        </Container>
+      </Desktop>
+
+      {/* MOBILE and TABLET */}
+      <Default>
+        <Container className={`text-${theme.textMode} py-4`}>
+          <TokenHeader />
+          <div className="py-4">
             <Swap />
-          </Col>
-        </Row>
-      </Container>
+          </div>
+          <TokenStats />
+          <TokenAbout />
+          <TokenComponents />
+          {/* <TokenTransactions /> */}
+        </Container>
+      </Default>
     </>
   )
 }
+
+// const Example = () => (
+//   <div>
+//     <Desktop>Desktop or laptop</Desktop>
+//     <Tablet>Tablet</Tablet>
+//     <Mobile>Mobile</Mobile>
+//     <Default>Not mobile (desktop or laptop or tablet)</Default>
+//   </div>
+// )
 
 export default token

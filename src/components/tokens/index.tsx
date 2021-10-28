@@ -20,8 +20,8 @@ export const Tokens = () => {
             <tr>
               <th>#</th>
               <th>Symbol</th>
-              <th>Name</th>
-              <th className="text-end">Market Cap</th>
+              <th className="d-none d-md-table-cell">Name</th>
+              <th className="text-end d-none d-sm-table-cell">Market Cap</th>
               <th className="text-end">Fees</th>
               <th className="text-center">Actions</th>
             </tr>
@@ -38,8 +38,8 @@ export const Tokens = () => {
                   ></img>
                 </td>
                 <td>{token.symbol}</td>
-                <td>{token.name}</td>
-                <td className="text-end">
+                <td className="d-none d-md-table-cell">{token.name}</td>
+                <td className="text-end d-none d-sm-table-cell">
                   ${Number(formatUnits(token.marketCap)).toFixed(2)}
                 </td>
                 <td className="text-end">{token.fee}</td>

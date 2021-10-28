@@ -27,19 +27,19 @@ export const TokenStats = () => {
   return (
     <>
       <Row className="pb-4">
-        <Col className="col-4">
+        <Col className="col-sm-4 col-12 pb-2">
           <Card>
             <p>Market Cap</p>
             <h3>${Number(formatUnits(activeToken.marketCap)).toFixed(2)}</h3>
           </Card>
         </Col>
-        <Col className="col-4">
+        <Col className="col-sm-4 col-12 pb-2">
           <Card>
             <p>Total Supply</p>
             <h3>{Number(formatUnits(activeToken.totalSupply)).toFixed(2)}</h3>
           </Card>
         </Col>
-        <Col className="col-4">
+        <Col className="col-sm-4 col-12 pb-2">
           <Card>
             <p>Fees</p>
             <h3>{activeToken?.fee}</h3>
@@ -71,9 +71,9 @@ export const TokenComponents = () => {
             <tr>
               <th>#</th>
               <th>Amount per Token</th>
-              <th>Value per Token</th>
-              <th>Porcent</th>
-              <th>24hs Change</th>
+              {/* <th className="d-none d-md-table-cell">Value per Token</th>
+              <th className="d-none d-md-table-cell">Porcent</th> */}
+              <th className="text-end">24hs Change</th>
             </tr>
           </thead>
 
@@ -95,8 +95,8 @@ export const TokenComponents = () => {
                     ' ' +
                     component.symbol}
                 </td>
-                <td className="text-end">{component.price}</td>
-                <td className="text-end">{component.price}</td>
+                {/* <td className="text-end d-none d-md-table-cell">{component.price}</td>
+                <td className="text-end d-none d-md-table-cell">{component.price}</td> */}
                 <td className="text-end">{component.price}</td>
               </tr>
             ))}
