@@ -66,9 +66,6 @@ export const swapUpdateToken = createAsyncThunk(
     const token = tokenList[tokenId]
     const web3 = (getState() as RootState).web3
 
-    let auxList: IToken[] = []
-    let auxTotalBalance: BigNumberish = 0
-
     const auxPrice = await coingeckoGetTokenPrice(token.contract)
     const auxBalance = await getTokenBalance(token.contractPolygon, web3)
     const auxAllowance = await getAllowance(token.contractPolygon, web3)
@@ -81,11 +78,11 @@ export const swapUpdateToken = createAsyncThunk(
 
 export const swapUpdateTokenProduct = createAsyncThunk(
   'swap/swapUpdateTokenProduct',
-  async (tokenId: number, { getState, dispatch }) => {
+  async (tokenId: number, { getState }) => {
 
-    const { tokensProduct } = (getState() as RootState).tokens
+    const { tokenProductList } = (getState() as RootState).swap
+    const token = tokenProductList[tokenId]
     const web3 = (getState() as RootState).web3
-    const token = tokensProduct[tokenId]
     
 
     const auxPrice = await getTokenPrice(token.contractPolygon, web3)
@@ -186,6 +183,9 @@ const swapSlice = createSlice({
     setTokenTo: (state, action) => {
       state.tokenProduct = action.payload
     },
+    setTokenToById: (state, action) => {
+      state.tokenProduct = state.tokenProductList[action.payload] 
+    },
     setActiveFocus: (state, action) => {
       state.status.activeFocus = action.payload
     },
@@ -213,10 +213,10 @@ const swapSlice = createSlice({
           (Number(state.token.allowance) > 0) :
           (Number(state.tokenProduct.allowance) > 0)
       state.status.buttonValue = state.status.enoughAllowance ? state.status.action : 'Approve'
-      // state.status.enoughBalance = 
-      //   state.status.action === 'Invest' ?
-      //     (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
-      //     (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
+      state.status.enoughBalance = 
+        state.status.action === 'Invest' ?
+          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
+          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
       state.statusToken = 'Succsess'
     })
     builder.addCase(swapUpdateToken.rejected, (state, action) => {
@@ -318,7 +318,7 @@ const swapSlice = createSlice({
   }
 });
 
-export const { setAction, setTokenFrom, setTokenTo, setActiveFocus, setAmoutFrom, setAmoutTo, cleanResponse } = swapSlice.actions;
+export const { setAction, setTokenFrom, setTokenTo, setTokenToById, setActiveFocus, setAmoutFrom, setAmoutTo, cleanResponse } = swapSlice.actions;
 
 export const selectSwap = (state: RootState) => state.swap
 

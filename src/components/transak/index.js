@@ -1,21 +1,23 @@
 import transakSDK from '@transak/transak-sdk'
+import { useWeb3React } from '@web3-react/core'
 
 let settings = {
-  apiKey: 'd27e0864-19dc-4539-8da4-38e00a3c148d', // Your API Key
-  environment: 'STAGING', // STAGING/PRODUCTION
+  apiKey: '912a7912-d6b3-481d-8995-09d676cebd12', // Your API Key
+  environment: 'PRODUCTION', // STAGING/PRODUCTION
   defaultCryptoCurrency: 'MATIC',
-  walletAddress: '0xc90Bd75d24364722862b23b2C7E10272CBaa1681', // Your customer's wallet address
+  walletAddress: '', // Your customer's wallet address
   themeColor: '000', // App theme color
   fiatCurrency: 'EUR', // INR/GBP
-  email: 'lucianoinsua@gmail.com', // Your customer's email address
+  email: '', // Your customer's email address
   redirectURL: '',
-  hostURL: 'http://localhost:3000/token/0',
+  hostURL: 'https://demo.commonsense.finance/',
   widgetHeight: '650px',
   widgetWidth: '500px',
 }
 
-export function openTransak() {
-  const transak = new transakSDK(settings)
+export function openTransak(account) {
+  
+  const transak = new transakSDK({...settings, walletAddress: account})
 
   // To get all the events
   transak.on(transak.ALL_EVENTS, (data) => {
@@ -29,9 +31,3 @@ export function openTransak() {
 
   transak.init()
 }
-
-function Transak() {
-  return <button onClick={() => openTransak()}>open trasak</button>
-}
-
-export default Transak

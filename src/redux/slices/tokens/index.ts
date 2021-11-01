@@ -96,9 +96,7 @@ export const updateTokenProduct = createAsyncThunk(
       marketCap: auxMarketCap || 0,
       components: auxComponents
     }
-
     
-
     return { auxTokenProduct }
   }
 )

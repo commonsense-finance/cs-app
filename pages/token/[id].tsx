@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   updateTokenProduct,
   setActiveTokenProduct,
-  swapUpdateToken,
-  setTokenTo,
-  swapUpdateTokenProduct,
+  setTokenToById,
   setAction,
 } from '@redux/actions'
 import { Col, Row, Container } from 'react-bootstrap'
@@ -38,9 +36,8 @@ const token = () => {
         dispatch(setActiveTokenProduct(Number(router?.query?.id)))
         dispatch(updateTokenProduct(Number(router?.query?.id)))
   
-        //for Swap
-        dispatch(swapUpdateToken(token.id))
-        dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
+            
+        // dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
   
         router.query.action &&
           dispatch(setAction(router.query.action))
