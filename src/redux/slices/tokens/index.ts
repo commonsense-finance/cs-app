@@ -1,105 +1,146 @@
 import { RootState } from '@redux/store';
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
-import { productTokens } from 'src/constants/tokens'
+import { tokens, tokensProduct } from 'src/constants/tokens'
 import { IToken } from '@redux/types';
 import { getTokenBalance, getTokenComponents, getTokenMarketCap, getTokenPrice, getTokenTotal, getTokenTotalSupply } from 'src/services/tokenSet';
 
 
 interface ITokens {
-  list: IToken[]
-  listStatus: string
-  active: IToken
-  totalBalance: BigNumberish
-  status: string
+  tokens: IToken[]
+  totalBalanceTokens: BigNumberish
+  tokensProduct: IToken[]
+  activeTokenProduct: number
+  totalBalanceTokensProduct: BigNumberish
+  statusTokensProduct: null | string
+  account: null | string
+  
 }
 
 const initialState: ITokens = {
-  list: productTokens,
-  listStatus: '',
-  active: productTokens[0],
-  totalBalance: 0,
-  status: ''
+  tokens: tokens,
+  totalBalanceTokens: 0,
+  tokensProduct: tokensProduct,
+  activeTokenProduct: 0,
+  totalBalanceTokensProduct: 0,
+  statusTokensProduct: 'Succsess',
+  account: null,
 }
 
 
-export const getUsers = createAsyncThunk(
-  'tokens/getUsers',
-  async (props, {dispatch, getState}) => { 
-    const response = await fetch('https://jsonplaceholder.typicode.com/users')
-    .then(response => response.json())
-    return response
-    
-  }
-)
-
-export const updateTokensList = createAsyncThunk(
-  'tokens/updateTokensList',
+export const updateTokensProduct = createAsyncThunk(
+  'tokens/updateTokensProducts',
   async (props, { getState }) => {
     
-    console.log('Update List')
+    console.log('Update Toknes Products....')
 
-    const list = (getState() as RootState).tokens.list
+    const tokens = (getState() as RootState).tokens.tokensProduct
     const web3 = (getState() as RootState).web3
 
-    let auxList: IToken[] = []
+    let auxTokens: IToken[] = []
     let auxTotalBalance: BigNumberish = 0
     
    
-    for (let i = 0; i < list.length; i++) {
-      const auxPrice = await getTokenPrice(list[i].contractPolygon, web3)
-      const auxBalance = await getTokenBalance(list[i].contractPolygon, web3)
+    for (let i = 0; i < tokens.length; i++) {
+      const auxPrice = await getTokenPrice(tokens[i].contractPolygon, web3)
+      const auxBalance = await getTokenBalance(tokens[i].contractPolygon, web3)
       const auxTotal =  getTokenTotal(auxPrice, auxBalance)
 
-      const auxTotalSupply = await getTokenTotalSupply(list[i].contractPolygon, web3)
+      const auxTotalSupply = await getTokenTotalSupply(tokens[i].contractPolygon, web3)
       const auxMarketap = getTokenMarketCap(auxPrice, auxTotalSupply)
 
-      const auxComponents = await getTokenComponents(list[i].contractPolygon, web3)
+      //const auxComponents = await getTokenComponents(tokens[i].contractPolygon, web3)
 
-      auxList.push(
-        {...list[i], 
+      auxTokens.push(
+        {...tokens[i], 
           price: auxPrice || 0,
           balance: auxBalance || 0,
           total: auxTotal || 0,  
           totalSupply: auxTotalSupply || 0,  
           marketCap: auxMarketap || 0,
-          components: auxComponents
+          //components: auxComponents
         })
 
         auxTotalBalance = BigNumber.from(auxTotalBalance).add(auxTotal)
     }
     
-    return { auxList, auxTotalBalance }
+    return { auxTokens, auxTotalBalance }
   }
 )
+
+export const updateTokenProduct = createAsyncThunk(
+  'tokens/updateTokenProducts',
+  async (tokenId: number, { getState }) => {
+    
+    console.log('Update Tokne Products.... ', tokenId)
+
+    let auxTokenProduct = (getState() as RootState).tokens.tokensProduct[tokenId]
+    const web3 = (getState() as RootState).web3
+
+    const auxPrice = await getTokenPrice(auxTokenProduct.contractPolygon, web3) 
+    const auxBalance = await getTokenBalance(auxTokenProduct.contractPolygon, web3)
+    const auxTotal =  getTokenTotal(auxPrice, auxBalance)
+    
+    const auxTotalSupply = await getTokenTotalSupply(auxTokenProduct.contractPolygon, web3)
+    const auxMarketCap = getTokenMarketCap(auxPrice, auxTotalSupply)
+
+    const auxComponents = await getTokenComponents(auxTokenProduct.contractPolygon, web3)
+
+    
+    
+    auxTokenProduct = {...auxTokenProduct, 
+      price: auxPrice || 0,
+      balance: auxBalance || 0,
+      total: auxTotal || 0,  
+      totalSupply: auxTotalSupply || 0,  
+      marketCap: auxMarketCap || 0,
+      components: auxComponents
+    }
+
+    
+
+    return { auxTokenProduct }
+  }
+)
+
 
 const tokensSlice = createSlice({
   name: 'tokens',
   initialState,
   reducers: {
-    setActiveToken: (state, action: PayloadAction<number>) => {
-      state.active = state.list[action.payload];
-    },
+    setActiveTokenProduct:(state, action ) => {
+      state.activeTokenProduct = action.payload
+    }
   },
   extraReducers: (builder) => {
     // LISTS
-    builder.addCase(updateTokensList.pending, (state, action) => {
-      state.listStatus = 'Pending'
+    builder.addCase(updateTokensProduct.pending, (state, action) => {
+      state.statusTokensProduct = 'Loading ...'
     }),
-    builder.addCase(updateTokensList.fulfilled, (state, action) => {
-      state.list = action.payload.auxList
-      state.totalBalance = action.payload.auxTotalBalance
-      state.listStatus = 'Succsess'
+    builder.addCase(updateTokensProduct.fulfilled, (state, action) => {
+      state.tokensProduct = action.payload.auxTokens
+      state.totalBalanceTokensProduct = action.payload.auxTotalBalance
+      state.statusTokensProduct = 'Succsess'
     })
-    builder.addCase(updateTokensList.rejected, (state, action) => {
-      state.listStatus = 'Failed'
+    builder.addCase(updateTokensProduct.rejected, (state, action) => {
+      state.statusTokensProduct = 'Failed'
+    })
+
+    builder.addCase(updateTokenProduct.pending, (state, action) => {
+      state.statusTokensProduct = 'Loading ...'
+    }),
+    builder.addCase(updateTokenProduct.fulfilled, (state, action) => {
+      state.tokensProduct[action.payload.auxTokenProduct.id] = action.payload.auxTokenProduct
+      state.statusTokensProduct = 'Succsess'
+    })
+    builder.addCase(updateTokenProduct.rejected, (state, action) => {
+      state.statusTokensProduct = 'Failed'
     })
   },
 })
 
-export const { setActiveToken } = tokensSlice.actions
-
-export const selectTokensList = (state: RootState) => state.tokens.list
-export const selectTokensActive = (state: RootState) => state.tokens.active
+export const { setActiveTokenProduct } = tokensSlice.actions;
+export const selectTokensProduct = (state: RootState) => state.tokens.tokensProduct
+export const selectActiveTokenProduct = (state: RootState) => state.tokens.tokensProduct[state.tokens.activeTokenProduct] 
 
 export default tokensSlice.reducer

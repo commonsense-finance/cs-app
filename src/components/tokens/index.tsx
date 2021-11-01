@@ -3,13 +3,15 @@ import { Button, Card, Table } from '@components/csComponents'
 import Link from 'next/link'
 
 import { useSelector } from 'react-redux'
-import { selectTokensList } from '@redux/slices/tokens'
+import { selectTokensProduct } from '@redux/slices/tokens'
 import { formatUnits } from '@ethersproject/units'
 import { selectTheme } from '@redux/slices/theme'
+import { RootState } from '@redux/store'
 
 export const Tokens = () => {
   const theme = useSelector(selectTheme)
-  const tokens = useSelector(selectTokensList)
+  const tokens = useSelector(selectTokensProduct)
+  const { statusTokensProduct } = useSelector((state: RootState) => state.tokens)
 
   return (
     <div className="pb-5">
@@ -44,12 +46,10 @@ export const Tokens = () => {
                 </td>
                 <td className="text-end">{token.fee}</td>
                 <td className="text-center">
-                  {/* <SwapOffcanvas 
-                        action="Invest" 
-                        tokenId={token.id} /> */}
+                { statusTokensProduct === 'Succsess' && 
                   <Link href={'/token/' + token.id + '?action=Invest'}>
                     <Button className="btn-sm me-2">Invest</Button>
-                  </Link>
+                  </Link> }
                   <Link href={'/token/' + token.id + '?action=Invest'}>
                     <Button className="btn-sm">View</Button>
                   </Link>

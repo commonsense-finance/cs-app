@@ -1,10 +1,11 @@
 
+import Transak from '@components/transak'
 import { selectSwap } from '@redux/slices/swap'
 import { selectTheme } from '@redux/slices/theme'
 import { useEffect } from 'react'
 import { Col, Form, Nav, Row } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import { setAction, updateToken } from '../../redux/actions'
+import { setAction } from '../../redux/actions'
 
 import {
   GroupButtons,
@@ -13,6 +14,7 @@ import {
   GroupSelectFrom,
   GroupSelectTo,
   ShowResponse,
+  TransakButton,
 } from './controls'
 
 export const Swap = () => {
@@ -21,7 +23,7 @@ export const Swap = () => {
   const theme = useSelector(selectTheme)
 
   useEffect(() => {
-    dispatch(updateToken(token.id))
+    //dispatch(updateToken(token.id))
   }, [])
 
   return (
@@ -82,6 +84,7 @@ export const Swap = () => {
 
           <Col>
             <GroupButtons />
+            <TransakButton />
           </Col>
         </Row>
       </Form>

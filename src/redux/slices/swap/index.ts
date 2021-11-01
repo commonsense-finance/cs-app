@@ -1,7 +1,7 @@
 import { RootState } from "@redux/store";
 import { IToken } from "@redux/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { productTokens, tokensList } from "src/constants/tokens";
+import { tokens, tokensProduct } from "src/constants/tokens";
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 
 import { getAllowance, getAmountInToIssueExactSet, getEstimatedIssueSetAmount, getTokenBalance, getTokenPrice, getTokenTotal, issueExactSetFromToken, redeemExactSetForToken, setApprove } from "src/services/tokenSet";
@@ -37,23 +37,29 @@ const initialStateStatus: ISwapStatus = {
 
 interface ISwap {
   token: IToken
-  tokenList: IToken[]
-  tokenListStatus: string
+  statusToken: string
   tokenProduct: IToken
+  statusTokenProduct: string
+  tokenList: IToken[]
+  tokenProductList: IToken[]
   status: ISwapStatus
+  statusStatus: string
 }
 
 const initialState: ISwap = {
-  token: tokensList[0],
-  tokenList: tokensList,
-  tokenListStatus: '',
-  tokenProduct: productTokens[0],
+  token: tokens[0],
+  statusToken: 'Succsess',
+  tokenProduct: tokensProduct[0],
+  statusTokenProduct: 'Succsess',
+  tokenList: tokens,
+  tokenProductList: tokensProduct,
   status: initialStateStatus,
+  statusStatus: 'Succsess',
 };
 
 
-export const updateToken = createAsyncThunk(
-  'swap/updateToken',
+export const swapUpdateToken = createAsyncThunk(
+  'swap/swapUpdateToken',
   async (tokenId: number, { getState }) => {
 
     const {tokenList} = (getState() as RootState).swap
@@ -73,24 +79,13 @@ export const updateToken = createAsyncThunk(
   }
 )
 
-export const swapGetAllowanceToken = createAsyncThunk(
-  'swap/swapGetAllowanceToken',
-  async (props: {contractAddress: string}, { getState }) => {
-    const web3 = (getState() as RootState).web3
-
-    const auxAllowance =  await getAllowance(props.contractAddress, web3)
-    
-    return { auxAllowance }
-  }
-)
-
-export const updateTokenProduct = createAsyncThunk(
-  'swap/updateTokenProduct',
+export const swapUpdateTokenProduct = createAsyncThunk(
+  'swap/swapUpdateTokenProduct',
   async (tokenId: number, { getState, dispatch }) => {
 
-    const { list } = (getState() as RootState).tokens
+    const { tokensProduct } = (getState() as RootState).tokens
     const web3 = (getState() as RootState).web3
-    const token = list[tokenId]
+    const token = tokensProduct[tokenId]
     
 
     const auxPrice = await getTokenPrice(token.contractPolygon, web3)
@@ -102,6 +97,16 @@ export const updateTokenProduct = createAsyncThunk(
   }
 )
 
+export const swapGetAllowanceToken = createAsyncThunk(
+  'swap/swapGetAllowanceToken',
+  async (props: {contractAddress: string}, { getState }) => {
+    const web3 = (getState() as RootState).web3
+
+    const auxAllowance =  await getAllowance(props.contractAddress, web3)
+    
+    return { auxAllowance }
+  }
+)
 
 export const swapApprove = createAsyncThunk(
   'swap/swapApprove',
@@ -196,10 +201,10 @@ const swapSlice = createSlice({
   },
 
   extraReducers: (builder) => {
-    builder.addCase(updateToken.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+    builder.addCase(swapUpdateToken.pending, (state, action) => {
+      state.statusToken = 'Loading ...'
     }),
-    builder.addCase(updateToken.fulfilled, (state, action) => {
+    builder.addCase(swapUpdateToken.fulfilled, (state, action) => {
       state.token.balance = action.payload.auxBalance
       state.token.price = action.payload.auxPrice
       state.token.allowance = action.payload.auxAllowance
@@ -208,20 +213,20 @@ const swapSlice = createSlice({
           (Number(state.token.allowance) > 0) :
           (Number(state.tokenProduct.allowance) > 0)
       state.status.buttonValue = state.status.enoughAllowance ? state.status.action : 'Approve'
-      state.status.enoughBalance = 
-        state.status.action === 'Invest' ?
-          (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
-          (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
-      state.tokenListStatus = 'Succsess'
+      // state.status.enoughBalance = 
+      //   state.status.action === 'Invest' ?
+      //     (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
+      //     (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
+      state.statusToken = 'Succsess'
     })
-    builder.addCase(updateToken.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+    builder.addCase(swapUpdateToken.rejected, (state, action) => {
+      state.statusToken = 'Failed'
     })
 
-    builder.addCase(updateTokenProduct.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+    builder.addCase(swapUpdateTokenProduct.pending, (state, action) => {
+      state.statusTokenProduct = 'Loading ...'
     }),
-    builder.addCase(updateTokenProduct.fulfilled, (state, action) => {
+    builder.addCase(swapUpdateTokenProduct.fulfilled, (state, action) => {
       state.tokenProduct.balance = action.payload.auxBalance
       state.tokenProduct.price = action.payload.auxPrice
       state.tokenProduct.total = action.payload.auxTotal
@@ -231,36 +236,36 @@ const swapSlice = createSlice({
           (Number(state.token.allowance) > 0) :
           (Number(state.tokenProduct.allowance) > 0)
       state.status.buttonValue = state.status.enoughAllowance ? state.status.action : 'Approve'
-      state.tokenListStatus = 'Succsess'
+      state.statusTokenProduct = 'Succsess'
     })
-    builder.addCase(updateTokenProduct.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+    builder.addCase(swapUpdateTokenProduct.rejected, (state, action) => {
+      state.statusTokenProduct = 'Failed'
     })
 
     builder.addCase(swapGetAllowanceToken.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusToken = 'Pending'
     }),
     builder.addCase(swapGetAllowanceToken.fulfilled, (state, action) => {
       state.token.allowance = action.payload.auxAllowance
-      state.tokenListStatus = 'Succsess'
+      state.statusToken = 'Succsess'
     })
     builder.addCase(swapGetAllowanceToken.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusToken = 'Failed'
     })
 
     builder.addCase(swapApprove.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusToken = 'Pending'
     }),
     builder.addCase(swapApprove.fulfilled, (state, action) => {
       state.status.response = action.payload.res
-      state.tokenListStatus = 'Succsess'
+      state.statusToken = 'Succsess'
     })
     builder.addCase(swapApprove.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusToken = 'Failed'
     })
 
     builder.addCase(swapGetEstimatedIssueSetAmount.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusStatus = 'Pending'
     }),
     builder.addCase(swapGetEstimatedIssueSetAmount.fulfilled, (state, action) => {
       state.status.amountTo = Number(formatUnits(action.payload.auxAmount, state.tokenProduct.decimals)).toFixed(4)
@@ -268,14 +273,14 @@ const swapSlice = createSlice({
         state.status.action === 'Invest' ?
           (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
           (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
-      state.tokenListStatus = 'Succsess'
+      state.statusStatus = 'Succsess'
     })
     builder.addCase(swapGetEstimatedIssueSetAmount.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusStatus = 'Failed'
     })
 
     builder.addCase(swapGetAmountInToIssueExactSet.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusStatus = 'Pending'
     }),
     builder.addCase(swapGetAmountInToIssueExactSet.fulfilled, (state, action) => {
       state.status.amountFrom = Number(formatUnits(action.payload.auxAmount, state.token.decimals)).toFixed(4)
@@ -283,32 +288,32 @@ const swapSlice = createSlice({
         state.status.action === 'Invest' ?
           (BigNumber.from(state.token.balance).gte(parseUnits(state.status.amountFrom ? state.status.amountFrom : '0',state.token.decimals))) :
           (BigNumber.from(state.tokenProduct.balance).gte(parseUnits(state.status.amountTo ? state.status.amountTo : '0',state.tokenProduct.decimals)))
-      state.tokenListStatus = 'Succsess'
+      state.statusStatus = 'Succsess'
     })
     builder.addCase(swapGetAmountInToIssueExactSet.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusStatus = 'Failed'
     })
 
     builder.addCase(swapIssueExactSetFromToken.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusStatus = 'Pending'
     }),
     builder.addCase(swapIssueExactSetFromToken.fulfilled, (state, action) => {
       state.status.response = action.payload.res
-      state.tokenListStatus = 'Succsess'
+      state.statusStatus = 'Succsess'
     })
     builder.addCase(swapIssueExactSetFromToken.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusStatus = 'Failed'
     })
 
     builder.addCase(swapRedeemExactSetForToken.pending, (state, action) => {
-      state.tokenListStatus = 'Pending'
+      state.statusStatus = 'Pending'
     }),
     builder.addCase(swapRedeemExactSetForToken.fulfilled, (state, action) => {
       state.status.response = action.payload.res
-      state.tokenListStatus = 'Succsess'
+      state.statusStatus = 'Succsess'
     })
     builder.addCase(swapRedeemExactSetForToken.rejected, (state, action) => {
-      state.tokenListStatus = 'Failed'
+      state.statusStatus = 'Failed'
     })
   }
 });

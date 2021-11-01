@@ -1,13 +1,14 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { selectTokensList } from '@redux/slices/tokens'
+import { RootState } from '@redux/store'
 import { selectTheme } from '@redux/slices/theme'
 import { formatUnits } from '@ethersproject/units'
 import Link from 'next/link'
 import { Button, Card, Table } from '@components/csComponents'
 
 export const UserTokensProduct = () => {
-  const tokens = useSelector(selectTokensList)
+
+  const { statusTokensProduct, tokensProduct } = useSelector((state: RootState) => state.tokens)
   const theme = useSelector(selectTheme)
   return (
     <div className={`pb-5`} >
@@ -27,7 +28,9 @@ export const UserTokensProduct = () => {
             </thead>
 
             <tbody className="border-top">
-              {tokens?.map(
+            { statusTokensProduct === 'Succsess' && 
+        
+              tokensProduct?.map(
                 (token, index) =>
                   token.balance != 0 && (
                     <tr key={index}>

@@ -112,6 +112,8 @@ export const getTokenBalance = async (
   web3: any,
 ): Promise<BigNumber> => {
   const { library, chainId, account } = web3
+  if (!account)
+    return BigNumber.from(0)
   const contract = getContract(library, erc20ABI, contractAddress)
   return await contract?.balanceOf(account)
 }

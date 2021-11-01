@@ -2,10 +2,12 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
-  setActiveToken,
+  updateTokenProduct,
+  setActiveTokenProduct,
+  swapUpdateToken,
   setTokenTo,
+  swapUpdateTokenProduct,
   setAction,
-  updateToken,
 } from '@redux/actions'
 import { Col, Row, Container } from 'react-bootstrap'
 import {
@@ -15,31 +17,38 @@ import {
   TokenStats,
   Swap,
 } from '@components'
-import { selectTokensList } from '@redux/slices/tokens'
-import { selectSwap, updateTokenProduct } from '@redux/slices/swap'
+
 import { selectTheme } from '@redux/slices/theme'
-import { Default, Desktop, Mobile } from '@components/mediaQuery'
+import { selectSwap } from '@redux/slices/swap'
+import { Default, Desktop } from '@components/mediaQuery'
+import { useWeb3React } from '@web3-react/core'
 
 const token = () => {
-  const tokensProduct = useSelector(selectTokensList)
-  const { token } = useSelector(selectSwap)
+  
   const theme = useSelector(selectTheme)
-  const dispatch = useDispatch()
   const router = useRouter()
+  const { token } = useSelector(selectSwap)
+  const { library } = useWeb3React()
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    if (router?.query?.id) {
-      //for Tokens Page
-      dispatch(setActiveToken(Number(router?.query?.id)))
-      //for Token Product
-      dispatch(setTokenTo(tokensProduct[Number(router?.query?.id)]))
-
-      dispatch(updateToken(token.id))
-      dispatch(updateTokenProduct(Number(router?.query?.id)))
-
-      dispatch(setAction(router.query.action))
+    if (library) {
+      if (router?.query?.id) {
+        //for Token Page
+        dispatch(setActiveTokenProduct(Number(router?.query?.id)))
+        dispatch(updateTokenProduct(Number(router?.query?.id)))
+  
+        //for Swap
+        dispatch(swapUpdateToken(token.id))
+        dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
+  
+        router.query.action &&
+          dispatch(setAction(router.query.action))
+      }
     }
-  }, [router?.query?.id])
+    
+  }, [router?.query?.id, library])
+
 
   return (
     <>
@@ -78,14 +87,5 @@ const token = () => {
     </>
   )
 }
-
-// const Example = () => (
-//   <div>
-//     <Desktop>Desktop or laptop</Desktop>
-//     <Tablet>Tablet</Tablet>
-//     <Mobile>Mobile</Mobile>
-//     <Default>Not mobile (desktop or laptop or tablet)</Default>
-//   </div>
-// )
 
 export default token

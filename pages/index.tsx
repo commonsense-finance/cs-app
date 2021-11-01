@@ -1,18 +1,23 @@
 import { Hero, Tokens, UserProfile } from '@components'
-import { selectTheme } from '@redux/slices/theme'
+import { updateTokensProduct } from '@redux/actions'
 import { useWeb3React } from '@web3-react/core'
+import { useEffect } from 'react'
 import { Container } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const Home = () => {
-  const { account } = useWeb3React()
-  const theme = useSelector(selectTheme)
+  const { library, account  } = useWeb3React()
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    library &&
+      dispatch(updateTokensProduct())
+  }, [library, account]) 
+
   return (
     <div>
-      <Container >
-        {account ? <UserProfile /> : <Hero />}
-      </Container>
-      <Container >
+      <Container>{account ? <UserProfile /> : <Hero />}</Container>
+      <Container>
         <Tokens />
       </Container>
     </div>

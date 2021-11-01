@@ -33,10 +33,10 @@ export function getErrorMessage(error: Error) {
 export function getNetworkName(id: number) {
   switch (id) {
     case 1: {
-      return 'Ethereum'
+      return 'Ethereum Mainnet'
     }
     case 137: {
-      return 'Polygon'
+      return 'Polygon Mainnet'
     }
     default: {
       return 'Not Connected'

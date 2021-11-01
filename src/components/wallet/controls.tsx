@@ -94,13 +94,18 @@ export const WalletModal = (props: {
   const theme = useSelector(selectTheme)
   return (
     <Modal show={props.showModal} onHide={props.handleClose}>
-      <Modal.Header closeButton>
+      <Modal.Header
+        className={`bg-${theme.bgMode} text-${theme.textMode}`}
+        //style={{ background: theme.bgColor,  }} 
+        closeButton>
         <Modal.Title>Select a wallet provider</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="text-center">
+      <Modal.Body 
+        className={`text-center bg-${theme.bgMode} text-${theme.textMode}`}
+        >
         <Button
-          className={`me-2 bg-${theme.bgMode} text-${theme.textMode}`}
-          variant="light"
+          className={`me-2`}
+          variant={theme.bgMode}
           onClick={() => {
             activate(injected)
             props.handleClose()
@@ -116,7 +121,7 @@ export const WalletModal = (props: {
         </Button>
         <Button
           className="me-2"
-          variant="light"
+          variant={theme.bgMode}
           onClick={() => {
             activate(walletconnect)
             props.handleClose()
@@ -132,7 +137,7 @@ export const WalletModal = (props: {
         </Button>
         <Button
           className="me-2"
-          variant="light"
+          variant={theme.bgMode}
           onClick={() => {
             activate(walletlink)
             props.handleClose()
@@ -147,8 +152,10 @@ export const WalletModal = (props: {
           WalletLink
         </Button>
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={props.handleClose}>
+      <Modal.Footer
+        className={`bg-${theme.bgMode} text-${theme.textMode}`}
+      >
+        <Button variant="info" onClick={props.handleClose}>
           Close
         </Button>
       </Modal.Footer>

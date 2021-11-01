@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Modal } from 'react-bootstrap'
-import { cleanResponse, selectSwap, swapApprove, swapRedeemExactSetForToken, updateTokenProduct } from '@redux/slices/swap'
+import { cleanResponse, selectSwap, swapApprove, swapRedeemExactSetForToken } from '@redux/slices/swap'
 import {
   setTokenFrom,
   setTokenTo,
   setActiveFocus,
   setAmoutFrom,
   setAmoutTo,
-  updateToken,
+  swapUpdateToken,
+  swapUpdateTokenProduct,
   swapGetEstimatedIssueSetAmount,
   swapGetAmountInToIssueExactSet,
   swapIssueExactSetFromToken,
 } from '../../redux/actions'
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { selectTokensList } from '@redux/slices/tokens'
+import { selectTokensProduct } from '@redux/slices/tokens'
 import { polygonUrlTx } from 'src/constants/web3'
+import Link from 'next/link'
+import { openTransak } from '@components/transak'
+import { selectTheme } from '@redux/slices/theme'
 
 export const SelectTokensFrom = () => {
   const { token, tokenProduct, tokenList, status } = useSelector(selectSwap)
@@ -26,7 +30,7 @@ export const SelectTokensFrom = () => {
       key={token.id}
       value={token.id}
       onChange={(e) => {
-        dispatch(updateToken(parseInt(e.currentTarget.value)))
+        dispatch(swapUpdateToken(parseInt(e.currentTarget.value)))
         dispatch(setTokenFrom(tokenList[parseInt(e.currentTarget.value)]))
         if (status.action == 'Invest')
           dispatch(
@@ -68,7 +72,7 @@ export const SelectTokensFrom = () => {
 
 export const SelectTokensTo = () => {
   const { tokenProduct, token, status } = useSelector(selectSwap)
-  const tokensProduct = useSelector(selectTokensList)
+  const tokensProduct = useSelector(selectTokensProduct)
   const dispatch = useDispatch()
 
   return (
@@ -76,7 +80,7 @@ export const SelectTokensTo = () => {
       key={tokenProduct.id}
       value={tokenProduct.id}
       onChange={(e) => {
-        dispatch(updateTokenProduct(parseInt(e.currentTarget.value)))
+        dispatch(swapUpdateTokenProduct(parseInt(e.currentTarget.value)))
         dispatch(setTokenTo(tokensProduct[parseInt(e.currentTarget.value)]))
         if (status.action == 'Invest')
           dispatch(
@@ -192,6 +196,27 @@ export const MaxButton = () => {
     </Button>
   )
 }
+
+
+
+export const TransakButton = () => {
+  return (
+    // <Link href='/buy'>
+    // <a>Buy Crypto</a>
+    // </Link>
+        <Button
+      className="align-top"
+      size="sm"
+      variant="link"
+      onClick={() => {
+        openTransak()
+      }}
+    >
+      Buy Crypto
+    </Button>
+  )
+}
+
 
 export const InputAmountFrom = () => {
   const { token, tokenProduct, status } = useSelector(selectSwap)
@@ -377,6 +402,7 @@ export const ShowResponse = () => {
   }
 
   const handleShow = () => setShow(true);
+  const theme = useSelector(selectTheme)
 
   useEffect(() => {
     status.response && handleShow()
@@ -385,10 +411,12 @@ export const ShowResponse = () => {
   return (
     <>
       <Modal size={status.response?.hash && "lg"} show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
+        <Modal.Header 
+          closeButton
+          className={`bg-${theme.bgMode} text-${theme.textMode}`}>
           <Modal.Title>{status.response?.code ? 'Error Status' : 'Transaction Status'}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body className={`text-center bg-${theme.bgMode} text-${theme.textMode}`}>
           {status.response?.code ? 
             <>
             {status.response?.message}
@@ -401,8 +429,8 @@ export const ShowResponse = () => {
             <a target="_blank" href={polygonUrlTx+status.response?.hash}>View</a> 
             </>} 
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+        <Modal.Footer  className={`bg-${theme.bgMode} text-${theme.textMode}`}>
+          <Button variant="info" onClick={handleClose}>
             Close
           </Button>
         </Modal.Footer>

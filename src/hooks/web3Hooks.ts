@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import { injected } from '../services/connectors'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateTokensList, updateWeb3 } from '@redux/actions'
+import { updateWeb3 } from '@redux/actions'
 import { selectWeb3 } from '@redux/slices/web3'
 
 export function useEagerConnect() {
@@ -13,15 +13,10 @@ export function useEagerConnect() {
   const dispatch = useDispatch()
 
   useEffect(() => {
-
     if (account !== undefined)
       dispatch(updateWeb3({library, chainId, account}))
-  }, [library]) 
+  }, [library, chainId, account]) 
 
-  useEffect(() => {
-    console.log('Library Changed')
-    dispatch(updateTokensList())
-  }, [web3.library]) 
 
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized: boolean) => {

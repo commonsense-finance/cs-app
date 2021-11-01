@@ -1,12 +1,14 @@
 import { useSelector } from 'react-redux'
-import { selectTokensActive } from '@redux/slices/tokens'
+import { selectActiveTokenProduct } from '@redux/slices/tokens'
 import { Col, Row } from 'react-bootstrap'
 import { formatUnits } from '@ethersproject/units'
 import { Table, Card } from '@components/csComponents'
-import Image from 'next/image'
+import { RootState } from '@redux/store'
+
 
 export const TokenHeader = () => {
-  const activeToken = useSelector(selectTokensActive)
+  const activeToken = useSelector(selectActiveTokenProduct)
+  const { statusTokensProduct } = useSelector((state: RootState) => state.tokens)
   return (
     <>
         <img
@@ -17,13 +19,17 @@ export const TokenHeader = () => {
         />
         <h4 className='d-inline'>{activeToken?.symbol}</h4>
       <h2>{activeToken?.name}</h2>
-      <h1>${Number(formatUnits(activeToken.price)).toFixed(2)}</h1>
+      { statusTokensProduct === 'Succsess' ? 
+        <h1>${Number(formatUnits(activeToken.price)).toFixed(2)}</h1>
+        :  <h1>{statusTokensProduct}</h1>
+      }
+      
     </>
   )
 }
 
 export const TokenStats = () => {
-  const activeToken = useSelector(selectTokensActive)
+  const activeToken = useSelector(selectActiveTokenProduct)
   return (
     <>
       <Row className="pb-4">
@@ -51,7 +57,7 @@ export const TokenStats = () => {
 }
 
 export const TokenAbout = () => {
-  const activeToken = useSelector(selectTokensActive)
+  const activeToken = useSelector(selectActiveTokenProduct)
   return (
     <>
       <h4 className="pb-2">About</h4>
@@ -61,7 +67,7 @@ export const TokenAbout = () => {
 }
 
 export const TokenComponents = () => {
-  const { components } = useSelector(selectTokensActive)
+  const { components } = useSelector(selectActiveTokenProduct)
   return (
     <>
       <h4 className="pb-2">Components</h4>

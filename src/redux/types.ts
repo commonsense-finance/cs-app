@@ -1,7 +1,6 @@
 
 import { BigNumberish } from '@ethersproject/bignumber'
 
-
 export interface IToken {
     id: number
     symbol: string

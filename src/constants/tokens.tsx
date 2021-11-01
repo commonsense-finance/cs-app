@@ -1,4 +1,4 @@
-export const productTokens = [
+export const tokensProduct = [
   {
     id: 0,
     name: 'CS Top10 Index',
@@ -39,7 +39,7 @@ export const productTokens = [
   },
 ]
 
-export const tokensList = [
+export const tokens = [
   {
     id: 0,
     symbol: 'WETH',

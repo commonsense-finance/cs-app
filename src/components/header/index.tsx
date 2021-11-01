@@ -26,7 +26,7 @@ export const Header = () => {
       <Navbar.Collapse id="responsive-navbar-nav">
         <Nav className="me-auto">
           <SwitchTheme />
-          <Button variant={theme.bgMode}>Demo v1.0 - {networkStatus}</Button>
+          <Button variant={theme.bgMode}>Demo - {networkStatus}</Button>
         </Nav>
         <Nav>
           <WalletButton />
