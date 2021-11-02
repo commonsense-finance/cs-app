@@ -21,7 +21,7 @@ import { selectSwap } from '@redux/slices/swap'
 import { Default, Desktop } from '@components/mediaQuery'
 import { useWeb3React } from '@web3-react/core'
 
-const token = () => {
+const Token = () => {
   
   const theme = useSelector(selectTheme)
   const router = useRouter()
@@ -85,4 +85,4 @@ const token = () => {
   )
 }
 
-export default token
+export default Token
