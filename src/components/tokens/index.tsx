@@ -51,7 +51,7 @@ export const Tokens = () => {
                     <Button className="btn-sm me-2">Invest</Button>
                   </Link> }
                   <Link href={'/token/' + token.id + '?action=Invest'}>
-                    <Button className="btn-sm">View</Button>
+                    <a className="btn-sm">View</a>
                   </Link>
                 </td>
               </tr>

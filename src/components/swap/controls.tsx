@@ -225,9 +225,7 @@ export const MaxButton = () => {
 export const TransakButton = () => {
   const { account } = useWeb3React()
   return (
-    // <Link href='/buy'>
-    // <a>Buy Crypto</a>
-    // </Link>
+  
     <Button
       className="align-top"
       size="sm"
