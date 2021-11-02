@@ -29,58 +29,11 @@ const Token = () => {
   const { library } = useWeb3React()
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (library) {
-      if (router?.query?.id) {
-        //for Token Page
-        dispatch(setActiveTokenProduct(Number(router?.query?.id)))
-        dispatch(updateTokenProduct(Number(router?.query?.id)))
-  
-            
-        // dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
-  
-        router.query.action &&
-          dispatch(setAction(router.query.action))
-      }
-    }
-    
-  }, [router?.query?.id, library])
 
 
   return (
     <>
-      <Desktop>
-        <Container className={`text-${theme.textMode} py-4`}>
-          <TokenHeader />
-        </Container>
-        <Container className={`text-${theme.textMode} pb-5`}>
-          <Row className="pb-5">
-            <Col className="col-md-7 col-xl-8">
-              <TokenStats />
-              <TokenAbout />
-              <TokenComponents />
-              {/* <TokenTransactions /> */}
-            </Col>
-            <Col>
-              <Swap />
-            </Col>
-          </Row>
-        </Container>
-      </Desktop>
-
-      {/* MOBILE and TABLET */}
-      <Default>
-        <Container className={`text-${theme.textMode} py-4`}>
-          <TokenHeader />
-          <div className="py-4">
-            <Swap />
-          </div>
-          <TokenStats />
-          <TokenAbout />
-          <TokenComponents />
-          {/* <TokenTransactions /> */}
-        </Container>
-      </Default>
+      <h1>token nro: {router.query.id}</h1>
     </>
   )
 }
