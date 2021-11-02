@@ -21,20 +21,7 @@ import { selectSwap } from '@redux/slices/swap'
 import { Default, Desktop } from '@components/mediaQuery'
 import { useWeb3React } from '@web3-react/core'
 
-
-// export async function getStaticPaths(context: any) {
-//   const { id } = context.query;
-//   return { props: { id: id } };
-// }
-
-export async function getStaticProps(  ) {
-  // params contains the post `id`.
-  // If the route is like /posts/1, then params.id is 1
-  //const res = await fetch(`https://.../posts/${params.id}`)
-  //const post = await res.json()
-
-  // Pass post data to the page via props
-  
+export async function getStaticProps() {
   return { props: {id: null} }
 }
 
@@ -43,15 +30,12 @@ export async function getStaticPaths() {
     paths: [
       { params: { id: '0' } },
       { params: { id: '1' } },
-      { params: { id: '2' } }, 
-      { params: { id: '3' } }// See the "paths" section below
     ],
-    fallback: false // See the "fallback" section below
+    fallback: false 
   };
 }
 
-
-const Token = (props: any) => {
+const Token = () => {
   
   const theme = useSelector(selectTheme)
   const router = useRouter()
@@ -59,11 +43,58 @@ const Token = (props: any) => {
   const { library } = useWeb3React()
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    if (library) {
+      if (router?.query?.id) {
+        //for Token Page
+        dispatch(setActiveTokenProduct(Number(router?.query?.id)))
+        dispatch(updateTokenProduct(Number(router?.query?.id)))
+  
+            
+        // dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
+  
+        router.query.action &&
+          dispatch(setAction(router.query.action))
+      }
+    }
+    
+  }, [router?.query?.id, library])
 
 
   return (
     <>
-      <h1>token nro: {router.query.id} token nro: {props.id}</h1>
+      <Desktop>
+        <Container className={`text-${theme.textMode} py-4`}>
+          <TokenHeader />
+        </Container>
+        <Container className={`text-${theme.textMode} pb-5`}>
+          <Row className="pb-5">
+            <Col className="col-md-7 col-xl-8">
+              <TokenStats />
+              <TokenAbout />
+              <TokenComponents />
+              {/* <TokenTransactions /> */}
+            </Col>
+            <Col>
+              <Swap />
+            </Col>
+          </Row>
+        </Container>
+      </Desktop>
+
+      {/* MOBILE and TABLET */}
+      <Default>
+        <Container className={`text-${theme.textMode} py-4`}>
+          <TokenHeader />
+          <div className="py-4">
+            <Swap />
+          </div>
+          <TokenStats />
+          <TokenAbout />
+          <TokenComponents />
+          {/* <TokenTransactions /> */}
+        </Container>
+      </Default>
     </>
   )
 }
