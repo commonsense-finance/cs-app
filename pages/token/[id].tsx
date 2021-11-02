@@ -21,7 +21,37 @@ import { selectSwap } from '@redux/slices/swap'
 import { Default, Desktop } from '@components/mediaQuery'
 import { useWeb3React } from '@web3-react/core'
 
-const Token = () => {
+
+// export async function getStaticPaths(context: any) {
+//   const { id } = context.query;
+//   return { props: { id: id } };
+// }
+
+export async function getStaticProps(  ) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  //const res = await fetch(`https://.../posts/${params.id}`)
+  //const post = await res.json()
+
+  // Pass post data to the page via props
+  
+  return { props: {id: null} }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [
+      { params: { id: '0' } },
+      { params: { id: '1' } },
+      { params: { id: '2' } }, 
+      { params: { id: '3' } }// See the "paths" section below
+    ],
+    fallback: false // See the "fallback" section below
+  };
+}
+
+
+const Token = (props: any) => {
   
   const theme = useSelector(selectTheme)
   const router = useRouter()
@@ -33,7 +63,7 @@ const Token = () => {
 
   return (
     <>
-      <h1>token nro: {router.query.id}</h1>
+      <h1>token nro: {router.query.id} token nro: {props.id}</h1>
     </>
   )
 }
