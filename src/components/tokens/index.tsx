@@ -53,6 +53,15 @@ export const Tokens = () => {
                   <Link href={'/token/' + token.id + '?action=Invest'}>
                     <a className="btn-sm">View</a>
                   </Link>
+                  <Link href={'/buy/'}>
+                    <a className="btn-sm">View</a>
+                  </Link>
+{/* 
+                  href={{
+              pathname: '/blog/[slug]',
+              query: { slug: post.slug },
+            }} */}
+
                 </td>
               </tr>
             ))}
