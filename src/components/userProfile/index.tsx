@@ -6,9 +6,7 @@ export const UserProfile = () => {
   return (
     <>
       <UserBalance />
-      <Container>
-        <UserTokensProduct />
-      </Container>
+      <UserTokensProduct />
     </>
   )
 }

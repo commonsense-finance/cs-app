@@ -1,10 +1,9 @@
 import { useEffect } from 'react'
 import { selectTheme } from '@redux/slices/theme'
-import { Col, Form, Nav, Row } from 'react-bootstrap'
-import { useWeb3React } from '@web3-react/core'
+import { Col, Form, Nav, Row, Spinner } from 'react-bootstrap'
 
 import { selectSwap } from '@redux/slices/swap'
-import { setAction, setTokenToById, swapUpdateToken, swapUpdateTokenProduct } from '../../redux/actions'
+import { setAction, setAmoutFrom, setAmoutTo } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
 
 import {
@@ -13,31 +12,45 @@ import {
   GroupInputTo,
   GroupSelectFrom,
   GroupSelectTo,
-  ShowResponse,
+  ShowNotification,
   TransakButton,
 } from './controls'
-import { useRouter } from 'next/router'
+
+import { parseUnits } from '@ethersproject/units'
+import { BigNumber } from '@ethersproject/bignumber'
+import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
+
 
 export const Swap = () => {
   const theme = useSelector(selectTheme)
-  const router = useRouter()
   const { token, tokenProduct, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
-  const { library, account } = useWeb3React()
+
+  const auxAmount =
+    status.action === 'Invest'
+      ? parseUnits(status.amountFrom ? status.amountFrom : '0', token.decimals)
+      : parseUnits(
+          status.amountTo ? status.amountTo : '0',
+          tokenProduct.decimals,
+        )
+
+  const estimated = useGetSetEstimated(
+    tokenProduct.contractPolygon,
+    token.contractPolygon,
+    auxAmount.toString() !== '0' ? auxAmount : BigNumber.from(0),
+    status.action,
+  )
 
   useEffect(() => {
-    
-    if (library) {
-      if (router?.query?.id) {
-      dispatch(swapUpdateToken(token.id))
-      dispatch(setTokenToById(Number(router?.query?.id)))
-      dispatch(swapUpdateTokenProduct(Number(router?.query?.id)))
-    }}
-  }, [router?.query?.id, library, account])
+    status.action === 'Invest'
+      ? dispatch(setAmoutTo(balanceFormat(estimated, tokenProduct.decimals)))
+      : dispatch(setAmoutFrom(balanceFormat(estimated, token.decimals)))
+  }, [estimated])
 
   return (
     <div>
       <Nav
+        justify
         className={`mb-2 border-0 `}
         variant="tabs"
         activeKey={status.action}
@@ -63,6 +76,20 @@ export const Swap = () => {
           >
             Withdraw
           </Nav.Link>
+        </Nav.Item>
+        <Nav.Item className="text-end p-2 ps-3">
+          {status.transactionStatus?.status === 'Mining' && (
+            <>
+              <Spinner
+                variant="primary"
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />
+            </>
+          )}
         </Nav.Item>
       </Nav>
 
@@ -110,7 +137,7 @@ export const Swap = () => {
           </Col>
         </Row>
       </Form>
-      <ShowResponse />
+      <ShowNotification />
     </div>
   )
 }

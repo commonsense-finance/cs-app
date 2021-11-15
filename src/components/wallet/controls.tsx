@@ -1,8 +1,10 @@
 import { selectTheme } from '@redux/slices/theme'
-import { useWeb3React } from '@web3-react/core'
+import { getChainName, shortenAddress, useEtherBalance, useEthers, useLookupAddress } from '@usedapp/core'
 import { Card, Dropdown, Image, Button, Modal } from 'react-bootstrap'
+import { Button as CSButton  } from '@components/csComponents'
 import { useSelector } from 'react-redux'
-import { Balance, formatAccount, getNetworkName } from 'src/services/web3Utils'
+import { balanceFormat } from 'src/services/tokenSetv2'
+
 import {
   injected,
   // network,
@@ -10,9 +12,45 @@ import {
   walletlink,
 } from '../../services/connectors'
 
+// export const AccountButton = () => {
+//   const { account, deactivate, activateBrowserWallet } = useEthers()
+//   const ens = useLookupAddress()
+//   const [showModal, setShowModal] = useState(false)
+
+//   const [activateError, setActivateError] = useState('')
+//   const { error } = useEthers()
+  
+//   useEffect(() => {
+//     if (error) {
+//       setActivateError(error.message)
+//     }
+//   }, [error])
+
+//   const activate = async () => {
+//     setActivateError('')
+//     activateBrowserWallet()
+//   }
+
+//   return (
+//     <Account>
+//       <ErrorWrapper>{activateError}</ErrorWrapper>
+//       {showModal && <AccountModal setShowModal={setShowModal} />}
+//       {account ? (
+//         <>
+//           <AccountLabel onClick={() => setShowModal(!showModal)}>{ens ?? shortenAddress(account)}</AccountLabel>
+//           <LoginButton onClick={() => deactivate()}>Disconnect</LoginButton>
+//         </>
+//       ) : (
+//         <LoginButton onClick={activate}>Connect</LoginButton>
+//       )}
+//     </Account>
+//   )
+// }
+
 export const ConnectedWalletButton = () => {
-  const { chainId, account, deactivate } = useWeb3React()
-  const walletButtonText = formatAccount(account)
+  const { account, deactivate, chainId } = useEthers()
+  const balance = useEtherBalance(account)
+  const ens = useLookupAddress()
   const theme = useSelector(selectTheme)
   return (
     <>
@@ -29,24 +67,16 @@ export const ConnectedWalletButton = () => {
             max-width="50px"
             roundedCircle
           />
-          {walletButtonText}
+          {ens ?? shortenAddress(account || '')}
         </Dropdown.Toggle>
 
         <Dropdown.Menu className={`border-0 bg-transparent`}>
-          <Card className={`border-1 text-${theme.textMode} bg-${theme.bgMode}`} style={{ width: '18rem' }}>
+          <Card className={`border-1 text-${theme.textMode} bg-${theme.bgMode}`} style={{ width: '19rem' }}>
             <Card.Header>
               <span className="float-start">
                 <strong>Account</strong>
               </span>
-              <Button
-                className="btn-sm float-end"
-                variant="info"
-                onClick={() => {
-                  deactivate()
-                }}
-              >
-                Disconnect
-              </Button>
+              
             </Card.Header>
             <Card.Body  style={{ backgroundColor: theme.bgSoftColor }}>
               <Image
@@ -56,19 +86,31 @@ export const ConnectedWalletButton = () => {
                 max-width="50px"
                 roundedCircle
               />
-              {walletButtonText}
+              {ens ?? shortenAddress(account || '')}
               <div className="pt-3">Balance</div>
               <strong>
-                <Balance />
+                {balanceFormat(balance || 0)}
               </strong>
             </Card.Body>
             <Card.Footer>
-              <span className="me-2 align-middle badge border border-light rounded-circle bg-success p-2">
+              <div className="d-inline align-middle">
+              <span className="me-2 badge rounded-circle bg-success p-1">
                 <span className="visually-hidden">unread messages</span>
               </span>
-              <span className=" align-middle">
-                {getNetworkName(chainId || 0)}
+              <span>
+                {getChainName(chainId || 0)}
               </span>
+              </div>
+              
+              <Button
+                className="btn-sm float-end"
+                variant="info"
+                onClick={() => {
+                  deactivate()
+                }}
+              >
+                Disconnect
+              </Button>
             </Card.Footer>
           </Card>
         </Dropdown.Menu>
@@ -80,9 +122,9 @@ export const ConnectedWalletButton = () => {
 export const DisconnectedWalletBotton = (props: { handleShow: any }) => {
   const theme = useSelector(selectTheme)
   return (
-    <Button variant="primary" onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
-      Connect Wallet
-    </Button>
+    <CSButton onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
+        Connect Wallet
+    </CSButton>
   )
 }
 
@@ -90,7 +132,7 @@ export const WalletModal = (props: {
   showModal: boolean
   handleClose: any
 }) => {
-  const { activate } = useWeb3React()
+  const { activateBrowserWallet } = useEthers()
   const theme = useSelector(selectTheme)
   return (
     <Modal show={props.showModal} onHide={props.handleClose}>
@@ -107,7 +149,7 @@ export const WalletModal = (props: {
           className={`me-2`}
           variant={theme.bgMode}
           onClick={() => {
-            activate(injected)
+            activateBrowserWallet()
             props.handleClose()
           }}
         >
@@ -123,9 +165,10 @@ export const WalletModal = (props: {
           className="me-2"
           variant={theme.bgMode}
           onClick={() => {
-            activate(walletconnect)
+            //activate(walletconnect)
             props.handleClose()
           }}
+          disabled={true}
         >
           <Image
             className="me-2"
@@ -139,9 +182,10 @@ export const WalletModal = (props: {
           className="me-2"
           variant={theme.bgMode}
           onClick={() => {
-            activate(walletlink)
+            //activate(walletlink)
             props.handleClose()
           }}
+          disabled={true}
         >
           <Image
             className="me-2"

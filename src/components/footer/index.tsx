@@ -11,7 +11,7 @@ export const Footer = () => {
   const theme = useSelector(selectTheme)
   return (
     <div
-      className={`fixed-bottom text-center py-2 text-${theme.textMode}`}
+      className={`text-center py-4 text-${theme.textMode}`}
     >
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">
         <li className={`mx-2 `}>

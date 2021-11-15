@@ -28,6 +28,7 @@ export const Hero = () => {
         Learn more <ArrowUpRight />
       </Button>
       <WalletModal showModal={showModal} handleClose={handleClose} />
+      
     </div>
   )
 }

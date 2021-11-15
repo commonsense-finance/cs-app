@@ -1,21 +1,21 @@
-//import useTokens from '../../hooks/useTokens'
 
-import { formatUnits } from '@ethersproject/units'
+
 import { selectTheme } from '@redux/slices/theme'
-import { RootState } from '@redux/store'
+import { useEthers } from '@usedapp/core'
 import { useSelector } from 'react-redux'
+import { tokensProduct } from 'src/constants/tokens'
+import { currencyFormat, useTotalBalance } from 'src/services/tokenSetv2'
 
 export const UserBalance = () => {
-  const { totalBalanceTokensProduct, statusTokensProduct } = useSelector((state: RootState) => state.tokens)
+  
   const theme = useSelector(selectTheme)
+  const { account } = useEthers()
+  const totalBalance = useTotalBalance(tokensProduct, account)
+  
   return (
     <div className={`text-center py-5 text-${theme.textMode}`}>
-      <p>My Total Balance</p>
-      { statusTokensProduct === 'Succsess' ? 
-        <h1>${Number(formatUnits(totalBalanceTokensProduct)).toFixed(2)}</h1> 
-        :  <h1>{statusTokensProduct}</h1>
-      }
-      
+      <p className='pb-2'>My Common Sense Total</p>
+      <h1>{currencyFormat(totalBalance)}</h1> 
     </div>
   )
 }

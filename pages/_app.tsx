@@ -2,25 +2,41 @@ import { AppProps } from 'next/app'
 import '@styles/app.scss'
 import '@styles/global.scss'
 
-import { Web3ReactProvider } from '@web3-react/core'
-import { getLibrary } from 'src/services/web3Utils'
+import {
+  ChainId,
+  DAppProvider,
+  Config,
+} from '@usedapp/core'
+
 import { Provider } from 'react-redux'
 import store from '@redux/store'
 
 import Layout from './layout'
+import { SSRProvider } from '@restart/ui/ssr'
 
 //import { appWithTranslation } from '@i18n'
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
+  const config: Config = {
+    readOnlyChainId: ChainId.Polygon,
+    readOnlyUrls: {
+      [ChainId.Polygon]:
+        'https://polygon-mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495',
+    },
+    supportedChains: [ChainId.Polygon]
+  }
+
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Provider store={store}>
-        <Layout>
-            <Component {...pageProps} />
-        </Layout>
-      </Provider>
-    </Web3ReactProvider>
+    <SSRProvider>
+      <DAppProvider config={config}>
+          <Provider store={store}>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </Provider>
+      </DAppProvider>
+    </SSRProvider>
   )
 }
 

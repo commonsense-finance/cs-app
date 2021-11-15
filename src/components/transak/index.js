@@ -1,5 +1,5 @@
 import transakSDK from '@transak/transak-sdk'
-import { useWeb3React } from '@web3-react/core'
+
 
 let settings = {
   apiKey: '912a7912-d6b3-481d-8995-09d676cebd12', // Your API Key

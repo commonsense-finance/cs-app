@@ -1,37 +1,54 @@
-import { SwitchTheme, WalletButton } from '@components'
+
+import { SwitchTheme, Activities, Wallet } from '@components'
 import { CSLogo } from '@components/Icons/'
 import { selectTheme } from '@redux/slices/theme'
-import { Navbar, Container, Nav, Button } from 'react-bootstrap'
+import { Navbar, Nav, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
-import { GetSelectedNetworkStatus } from 'src/services/web3Utils'
 import Link from 'next/link'
+import { getChainName, useEthers } from '@usedapp/core'
 
 export const Header = () => {
-  const networkStatus = GetSelectedNetworkStatus()
   const theme = useSelector(selectTheme)
+  const { account, chainId } = useEthers()
+
   return (
-    <Navbar
-      collapseOnSelect
-      expand="lg"
-      className={`navbar-${theme.bgMode} bg-transparence`}
-    >
-      <Navbar.Brand>
-        <Link href="/">
-          <a>
-            <CSLogo />
-          </a>
-        </Link>
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="me-auto">
-          <SwitchTheme />
-          <Button variant={theme.bgMode}>Demo - {networkStatus}</Button>
-        </Nav>
-        <Nav>
-          <WalletButton />
-        </Nav>
-      </Navbar.Collapse>
-    </Navbar>
+    <>
+      <Navbar
+        collapseOnSelect
+        expand="lg"
+        className={`navbar-${theme.bgMode} bg-transparence`}
+      >
+        <Navbar.Brand>
+          <Link href="/">
+            <a>
+              <CSLogo />
+            </a>
+          </Link>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <SwitchTheme />
+            <Button className="me-2" variant={theme.bgMode}>
+              Demo
+            </Button>
+            {account && (
+              <Button variant={theme.bgMode}>
+                <div className="d-inline align-middle">
+                  <span className="me-2 badge rounded-circle bg-success p-1">
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                  <span>{getChainName(chainId || 0)}</span>
+                </div>
+              </Button>
+            )}
+          </Nav>
+          <Nav>
+            <Activities />
+            <Wallet />
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
+    </>
   )
 }

@@ -3,7 +3,7 @@ export const tokensProduct = [
     id: 0,
     name: 'CS Top10 Index',
     symbol: 'CSTOP',
-    image: 'https://commonsense.finance/cs-static/cstop.png',
+    image: '/icons/cstop.svg',
     fee: '2%',
     contractPolygon: '0xff3ee79CB4A7Fe0F78a3634cCfDbFc3CdCD65a64',
     contract: '',
@@ -149,3 +149,6 @@ export const tokens = [
     components: [],
   },
 ]
+
+export const DAI = tokens[2]
+

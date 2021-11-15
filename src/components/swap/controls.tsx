@@ -1,68 +1,49 @@
 import { useEffect, useState } from 'react'
+
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Modal } from 'react-bootstrap'
-import {
-  cleanResponse,
-  selectSwap,
-  swapApprove,
-  swapRedeemExactSetForToken,
-} from '@redux/slices/swap'
+import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
+import { selectSwap } from '@redux/slices/swap'
 import {
   setTokenFrom,
   setTokenTo,
-  setActiveFocus,
   setAmoutFrom,
   setAmoutTo,
-  swapUpdateToken,
-  swapUpdateTokenProduct,
-  swapGetEstimatedIssueSetAmount,
-  swapGetAmountInToIssueExactSet,
-  swapIssueExactSetFromToken,
+  setTransactionStatus,
 } from '../../redux/actions'
 
 import { formatUnits, parseUnits } from '@ethersproject/units'
-import { BigNumber } from '@ethersproject/bignumber'
-import { polygonUrlTx } from 'src/constants/web3'
 import { openTransak } from '@components/transak'
 import { selectTheme } from '@redux/slices/theme'
 import { useWeb3React } from '@web3-react/core'
+import {
+  getExplorerTransactionLink,
+  Notification,
+  useEthers,
+  useNotifications,
+  useTokenAllowance,
+  useTokenBalance,
+} from '@usedapp/core'
+import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
+import {
+  balanceFormat,
+  currencyFormat,
+  useApproveSet,
+  useIssueSet,
+  useRedeemSet,
+  useTokenSetPrice,
+} from 'src/services/tokenSetv2'
+import { exchangeIssuanceV2 } from 'src/constants/contracts'
 
 export const SelectTokensFrom = () => {
-  const { token, tokenProduct, tokenList, status } = useSelector(selectSwap)
+  const { token, tokenList } = useSelector(selectSwap)
   const dispatch = useDispatch()
-
   return (
     <Form.Select
       key={token.id}
       value={token.id}
       onChange={(e) => {
-        dispatch(swapUpdateToken(parseInt(e.currentTarget.value)))
         dispatch(setTokenFrom(tokenList[parseInt(e.currentTarget.value)]))
-        if (status.action == 'Invest')
-          dispatch(
-            swapGetEstimatedIssueSetAmount({
-              contractAddressTo: tokenProduct.contractPolygon,
-              contractAddressFrom:
-                tokenList[parseInt(e.currentTarget.value)].contractPolygon,
-              amountFrom: status.amountFrom
-                ? parseUnits(
-                    status.amountFrom,
-                    tokenList[parseInt(e.currentTarget.value)].decimals,
-                  )
-                : 0,
-            }),
-          )
-        else
-          dispatch(
-            swapGetAmountInToIssueExactSet({
-              contractAddressTo: tokenProduct.contractPolygon,
-              contractAddressFrom:
-                tokenList[parseInt(e.currentTarget.value)].contractPolygon,
-              amountTo: status.amountTo
-                ? parseUnits(status.amountTo, tokenProduct.decimals)
-                : 0,
-            }),
-          )
       }}
     >
       {tokenList.map((token) => {
@@ -77,9 +58,7 @@ export const SelectTokensFrom = () => {
 }
 
 export const SelectTokensTo = () => {
-  const { token, tokenProduct, tokenProductList, status } = useSelector(
-    selectSwap,
-  )
+  const { tokenProduct, tokenProductList } = useSelector(selectSwap)
   const dispatch = useDispatch()
 
   return (
@@ -87,35 +66,7 @@ export const SelectTokensTo = () => {
       key={tokenProduct.id}
       value={tokenProduct.id}
       onChange={(e) => {
-        dispatch(swapUpdateTokenProduct(parseInt(e.currentTarget.value)))
         dispatch(setTokenTo(tokenProductList[parseInt(e.currentTarget.value)]))
-        if (status.action == 'Invest')
-          dispatch(
-            swapGetEstimatedIssueSetAmount({
-              contractAddressTo:
-                tokenProductList[parseInt(e.currentTarget.value)]
-                  .contractPolygon,
-              contractAddressFrom: token.contractPolygon,
-              amountFrom: status.amountFrom
-                ? parseUnits(status.amountFrom, token.decimals)
-                : 0,
-            }),
-          )
-        else
-          dispatch(
-            swapGetAmountInToIssueExactSet({
-              contractAddressTo:
-                tokenProductList[parseInt(e.currentTarget.value)]
-                  .contractPolygon,
-              contractAddressFrom: token.contractPolygon,
-              amountTo: status.amountTo
-                ? parseUnits(
-                    status.amountTo,
-                    tokenProductList[parseInt(e.currentTarget.value)].decimals,
-                  )
-                : 0,
-            }),
-          )
       }}
     >
       {tokenProductList.map((token) => {
@@ -131,12 +82,8 @@ export const SelectTokensTo = () => {
 
 export const GroupSelectFrom = () => {
   const { token, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
   return (
-    <Form.Group
-      onFocus={() => dispatch(setActiveFocus('From'))}
-      className="mb-3"
-    >
+    <Form.Group className="mb-3">
       <Form.Label className="text-end pt-1">{status.labelFrom}</Form.Label>
       <SelectTokensFrom />
       <Form.Label className="pt-2">{token.name}</Form.Label>
@@ -146,9 +93,8 @@ export const GroupSelectFrom = () => {
 
 export const GroupSelectTo = () => {
   const { tokenProduct, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
   return (
-    <Form.Group onFocus={() => dispatch(setActiveFocus('To'))} className="mb-3">
+    <Form.Group className="mb-3">
       <Form.Label className="text-end pt-1">{status.labelTo}</Form.Label>
       <SelectTokensTo />
       <Form.Label className="pt-2">{tokenProduct.name}</Form.Label>
@@ -156,56 +102,120 @@ export const GroupSelectTo = () => {
   )
 }
 
+export const InputAmountFrom = () => {
+  const { status } = useSelector(selectSwap)
+  const dispatch = useDispatch()
+  return (
+    <Form.Control
+      className="text-end"
+      type="number"
+      placeholder=""
+      value={status.amountFrom}
+      onChange={(e) => {
+        status.action === 'Invest' &&
+          dispatch(setAmoutFrom(e.currentTarget.value))
+      }}
+    />
+  )
+}
+
+export const InputAmountTo = () => {
+  const { status } = useSelector(selectSwap)
+  const dispatch = useDispatch()
+  return (
+    <Form.Control
+      className="text-end"
+      type="number"
+      placeholder=""
+      value={status.amountTo}
+      onChange={(e) => {
+        status.action === 'Withdraw' &&
+          dispatch(setAmoutTo(e.currentTarget.value))
+      }}
+    />
+  )
+}
+
+export const GroupInputFrom = () => {
+  const { token, status } = useSelector(selectSwap)
+  const { account } = useEthers()
+  const tokenBalance = useTokenBalance(token.contractPolygon, account)
+  const tokenPrice = useCoingeckoTokenPrice(
+    token.contractPolygon,
+    'usd',
+    'polygon-pos',
+  )
+
+  return (
+    <Form.Group
+      // onFocus={() => dispatch(setActiveFocus('From'))}
+      className="mb-3 text-end"
+    >
+      <Form.Label className="pt-1">
+        Balance: {balanceFormat(tokenBalance || 0, token.decimals)}
+      </Form.Label>
+      {status.action === 'Invest' && <MaxButton />}
+      <InputAmountFrom />
+      <Form.Label className="pt-2">
+        ${Number(tokenPrice || 0).toFixed(2)}
+      </Form.Label>
+    </Form.Group>
+  )
+}
+
+export const GroupInputTo = () => {
+  const { tokenProduct, status } = useSelector(selectSwap)
+  const { account } = useEthers()
+  const tokenBalance = useTokenBalance(tokenProduct.contractPolygon, account)
+  const tokenPrice = useTokenSetPrice(tokenProduct.contractPolygon)
+
+  return (
+    <Form.Group
+      // onFocus={() => dispatch(setActiveFocus('To'))}
+      className="mb-3 text-end"
+    >
+      <Form.Label className="pt-1">
+        Balance: {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
+      </Form.Label>
+      {status.action === 'Withdraw' && <MaxButton />}
+      <InputAmountTo />
+      <Form.Label className="pt-2">
+        {currencyFormat(tokenPrice || 0, tokenProduct.decimals)}
+      </Form.Label>
+    </Form.Group>
+  )
+}
+
 export const MaxButton = () => {
   const { token, tokenProduct, status } = useSelector(selectSwap)
+  const { account } = useEthers()
+  const tokenBalance = useTokenBalance(token.contractPolygon, account)
+  const tokenProductBalance = useTokenBalance(
+    tokenProduct.contractPolygon,
+    account,
+  )
+
   const dispatch = useDispatch()
 
-  const updateAmount = () => {
-    if (status.action === 'Invest') {
-      dispatch(
-        setAmoutFrom(
-          (Number(formatUnits(token.balance, token.decimals)) / 1.006).toFixed(
-            4,
-          ),
-        ),
-      )
-      dispatch(
-        swapGetEstimatedIssueSetAmount({
-          contractAddressTo: tokenProduct.contractPolygon,
-          contractAddressFrom: token.contractPolygon,
-          amountFrom: parseUnits(
-            (
-              Number(formatUnits(token.balance, token.decimals)) / 1.006
-            ).toFixed(4),
-            token.decimals,
-          ),
-          //amountFrom: token.balance,
-        }),
-      )
-    } else {
-      dispatch(
-        setAmoutTo(
-          (
-            Number(formatUnits(tokenProduct.balance, tokenProduct.decimals)) /
-            1.00001
-          ).toFixed(4),
-        ),
-      )
-      dispatch(
-        swapGetAmountInToIssueExactSet({
-          contractAddressTo: tokenProduct.contractPolygon,
-          contractAddressFrom: token.contractPolygon,
-          amountTo: parseUnits(
-            (
-              Number(formatUnits(tokenProduct.balance, tokenProduct.decimals)) /
-              1.00001
-            ).toFixed(4),
-            tokenProduct.decimals,
-          ),
-          //amountTo: tokenProduct.balance,
-        }),
-      )
-    }
+  const handleSetAmountFrom = () => {
+    dispatch(
+      setAmoutFrom(
+        (
+          Number(formatUnits(tokenBalance || 0, token.decimals)) / 1.006
+        ).toFixed(5),
+      ),
+    )
+  }
+
+  const handleSetAmountTo = () => {
+    dispatch(
+      setAmoutTo(
+        (
+          Number(formatUnits(tokenProductBalance || 0, tokenProduct.decimals)) /
+          1.00001
+        ).toFixed(4),
+      ),
+    )
   }
 
   return (
@@ -214,7 +224,7 @@ export const MaxButton = () => {
       size="sm"
       variant="link"
       onClick={() => {
-        updateAmount()
+        status.action === 'Invest' ? handleSetAmountFrom() : handleSetAmountTo()
       }}
     >
       Max
@@ -225,7 +235,6 @@ export const MaxButton = () => {
 export const TransakButton = () => {
   const { account } = useWeb3React()
   return (
-  
     <Button
       className="align-top"
       size="sm"
@@ -239,224 +248,252 @@ export const TransakButton = () => {
   )
 }
 
-export const InputAmountFrom = () => {
-  const { token, tokenProduct, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
-  return (
-    <Form.Control
-      className="text-end"
-      type="number"
-      placeholder=""
-      value={status.amountFrom}
-      onChange={(e) => {
-        if (status.activeFocus === 'From') {
-          dispatch(setAmoutFrom(e.currentTarget.value))
-          dispatch(
-            swapGetEstimatedIssueSetAmount({
-              contractAddressTo: tokenProduct.contractPolygon,
-              contractAddressFrom: token.contractPolygon,
-              amountFrom: e.currentTarget.value
-                ? parseUnits(e.currentTarget.value, token.decimals)
-                : 0,
-            }),
-          )
-        }
-      }}
-    />
-  )
+{
+  /* APPROVE BUTTON */
 }
-
-export const InputAmountTo = () => {
-  const { token, tokenProduct, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
-  return (
-    <Form.Control
-      className="text-end"
-      type="number"
-      placeholder=""
-      value={status.amountTo}
-      onChange={(e) => {
-        if (status.activeFocus === 'To') {
-          dispatch(setAmoutTo(e.currentTarget.value))
-          dispatch(
-            swapGetAmountInToIssueExactSet({
-              contractAddressTo: tokenProduct.contractPolygon,
-              contractAddressFrom: token.contractPolygon,
-              amountTo: e.currentTarget.value
-                ? parseUnits(e.currentTarget.value, tokenProduct.decimals)
-                : 0,
-            }),
-          )
-        }
-      }}
-    />
-  )
-}
-
-export const GroupInputFrom = () => {
-  const { token, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
-  return (
-    <Form.Group
-      onFocus={() => dispatch(setActiveFocus('From'))}
-      className="mb-3 text-end"
-    >
-      <Form.Label className="pt-1">
-        Balance:{' '}
-        {Number(formatUnits(token.balance || 0, token.decimals)).toFixed(4)}
-      </Form.Label>
-      {status.action === 'Invest' ? <MaxButton /> : <></>}
-
-      <InputAmountFrom />
-      <Form.Label className="pt-2">
-        ~$
-        {Number(token.price)
-          //* Number(activeTokenFrom.balance)
-          .toFixed(2)}
-      </Form.Label>
-    </Form.Group>
-  )
-}
-
-export const GroupInputTo = () => {
-  const { tokenProduct, status } = useSelector(selectSwap)
-  const dispatch = useDispatch()
-  return (
-    <Form.Group
-      onFocus={() => dispatch(setActiveFocus('To'))}
-      className="mb-3 text-end"
-    >
-      <Form.Label className="pt-1">
-        Balance: {Number(formatUnits(tokenProduct.balance)).toFixed(4)}
-      </Form.Label>
-      {status.action === 'Withdraw' ? <MaxButton /> : <></>}
-      <InputAmountTo />
-      <Form.Label className="pt-2">
-        ${Number(formatUnits(tokenProduct.total)).toFixed(2)}
-      </Form.Label>
-    </Form.Group>
-  )
+{
+  /* INVEST AND WITHDRAW BUTTON */
 }
 
 export const GroupButtons = () => {
   const { token, tokenProduct, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
 
-  const handleApprove = (address: string) => {
-    dispatch(
-      swapApprove({
-        contractAddress: address,
-        amount: BigNumber.from(0) // CONSTANTE EN SET SDK,
-      }),
+  const { account } = useEthers()
+
+  const selectedToken = status.action === 'Invest' ? token : tokenProduct
+
+  const allowanceAmount = useTokenAllowance(
+    selectedToken.contractPolygon,
+    account,
+    exchangeIssuanceV2.contractPolygon,
+  )
+  const enoughAllowance = allowanceAmount?.toString() !== '0'
+
+  const balance = useTokenBalance(selectedToken.contractPolygon, account)
+  const enoughBalance = balance?.gte(
+    parseUnits(
+      status.action === 'Invest'
+        ? status.amountFrom || '0'
+        : status.amountTo || '0',
+      selectedToken.decimals,
+    ),
+  )
+
+  const handleConnect = () => {}
+
+  const approve = useApproveSet(selectedToken.contractPolygon)
+  const issue = useIssueSet()
+  const redeem = useRedeemSet()
+
+  useEffect(() => {
+    dispatch(setTransactionStatus(approve.state))
+  }, [approve.state])
+
+  useEffect(() => {
+    dispatch(setTransactionStatus(issue.state))
+  }, [issue.state])
+
+  useEffect(() => {
+    dispatch(setTransactionStatus(redeem.state))
+  }, [redeem.state])
+
+  const handleApprove = () => {
+    console.log('Approve')
+
+    approve.send(
+      exchangeIssuanceV2.contractPolygon,
+      '115792089237316195423570985008687907853269984665640564039457584007913129639935',
+    )
+  }
+  const handleInvest = () => {
+    issue.send(
+      tokenProduct.contractPolygon,
+      token.contractPolygon,
+      parseUnits(status.amountTo, tokenProduct.decimals),
+      parseUnits(
+        (Number(status.amountFrom) * 1.005).toFixed(4),
+        token.decimals,
+      ),
     )
   }
 
-  const handleInvest = () => {
-    dispatch(
-      swapIssueExactSetFromToken({
-        contractAddressTo: tokenProduct.contractPolygon,
-        contractAddressFrom: token.contractPolygon,
-        amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-        amountFrom: parseUnits(
-          (Number(status.amountFrom) * 1.005).toFixed(4),
-          token.decimals,
-        ),
-      }),
-    )
-  }
+  // const handleInvest = () => {
+  //   dispatch(
+  //     swapIssueExactSetFromToken({
+  //       contractAddressTo: tokenProduct.contractPolygon,
+  //       contractAddressFrom: token.contractPolygon,
+  //       amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
+  //       amountFrom: parseUnits(
+  //         (Number(status.amountFrom) * 1.005).toFixed(4),
+  //         token.decimals,
+  //       ),
+  //     }),
+  //   )
+  // }
 
   const handleWithdraw = () => {
-    dispatch(
-      swapRedeemExactSetForToken({
-        contractAddressTo: tokenProduct.contractPolygon,
-        contractAddressFrom: token.contractPolygon,
-        amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-        amountFrom: parseUnits(
-          (Number(status.amountFrom) * 0.005).toFixed(4),
-          token.decimals,
-        ),
-      }),
+    redeem.send(
+      tokenProduct.contractPolygon,
+      token.contractPolygon,
+      parseUnits(status.amountTo, tokenProduct.decimals),
+      parseUnits(
+        (Number(status.amountFrom) * 0.005).toFixed(4),
+        token.decimals,
+      ),
     )
   }
 
-  const handleClick = () => {
-    if (status.action === 'Invest') {
-      if (Number(token.allowance).toFixed(0) === '0')
-        handleApprove(token.contractPolygon)
-      else handleInvest()
-    } else {
-      if (Number(tokenProduct.allowance).toFixed(0) === '0')
-        handleApprove(tokenProduct.contractPolygon)
-      else handleWithdraw()
-    }
-  }
+  // const handleWithdraw = () => {
+  //   dispatch(
+  //     swapRedeemExactSetForToken({
+  //       contractAddressTo: tokenProduct.contractPolygon,
+  //       contractAddressFrom: token.contractPolygon,
+  //       amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
+  //       amountFrom: parseUnits(
+  //         (Number(status.amountFrom) * 0.005).toFixed(4),
+  //         token.decimals,
+  //       ),
+  //     }),
+  //   )
+  // }
 
   return (
     <Form.Group className="mb-3">
-      <Form.Control
-        className="btn-lg btn-primary bg-gradient"
-        type="button"
-        value={status.buttonValue}
-        disabled={status.enoughAllowance && !status.enoughBalance}
-        onClick={() => handleClick()}
-      />
-      {!status.enoughBalance && (
-        <Form.Label className="pt-1">Enough Balance</Form.Label>
+      {/* CONNECTED BUTTON */}
+      {!account && (
+        <div className="pb-2">
+          <Form.Control
+            className="btn btn-primary"
+            type="button"
+            value={'Connect Wallet'}
+            onClick={() => handleConnect()}
+          />
+        </div>
       )}
+      {/* APPROVE BUTTON */}
+      {!enoughAllowance && (
+        <div className="pb-2">
+          <Form.Control
+            className="btn btn-primary"
+            type="button"
+            value={`Approve ${selectedToken.symbol}`}
+            onClick={() => handleApprove()}
+          />
+        </div>
+      )}
+      {/* INVEST AND WITHDRAW BUTTON */}
+      {account && (
+        <div className="pb-2">
+          <Form.Control
+            className="btn btn-primary"
+            type="button"
+            value={enoughBalance ? status.action : 'Enough Balance'}
+            disabled={!enoughAllowance || !enoughBalance}
+            onClick={() =>
+              status.action === 'Invest' ? handleInvest() : handleWithdraw()
+            }
+          />
+        </div>
+      )}
+      {/* <div>{approve.state.status}</div> */}
     </Form.Group>
   )
 }
 
-export const ShowResponse = () => {
-  const { status } = useSelector(selectSwap)
-  const [show, setShow] = useState(false)
-  const dispatch = useDispatch()
-
-  const handleClose = () => {
-    dispatch(cleanResponse())
-    setShow(false)
+export const ShowNotification = () => {
+  interface INotification {
+    title: string
+    icon: JSX.Element
+    urlTx: string
   }
 
-  const handleShow = () => setShow(true)
+  const [activeNotification, setActiveNotification]:
+    | INotification
+    | any = useState(null)
   const theme = useSelector(selectTheme)
+  const { notifications } = useNotifications()
+
+  const showModal = activeNotification !== null
+
+  const handleClose = () => {
+    setActiveNotification(null)
+  }
 
   useEffect(() => {
-    status.response && handleShow()
-  }, [status.response])
+    //console.log(notifications[0])
+    notifications[0] &&
+      'transaction' in notifications[0] &&
+      setActiveNotification({
+        title: notificationContent[notifications[0].type].title,
+        icon: notificationContent[notifications[0].type].icon,
+        type: notificationContent[notifications[0].type].type,
+        transaction: notifications[0]?.transaction,
+      })
+  }, [notifications])
+
+  const notificationContent: {
+    [key in Notification['type']]: {
+      title: string
+      icon: JSX.Element
+      type: string
+    }
+  } = {
+    transactionFailed: {
+      title: 'Transaction Failed',
+      icon: <XCircle size="40px" color="#f34837" />,
+      type: 'Failed',
+    },
+    transactionStarted: {
+      title: 'Transaction Sent',
+      icon: (
+        <Spinner
+          variant="primary"
+          as="span"
+          animation="border"
+          role="status"
+          aria-hidden="true"
+          className="p-4"
+        />
+      ),
+      type: 'Sent',
+    },
+    transactionSucceed: {
+      title: 'Transaction Succeed',
+      icon: <CheckCircle size="40px" color="#75bfc0" />,
+      type: 'Succeed',
+    },
+    walletConnected: {
+      title: 'Wallet connected',
+      icon: <CheckCircle size="40px" color="#f34837" />,
+      type: 'Connected',
+    },
+  }
 
   return (
     <>
-      <Modal
-        size={status.response?.hash && 'lg'}
-        show={show}
-        onHide={handleClose}
-      >
+      <Modal show={showModal} onHide={handleClose} centered>
         <Modal.Header
           closeButton
+          closeVariant={theme.darkMode ? 'white' : undefined}
           className={`bg-${theme.bgMode} text-${theme.textMode}`}
         >
-          <Modal.Title>
-            {status.response?.code ? 'Error Status' : 'Transaction Status'}
-          </Modal.Title>
+          <Modal.Title>{activeNotification?.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body
           className={`text-center bg-${theme.bgMode} text-${theme.textMode}`}
         >
-          {status.response?.code ? (
-            <>
-              {status.response?.message}
-              <br />
-              {status.response?.data?.message}
-            </>
-          ) : (
-            <>
-              {status.response?.hash}
-              <br />
-              <a target="_blank" href={polygonUrlTx + status.response?.hash}>
-                View
-              </a>
-            </>
-          )}
+          <div className="py-3">{activeNotification?.icon}</div>
+          <a
+            href={getExplorerTransactionLink(
+              activeNotification?.transaction?.hash,
+              137,
+            )}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View on Polygonscan  <BoxArrowUpRight />
+          </a>
         </Modal.Body>
         <Modal.Footer className={`bg-${theme.bgMode} text-${theme.textMode}`}>
           <Button variant="info" onClick={handleClose}>
