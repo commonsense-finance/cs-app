@@ -10,10 +10,10 @@ const RPC_URLS: { [chainId: number]: string } = {
   137: 'https://polygon-mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495'
 }
 
-export const network = new NetworkConnector({
-    urls: { 137: RPC_URLS[137] },
-    defaultChainId: 137
-})
+// export const network = new NetworkConnector({
+//     urls: { 137: RPC_URLS[137] },
+//     defaultChainId: 137
+// })
 
 export const injected = new InjectedConnector({
   supportedChainIds: [137]

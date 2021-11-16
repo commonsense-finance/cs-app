@@ -9,8 +9,8 @@ import { tokensProduct } from 'src/constants/tokens'
 export const TokenHeader = () => {
   const router = useRouter()
   const activeToken = tokensProduct[Number(router?.query?.id)]
-
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
+
   return (
     <>
       <img

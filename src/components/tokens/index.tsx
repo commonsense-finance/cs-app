@@ -65,10 +65,14 @@ export const Tokens = () => {
                 <td className="text-end">{token.fee}</td>
                 <td className="text-center">
                   <Link href={'/token/' + token.id + '?action=Invest'}>
-                    <Button className="btn-sm me-2">Invest</Button>
+                    {/* <Button className="btn-sm me-2">Invest</Button> */}
+                    <a className="btn-sm me-2">Invest</a> 
+                    
                   </Link>
                   <Link href={'/token/' + token.id + '?action=Invest'}>
-                    <Button className="btn-sm me-2">View</Button>
+                  <a className="btn-sm">View</a> 
+                    {/* <Button className="btn-sm me-2">View</Button> */}
+                    
                   </Link>
 
                   {/* 

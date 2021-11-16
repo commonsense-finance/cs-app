@@ -14,6 +14,7 @@ export default function Layout(props: { children: JSX.Element }) {
         <Header />
       </Container>
       <main>{props.children}</main>
+      {/* {props.children} */}
       <Container fluid>
         <Footer />
       </Container>

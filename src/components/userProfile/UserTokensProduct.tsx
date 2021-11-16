@@ -74,8 +74,9 @@ export const UserTokensProduct = () => {
                     {/* <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td> */}
                     {/* <td className='text-end d-none d-sm-table-cell'>${Number(formatUnits(token.total)).toFixed(2)}</td> */}
                     <td className="text-center">
-                      <Link href={'/token/' + token.id + '?action=Withdraw'}>
-                        <Button className="btn-sm">Withdraw</Button>
+                      <Link href={'/token/' + token.id + '?action=Withdraw'} passHref>
+                         <a className="btn-sm">Withdraw</a> 
+                        
                       </Link>
                     </td>
                   </tr>
@@ -87,3 +88,5 @@ export const UserTokensProduct = () => {
     </div>
   )
 }
+
+

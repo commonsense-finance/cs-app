@@ -15,7 +15,7 @@ import {
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { openTransak } from '@components/transak'
 import { selectTheme } from '@redux/slices/theme'
-import { useWeb3React } from '@web3-react/core'
+
 import {
   getExplorerTransactionLink,
   Notification,
@@ -233,7 +233,7 @@ export const MaxButton = () => {
 }
 
 export const TransakButton = () => {
-  const { account } = useWeb3React()
+  const { account } = useEthers()
   return (
     <Button
       className="align-top"

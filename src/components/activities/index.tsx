@@ -45,8 +45,8 @@ export const Activities = () => {
               <Card.Body style={{ backgroundColor: theme.bgSoftColor }}>
               
 
-        {transactions.map((tx) => (
-              <div>{tx.transactionName}</div>
+        {transactions.map((tx, idx) => (
+              <div key={idx}>{tx.transactionName}</div>
 
         
 
