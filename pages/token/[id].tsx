@@ -30,19 +30,12 @@ const Token = () => {
     <>
       <Desktop>
         <Container className={`text-${theme.textMode} py-4`}>
-          <Row className="pb-5">
-            <Col className="col-md-3 col-xl-3"> 
-              <TokenHeader />
-            </Col>
-            <Col>
-              <LineChart />
-            </Col>
-          </Row>
+          <TokenHeader />
         </Container>
         <Container className={`text-${theme.textMode} pb-5`}>
           <Row className="pb-5">
             <Col className="col-md-7 col-xl-8">
-              <div className='pb-5'>
+              <div className="pb-5">
                 <LineChart />
               </div>
               <TokenStats />
@@ -52,14 +45,13 @@ const Token = () => {
             </Col>
             <Col>
               <Swap />
-            </Col> 
+            </Col>
           </Row>
         </Container>
       </Desktop>
 
       {/* MOBILE and TABLET */}
       <Default>
-       
         <Container className={`text-${theme.textMode} py-4`}>
           <TokenHeader />
           <div className="py-4">

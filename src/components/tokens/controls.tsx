@@ -17,6 +17,7 @@ export const TokenHeader = () => {
         src={activeToken.image}
         alt=""
         width="27"
+        height='27'
         className="me-2 rounded pb-1"
       />
       <h4 className="d-inline">{activeToken?.symbol}</h4>
