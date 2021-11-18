@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import { Card } from '@components/csComponents'
 import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
 import { selectSwap } from '@redux/slices/swap'
 import {
@@ -20,12 +21,14 @@ import {
   getExplorerTransactionLink,
   Notification,
   useEthers,
+  useGasPrice,
   useNotifications,
   useTokenAllowance,
   useTokenBalance,
 } from '@usedapp/core'
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
 import {
+  amountFormat,
   balanceFormat,
   currencyFormat,
   useApproveSet,
@@ -34,6 +37,7 @@ import {
   useTokenSetPrice,
 } from 'src/services/tokenSetv2'
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
+import { WalletModal } from '@components/wallet/controls'
 
 export const SelectTokensFrom = () => {
   const { token, tokenList } = useSelector(selectSwap)
@@ -249,11 +253,17 @@ export const TransakButton = () => {
   )
 }
 
-{
-  /* APPROVE BUTTON */
-}
-{
-  /* INVEST AND WITHDRAW BUTTON */
+export const GroupSumary = () => {
+  const { account } = useEthers()
+  const gasPrice = useGasPrice()
+  return (
+    <div className="pb-3">
+      <Card>
+        {amountFormat(gasPrice || 0)}
+        {gasPrice?.toString() || 0}
+      </Card>
+    </div>
+  )
 }
 
 export const GroupButtons = () => {
@@ -266,8 +276,14 @@ export const GroupButtons = () => {
 
   const enoughInput =
     status.action === 'Invest'
-      ? parseUnits(status.amountFrom ? status.amountFrom : '0', token.decimals).gt(0)
-      : parseUnits(status.amountTo ? status.amountTo : '0',tokenProduct.decimals).gt(0)
+      ? parseUnits(
+          status.amountFrom ? status.amountFrom : '0',
+          token.decimals,
+        ).gt(0)
+      : parseUnits(
+          status.amountTo ? status.amountTo : '0',
+          tokenProduct.decimals,
+        ).gt(0)
 
   const allowanceAmount = useTokenAllowance(
     selectedToken.contractPolygon,
@@ -277,7 +293,7 @@ export const GroupButtons = () => {
   const enoughAllowance = allowanceAmount?.toString() !== '0'
 
   const balance = useTokenBalance(selectedToken.contractPolygon, account)
-  const enoughBalance = balance?.gte(
+  const enoughBalance = balance?.gt(
     parseUnits(
       status.action === 'Invest'
         ? status.amountFrom || '0'
@@ -285,8 +301,6 @@ export const GroupButtons = () => {
       selectedToken.decimals,
     ),
   )
-
-  const handleConnect = () => {}
 
   const approve = useApproveSet(selectedToken.contractPolygon)
   const issue = useIssueSet()
@@ -317,10 +331,8 @@ export const GroupButtons = () => {
       tokenProduct.contractPolygon,
       token.contractPolygon,
       parseUnits(status.amountTo, tokenProduct.decimals),
-      parseUnits(
-        (Number(status.amountFrom) * 1.005).toFixed(4),
-        token.decimals,
-      ),
+      parseUnits((Number(status.amountFrom) * 1.005).toFixed(4),token.decimals),
+      { gasPrice: 30000000000, gasLimit: 1500000}
     )
   }
 
@@ -333,49 +345,58 @@ export const GroupButtons = () => {
         (Number(status.amountFrom) * 0.005).toFixed(4),
         token.decimals,
       ),
+      { gasPrice: 30000000000, gasLimit: 1500000}
     )
   }
 
+  const [showModal, setShowModal] = useState(false)
+
+  const handleClose = () => setShowModal(false)
+  const handleShow = () => setShowModal(true)
+
   return (
-    <Form.Group className="mb-3">
-      {/* CONNECTED BUTTON */}
-      {!account && (
-        <div className="pb-2">
-          <Form.Control
-            className="btn btn-primary"
-            type="button"
-            value={'Connect Wallet'}
-            onClick={() => handleConnect()}
-          />
-        </div>
-      )}
-      {/* APPROVE BUTTON */}
-      {!enoughAllowance && (
-        <div className="pb-2">
-          <Form.Control
-            className="btn btn-primary"
-            type="button"
-            value={`Approve ${selectedToken.symbol}`}
-            onClick={() => handleApprove()}
-          />
-        </div>
-      )}
-      {/* INVEST AND WITHDRAW BUTTON */}
-      {account && (
-        <div className="pb-2">
-          <Form.Control
-            className="btn btn-primary"
-            type="button"
-            value={enoughBalance ? status.action : 'Enough Balance'}
-            disabled={!enoughAllowance || !enoughBalance || !enoughInput}
-            onClick={() =>
-              status.action === 'Invest' ? handleInvest() : handleWithdraw()
-            }
-          />
-        </div>
-      )}
-      {/* <div>{approve.state.status}</div> */}
-    </Form.Group>
+    <>
+      <Form.Group className="mb-3">
+        {/* CONNECTED BUTTON */}
+        {!account && (
+          <div className="pb-2">
+            <Form.Control
+              className="btn btn-primary"
+              type="button"
+              value={'Connect Wallet'}
+              onClick={() => handleShow()}
+            />
+          </div>
+        )}
+        {/* APPROVE BUTTON */}
+        {!enoughAllowance && (
+          <div className="pb-2">
+            <Form.Control
+              className="btn btn-primary"
+              type="button"
+              value={`Approve ${selectedToken.symbol}`}
+              onClick={() => handleApprove()}
+            />
+          </div>
+        )}
+        {/* INVEST AND WITHDRAW BUTTON */}
+        {account && (
+          <div className="pb-2">
+            <Form.Control
+              className="btn btn-primary"
+              type="button"
+              value={enoughBalance ? status.action : 'Enough Balance'}
+              disabled={!enoughAllowance || !enoughBalance || !enoughInput}
+              onClick={() =>
+                status.action === 'Invest' ? handleInvest() : handleWithdraw()
+              }
+            />
+          </div>
+        )}
+        {/* <div>{approve.state.status}</div> */}
+      </Form.Group>
+      <WalletModal showModal={showModal} handleClose={handleClose} />
+    </>
   )
 }
 

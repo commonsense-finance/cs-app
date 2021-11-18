@@ -18,6 +18,8 @@ import tokenSetABI from '../services/ABI/tokenSet.json'
 
 import { DAI } from '../constants/tokens'
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
+import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
+import { getCoinGeckoTokensPrice } from './coinGecko'
 
 
 const exchangeIssuanceV2Interface = new utils.Interface(exchangeIssuanceV2ABI)
@@ -165,7 +167,6 @@ export function useTokenSetPrice(tokenAddress: string) {
 }
 
 export function useGetSetEstimated(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish, action: string) {
-  console.log('Estimated -> ', amount.toString())
   return  amount.toString() !== '0' ? useContractCall({
     abi: exchangeIssuanceV2Interface,
     address: exchangeIssuanceV2.contractPolygon,
@@ -260,22 +261,30 @@ export function useTokenSetComponents(setAddress: string) {
 
   const componentsSymbol = useComponentsSymbol(componentsAddress)
   const componentsDecimals = useComponentsDecimals(componentsAddress)
-  const componentsRealPosition = useComponentsRealPositions(
-    setAddress,
-    componentsAddress,
-  )
+  const componentsRealPosition = useComponentsRealPositions(setAddress,componentsAddress)
+  const componentsPrice = 0//await getCoinGeckoTokensPrice(componentsAddress)
+  
+  //useCoingeckoTokenPrice(componentsAddress[1],'usd','polygon-pos')
 
+  
   // console.log('symbols -> ',componentsSymbol)
   // console.log('decimals -> ',componentsDecimals)
   // console.log('Real Positions -> ',componentsRealPosition)
 
-  return componentsAddress?.map((address: any, idx: number) => ({
+  // let componentsPrice: string[] = [] 
+  // componentsAddress?.map((address: any, idx: Number) => (
+  //   componentsPrice.push('51-' + idx)
+  // ))
+
+  
+  return componentsAddress?.map((address: any, idx: number) => (
+  {
     id: idx,
     symbol: componentsSymbol[idx],
     image: '',
     decimals: componentsDecimals[idx]?.[0],
     position: componentsRealPosition[idx]?.[0],
-    price: 0,
+    price: 0, //componentsPrice[idx]?.[0],
     contractPolygon: address,
   }))
 }

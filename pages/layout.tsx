@@ -10,6 +10,7 @@ export default function Layout(props: { children: JSX.Element }) {
   return (
     <>
       <Head>
+        <title>Common Sense</title>
         <link rel="shortcut icon" href="/icons/favicon.ico" />
       </Head>
       <Top />

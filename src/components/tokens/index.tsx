@@ -12,11 +12,11 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-
+import { useEthers } from '@usedapp/core'
 
 export const Tokens = () => {
   const theme = useSelector(selectTheme)
-
+  const { account } = useEthers()
   const tokensProductTotalSupply = useTokensTotalSupply(tokensProduct)
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
@@ -64,22 +64,27 @@ export const Tokens = () => {
                 </td>
                 <td className="text-end">{token.fee}</td>
                 <td className="text-center">
-                  <Link href={'/token/' + token.id + '?action=Invest'}>
+                  {
+                    account && 
+                  <Link
+                    href={{
+                      pathname: '/token/[id]',
+                      query: { id: token.id },
+                    }}
+                  >
                     {/* <Button className="btn-sm me-2">Invest</Button> */}
-                    <a className="btn-sm me-2">Invest</a> 
-                    
+                    <a className="btn-sm me-2">Invest</a>
                   </Link>
-                  <Link href={'/token/' + token.id + '?action=Invest'}>
-                  <a className="btn-sm">View</a> 
+                  }
+                  <Link
+                    href={{
+                      pathname: '/token/[id]',
+                      query: { id: token.id },
+                    }}
+                  >
+                    <a className="btn-sm">View</a>
                     {/* <Button className="btn-sm me-2">View</Button> */}
-                    
                   </Link>
-
-                  {/* 
-                  href={{
-              pathname: '/blog/[slug]',
-              query: { slug: post.slug },
-            }} */}
                 </td>
               </tr>
             ))}

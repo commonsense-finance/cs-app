@@ -15,7 +15,7 @@ interface ISwapStatus {
 }
 
 const initialStateStatus: ISwapStatus = {
-  amountFrom: '1',
+  amountFrom: '0',
   amountTo: '0',
   activeFocus: 'From',
   action: 'Invest',

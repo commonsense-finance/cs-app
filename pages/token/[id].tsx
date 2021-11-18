@@ -26,7 +26,6 @@ export async function getStaticPaths() {
 
 const DesktopLayout = () => {
   const theme = useSelector(selectTheme)
-
   return (
     <>
       <Container className={`text-${theme.textMode} py-4`}>
@@ -35,9 +34,9 @@ const DesktopLayout = () => {
       <Container className={`text-${theme.textMode} pb-5`}>
         <Row className="pb-5">
           <Col className="col-md-7 col-xl-8">
-            <div className="pb-5">
+            {/* <div className="pb-5">
               <LineChart />
-            </div>
+            </div> */}
             <TokenStats />
             <TokenAbout />
             <TokenComponents />

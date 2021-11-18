@@ -12,6 +12,7 @@ import {
   GroupInputTo,
   GroupSelectFrom,
   GroupSelectTo,
+  GroupSumary,
   ShowNotification,
   TransakButton,
 } from './controls'
@@ -19,8 +20,11 @@ import {
 import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
+import { useRouter } from 'next/router'
 
 export const Swap = () => {
+  const router = useRouter()
+
   const theme = useSelector(selectTheme)
   const { token, tokenProduct, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
@@ -41,9 +45,11 @@ export const Swap = () => {
   )
 
   const estimated =
-    auxAmount.toString() === '0'
-      ? BigNumber.from(0)
-      : auxEstimated
+    auxAmount.toString() === '0' ? BigNumber.from(0) : auxEstimated
+
+  useEffect(() => {
+    dispatch(setAction(router?.query?.action || 'Invest'))
+  }, [router?.query?.action])
 
   useEffect(() => {
     status.action === 'Invest'
@@ -136,6 +142,7 @@ export const Swap = () => {
           )}
 
           <Col>
+            {/* <GroupSumary /> */}
             <GroupButtons />
             <TransakButton />
           </Col>
