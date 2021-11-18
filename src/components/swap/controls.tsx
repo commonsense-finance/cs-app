@@ -223,6 +223,7 @@ export const MaxButton = () => {
       className="align-top"
       size="sm"
       variant="link"
+      disabled={!account}
       onClick={() => {
         status.action === 'Invest' ? handleSetAmountFrom() : handleSetAmountTo()
       }}
@@ -262,6 +263,11 @@ export const GroupButtons = () => {
   const { account } = useEthers()
 
   const selectedToken = status.action === 'Invest' ? token : tokenProduct
+
+  const enoughInput =
+    status.action === 'Invest'
+      ? parseUnits(status.amountFrom ? status.amountFrom : '0', token.decimals).gt(0)
+      : parseUnits(status.amountTo ? status.amountTo : '0',tokenProduct.decimals).gt(0)
 
   const allowanceAmount = useTokenAllowance(
     selectedToken.contractPolygon,
@@ -318,20 +324,6 @@ export const GroupButtons = () => {
     )
   }
 
-  // const handleInvest = () => {
-  //   dispatch(
-  //     swapIssueExactSetFromToken({
-  //       contractAddressTo: tokenProduct.contractPolygon,
-  //       contractAddressFrom: token.contractPolygon,
-  //       amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-  //       amountFrom: parseUnits(
-  //         (Number(status.amountFrom) * 1.005).toFixed(4),
-  //         token.decimals,
-  //       ),
-  //     }),
-  //   )
-  // }
-
   const handleWithdraw = () => {
     redeem.send(
       tokenProduct.contractPolygon,
@@ -343,20 +335,6 @@ export const GroupButtons = () => {
       ),
     )
   }
-
-  // const handleWithdraw = () => {
-  //   dispatch(
-  //     swapRedeemExactSetForToken({
-  //       contractAddressTo: tokenProduct.contractPolygon,
-  //       contractAddressFrom: token.contractPolygon,
-  //       amountTo: parseUnits(status.amountTo, tokenProduct.decimals),
-  //       amountFrom: parseUnits(
-  //         (Number(status.amountFrom) * 0.005).toFixed(4),
-  //         token.decimals,
-  //       ),
-  //     }),
-  //   )
-  // }
 
   return (
     <Form.Group className="mb-3">
@@ -389,7 +367,7 @@ export const GroupButtons = () => {
             className="btn btn-primary"
             type="button"
             value={enoughBalance ? status.action : 'Enough Balance'}
-            disabled={!enoughAllowance || !enoughBalance}
+            disabled={!enoughAllowance || !enoughBalance || !enoughInput}
             onClick={() =>
               status.action === 'Invest' ? handleInvest() : handleWithdraw()
             }
@@ -492,7 +470,7 @@ export const ShowNotification = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            View on Polygonscan  <BoxArrowUpRight />
+            View on Polygonscan <BoxArrowUpRight />
           </a>
         </Modal.Body>
         <Modal.Footer className={`bg-${theme.bgMode} text-${theme.textMode}`}>

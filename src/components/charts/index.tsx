@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 
+
 const data = {
   labels: ['Ene', 'Feb', 'Mar', '...', '...', 'Dic'],
   datasets: [
@@ -10,6 +11,7 @@ const data = {
       fill: false,
       backgroundColor: '#75bfc0',
       borderColor: '#75bfc0',
+      tension: 0.5
     },
   ],
 };

@@ -9,8 +9,9 @@ import {
 } from '@components'
 
 import { selectTheme } from '@redux/slices/theme'
-import { Default, Desktop } from '@components/mediaQuery'
 import LineChart from '@components/charts'
+import { useMediaQuery } from 'react-responsive'
+import { useEffect, useState } from 'react'
 
 export async function getStaticProps() {
   return { props: { id: null } }
@@ -23,48 +24,62 @@ export async function getStaticPaths() {
   }
 }
 
-const Token = () => {
+const DesktopLayout = () => {
   const theme = useSelector(selectTheme)
 
   return (
     <>
-      <Desktop>
-        <Container className={`text-${theme.textMode} py-4`}>
-          <TokenHeader />
-        </Container>
-        <Container className={`text-${theme.textMode} pb-5`}>
-          <Row className="pb-5">
-            <Col className="col-md-7 col-xl-8">
-              <div className="pb-5">
-                <LineChart />
-              </div>
-              <TokenStats />
-              <TokenAbout />
-              <TokenComponents />
-              {/* <TokenTransactions /> */}
-            </Col>
-            <Col>
-              <Swap />
-            </Col>
-          </Row>
-        </Container>
-      </Desktop>
-
-      {/* MOBILE and TABLET */}
-      <Default>
-        <Container className={`text-${theme.textMode} py-4`}>
-          <TokenHeader />
-          <div className="py-4">
+      <Container className={`text-${theme.textMode} py-4`}>
+        <TokenHeader />
+      </Container>
+      <Container className={`text-${theme.textMode} pb-5`}>
+        <Row className="pb-5">
+          <Col className="col-md-7 col-xl-8">
+            <div className="pb-5">
+              <LineChart />
+            </div>
+            <TokenStats />
+            <TokenAbout />
+            <TokenComponents />
+            {/* <TokenTransactions /> */}
+          </Col>
+          <Col>
             <Swap />
-          </div>
-          <TokenStats />
-          <TokenAbout />
-          <TokenComponents />
-          {/* <TokenTransactions /> */}
-        </Container>
-      </Default>
+          </Col>
+        </Row>
+      </Container>
     </>
   )
+}
+
+const DefaultLayout = () => {
+  const theme = useSelector(selectTheme)
+  return (
+    <>
+      <Container className={`text-${theme.textMode} py-4`}>
+        <TokenHeader />
+        <div className="py-4">
+          <Swap />
+        </div>
+        <TokenStats />
+        <TokenAbout />
+        <TokenComponents />
+        {/* <TokenTransactions /> */}
+      </Container>
+    </>
+  )
+}
+
+const Token = () => {
+  const isDesktop = useMediaQuery({ minWidth: 992 })
+
+  const [desktopLayout, setDesktopLayout] = useState(true)
+
+  useEffect(() => {
+    setDesktopLayout(isDesktop)
+  }, [isDesktop])
+
+  return <>{desktopLayout ? <DesktopLayout /> : <DefaultLayout />}</>
 }
 
 export default Token

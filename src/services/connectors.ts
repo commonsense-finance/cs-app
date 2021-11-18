@@ -6,8 +6,8 @@ import { NetworkConnector } from '@web3-react/network-connector'
 // const NETWORK_URL = 'https://mainnet.eth.aragon.network/'
 
 const RPC_URLS: { [chainId: number]: string } = {
-  1: 'https://mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495',
-  137: 'https://polygon-mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495'
+  1: '',
+  137: ''
 }
 
 // export const network = new NetworkConnector({

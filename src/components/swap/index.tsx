@@ -20,7 +20,6 @@ import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
 
-
 export const Swap = () => {
   const theme = useSelector(selectTheme)
   const { token, tokenProduct, status } = useSelector(selectSwap)
@@ -34,12 +33,17 @@ export const Swap = () => {
           tokenProduct.decimals,
         )
 
-  const estimated = useGetSetEstimated(
+  const auxEstimated = useGetSetEstimated(
     tokenProduct.contractPolygon,
     token.contractPolygon,
-    auxAmount.toString() !== '0' ? auxAmount : BigNumber.from(0),
+    auxAmount.toString() !== '0' ? auxAmount : '1000000000000000000',
     status.action,
   )
+
+  const estimated =
+    auxAmount.toString() === '0'
+      ? BigNumber.from(0)
+      : auxEstimated
 
   useEffect(() => {
     status.action === 'Invest'

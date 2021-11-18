@@ -19,7 +19,10 @@ import tokenSetABI from '../services/ABI/tokenSet.json'
 import { DAI } from '../constants/tokens'
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
 
+
 const exchangeIssuanceV2Interface = new utils.Interface(exchangeIssuanceV2ABI)
+const exchangeIssuanceV2Contract = new Contract(exchangeIssuanceV2.contractPolygon, exchangeIssuanceV2Interface)
+
 const tokenSetInterface = new utils.Interface(tokenSetABI)
 
 
@@ -162,13 +165,13 @@ export function useTokenSetPrice(tokenAddress: string) {
 }
 
 export function useGetSetEstimated(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish, action: string) {
-  
-  return useContractCall({
+  console.log('Estimated -> ', amount.toString())
+  return  amount.toString() !== '0' ? useContractCall({
     abi: exchangeIssuanceV2Interface,
     address: exchangeIssuanceV2.contractPolygon,
     method: action === 'Invest' ? 'getEstimatedIssueSetAmount' : 'getAmountInToIssueExactSet',
     args: [tokenSetAddress, tokenAddress, amount],
-  })?.[0]
+  })?.[0] : 0
 }
 
 export function useGetEstimatedIssueSetAmount(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish) {
@@ -279,6 +282,6 @@ export function useTokenSetComponents(setAddress: string) {
 
 
 
-const exchangeIssuanceV2Contract = new Contract(exchangeIssuanceV2.contractPolygon, exchangeIssuanceV2Interface)
+
 
 
