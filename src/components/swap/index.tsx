@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { selectTheme } from '@redux/slices/theme'
 import { Col, Form, Nav, Row, Spinner } from 'react-bootstrap'
 
-import { selectSwap } from '@redux/slices/swap'
+import { selectSwap, setTokenFrom, setTokenTo } from '@redux/slices/swap'
 import { setAction, setAmoutFrom, setAmoutTo } from '../../redux/actions'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -21,6 +21,7 @@ import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
 import { useRouter } from 'next/router'
+import { tokensProduct } from 'src/constants/tokens'
 
 export const Swap = () => {
   const router = useRouter()
@@ -46,7 +47,11 @@ export const Swap = () => {
 
   const estimated =
     auxAmount.toString() === '0' ? BigNumber.from(0) : auxEstimated
-
+    
+  useEffect(() => {
+      dispatch(setTokenTo(tokensProduct[Number(router?.query?.id) || 0]))
+    }, [router?.query?.id])
+  
   useEffect(() => {
     dispatch(setAction(router?.query?.action || 'Invest'))
   }, [router?.query?.action])

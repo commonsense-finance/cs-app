@@ -12,7 +12,8 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { useEthers } from '@usedapp/core'
+import { getExplorerAddressLink, useEthers } from '@usedapp/core'
+import { BoxArrowUpRight } from 'react-bootstrap-icons'
 
 export const Tokens = () => {
   const theme = useSelector(selectTheme)
@@ -47,7 +48,10 @@ export const Tokens = () => {
                     className="me-2 rounded"
                   ></img>
                 </td>
-                <td>{token.symbol}</td>
+                <td>
+                  {token.symbol}
+                  
+                </td>
                 <td className="d-none d-md-table-cell">{token.name}</td>
                 <td className="text-end d-none d-sm-table-cell">
                   {tokensProductPrice?.[idx] &&
@@ -64,27 +68,24 @@ export const Tokens = () => {
                 </td>
                 <td className="text-end">{token.fee}</td>
                 <td className="text-center">
-                  {
-                    account && 
-                  <Link
-                    href={{
-                      pathname: '/token/[id]',
-                      query: { id: token.id },
-                    }}
+                  
+                    <Link
+                      href={{
+                        pathname: '/token/[id]',
+                        query: { id: token.id },
+                      }}
+                    >
+                      {/* <Button className="btn-sm me-2">Invest</Button> */}
+                      <a className="btn-sm me-2">{account ? 'Invest' : 'View'}</a>
+                    </Link>
+                
+                  <a
+                    href={getExplorerAddressLink(token.contractPolygon, 137)}
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    {/* <Button className="btn-sm me-2">Invest</Button> */}
-                    <a className="btn-sm me-2">Invest</a>
-                  </Link>
-                  }
-                  <Link
-                    href={{
-                      pathname: '/token/[id]',
-                      query: { id: token.id },
-                    }}
-                  >
-                    <a className="btn-sm">View</a>
-                    {/* <Button className="btn-sm me-2">View</Button> */}
-                  </Link>
+                    <BoxArrowUpRight />
+                  </a>
                 </td>
               </tr>
             ))}
