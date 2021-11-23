@@ -52,7 +52,9 @@ export const SelectTokensFrom = () => {
     >
       {tokenList.map((token) => {
         return (
-          <option key={token.id} value={token.id}>
+          <option key={token.id} value={token.id} >
+            
+        
             {token.symbol}
           </option>
         )

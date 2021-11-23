@@ -13,7 +13,7 @@ export const tokensProduct = [
     total: 0,
     allowance: 0,
     about:
-      "The CSI 'All in One' Token aims to replicate the profitability of an index composed of the Top 8 cryptocurrencies in the Polygon Network (ERC20) with a market capitalization of over 2 millon. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
+      "The Common Sense Index Token (CSI) aims to replicate the profitability of an index composed of the Top 8 cryptocurrencies in the Polygon Network (ERC20) with a market capitalization of over 2 billion. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
     marketCap: 0,
     totalSupply: 0,
     components: [],
@@ -58,12 +58,90 @@ export const tokensProduct = [
   // },
 ]
 
+export const ComponentsTokenProduct = [
+  [
+    {
+      id: 0,
+      symbol: 'WBTC',
+      image: 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png',
+      decimals: 8,
+      position: '25%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 1,
+      symbol: 'WETH',
+      image: 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
+      decimals: 18,
+      position: '25%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 2,
+      symbol: 'LINK',
+      image: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png',
+      decimals: 18,
+      position: '14%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 3,
+      symbol: 'WMATIC',
+      image: 'https://assets.coingecko.com/coins/images/14073/small/matic.png',
+      decimals: 18,
+      position: '13%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 4,
+      symbol: 'UNI',
+      image: 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png',
+      decimals: 18,
+      position: '13%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 5,
+      symbol: 'AAVE',
+      image: 'https://assets.coingecko.com/coins/images/12645/small/AAVE.png',
+      decimals: 18,
+      position: '5%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 6,
+      symbol: 'SUSHI',
+      image: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png',
+      decimals: 18,
+      position: '3%',
+      price: 0,
+      contractPolygon: '',
+    },
+    {
+      id: 7,
+      symbol: 'TEL',
+      image: 'https://assets.coingecko.com/coins/images/1899/small/tel.png',
+      decimals: 18,
+      position: '2%',
+      price: 0,
+      contractPolygon: '',
+    }
+  ]
+]
+
+
 export const tokens = [
   {
     id: 0,
     symbol: 'WETH',
     name: 'Wrapped Ether',
-    image: '',
+    image: 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
     fee: '0%',
     contractPolygon: '0x7ceb23fd6bc0add59e62ac25578270cff1b9f619',
     contract: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
@@ -81,7 +159,7 @@ export const tokens = [
     id: 1,
     symbol: 'WBTC',
     name: 'Wrapped BTC',
-    image: '',
+    image: 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png',
     fee: '0%',
     contractPolygon: '0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6',
     contract: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599',
@@ -117,7 +195,7 @@ export const tokens = [
     id: 3,
     symbol: 'WMATIC',
     name: 'Wrapped Matic',
-    image: '',
+    image: 'https://assets.coingecko.com/coins/images/14073/small/matic.png',
     fee: '0%',
     contractPolygon: '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270',
     contract: '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0',

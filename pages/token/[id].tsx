@@ -9,7 +9,7 @@ import {
 } from '@components'
 
 import { selectTheme } from '@redux/slices/theme'
-import LineChart from '@components/charts'
+import ComponentsChart from '@components/charts'
 import { useMediaQuery } from 'react-responsive'
 import { useEffect, useState } from 'react'
 
@@ -34,9 +34,6 @@ const DesktopLayout = () => {
       <Container className={`text-${theme.textMode} pb-5`}>
         <Row className="pb-5">
           <Col className="col-md-7 col-xl-8">
-            {/* <div className="pb-5">
-              <LineChart />
-            </div> */}
             <TokenStats />
             <TokenAbout />
             <TokenComponents />

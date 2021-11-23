@@ -30,7 +30,7 @@ export const Header = () => {
           <Nav className="me-auto">
             <SwitchTheme />
             <Button className="me-2" variant={theme.bgMode}>
-              Demo
+              Beta v1.0
             </Button>
             {account && (
               <Button variant={theme.bgMode}>
@@ -44,7 +44,7 @@ export const Header = () => {
             )}
           </Nav>
           <Nav>
-            <Activities />
+            {/* <Activities /> */}
             <Wallet />
           </Nav>
         </Navbar.Collapse>
