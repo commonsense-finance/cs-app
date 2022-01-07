@@ -51,7 +51,7 @@ export function currencyFormat(
   amount: BigNumberish,
   decimals?: number | string,
 ): string {
-  return '$' + Number(formatUnits(amount ? amount : 0, decimals ? decimals : 18)).toFixed(2)
+  return '$' + Number(formatUnits(amount ? amount : 0, decimals ? decimals : 18)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
 export function balanceFormat(

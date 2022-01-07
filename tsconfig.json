@@ -5,6 +5,8 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    // "strictFunctionTypes": true,
+    // "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -26,6 +28,6 @@
       "@i18n": ["./i18n"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/tothemoon.js", "pages/api/contact/add.js", "pages/api/contact/[id].js", "src/components/metamask/index.tsx"],
   "exclude": ["node_modules"]
 }

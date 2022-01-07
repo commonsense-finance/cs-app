@@ -1,5 +1,9 @@
 import { useEthers } from '@usedapp/core'
 import { useEffect, useState } from 'react'
+import Metamask from '@components/metamask'
+import { Col, Row } from 'react-bootstrap'
+
+//Unsupported chain id: 1. Supported chain ids are: 137.
 
 export const Top = () => {
   const [activateError, setActivateError] = useState('')
@@ -7,6 +11,7 @@ export const Top = () => {
 
   useEffect(() => {
     if (error) {
+      console.log('error-> ', error)
       setActivateError(error.message)
     }
   }, [error])
@@ -21,10 +26,17 @@ export const Top = () => {
     <>
       {activateError !== '' && (
         <div
-          className="text-center text-light"
+          className="text-light py-2"
           style={{ backgroundColor: '#f34837' }}
         >
-          {activateError}
+          <Row>
+            <Col className='text-end pt-1'>
+              <p>{activateError}</p>
+            </Col>
+            <Col className='text-start'>
+              <Metamask />
+            </Col>
+          </Row>
         </div>
       )}
     </>

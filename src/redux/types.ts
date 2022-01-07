@@ -1,6 +1,14 @@
 
 import { BigNumberish } from '@ethersproject/bignumber'
 
+export interface IContact {
+  id: string
+  email: string
+  merge_fields: any
+  isLogin: boolean
+  action: string
+}
+
 export interface IToken {
     id: number
     symbol: string

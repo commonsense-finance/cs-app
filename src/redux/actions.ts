@@ -10,3 +10,5 @@ export {
   setTransactionStatus,
 } from '@redux/slices/swap'
 
+export { setInitial, setEmail, setName, setAccount, setStatus, setContactAction, setContact, setContactConnected, getContactByAddress, getContactByEmail } from '@redux/slices/contact'
+
