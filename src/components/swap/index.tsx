@@ -147,7 +147,7 @@ export const Swap = () => {
           )}
 
           <Col>
-            {/* <GroupSumary /> */}
+            <GroupSumary />
             <GroupButtons />
             <TransakButton />
           </Col>

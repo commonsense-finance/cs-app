@@ -23,8 +23,6 @@ import { IContact } from '@redux/types'
 import { selectTheme } from '@redux/slices/theme'
 import {
   balanceFormat,
-  currencyFormat,
-  mulFormat,
 } from 'src/services/tokenSetv2'
 import { tokens } from 'src/constants/tokens'
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'

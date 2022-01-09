@@ -1,6 +1,6 @@
 import { useEthers } from '@usedapp/core'
 import { useEffect, useState } from 'react'
-import Metamask from '@components/metamask'
+import { AddChainToMetamask } from '@components/metamask'
 import { Col, Row } from 'react-bootstrap'
 
 //Unsupported chain id: 1. Supported chain ids are: 137.
@@ -34,7 +34,7 @@ export const Top = () => {
               <p>{activateError}</p>
             </Col>
             <Col className='text-start'>
-              <Metamask />
+              <AddChainToMetamask />
             </Col>
           </Row>
         </div>

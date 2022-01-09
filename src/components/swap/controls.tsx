@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { Button, Form, Modal, Spinner } from 'react-bootstrap'
-import { Card } from '@components/csComponents'
 import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
 import { selectSwap } from '@redux/slices/swap'
 import {
@@ -31,6 +30,7 @@ import {
   amountFormat,
   balanceFormat,
   currencyFormat,
+  intFormat,
   useApproveSet,
   useIssueSet,
   useRedeemSet,
@@ -52,9 +52,7 @@ export const SelectTokensFrom = () => {
     >
       {tokenList.map((token) => {
         return (
-          <option key={token.id} value={token.id} >
-            
-        
+          <option key={token.id} value={token.id}>
             {token.symbol}
           </option>
         )
@@ -64,7 +62,6 @@ export const SelectTokensFrom = () => {
 }
 
 export const SelectTokensTo = () => {
-  
   const { tokenProduct, tokenProductList } = useSelector(selectSwap)
   const dispatch = useDispatch()
 
@@ -261,10 +258,8 @@ export const GroupSumary = () => {
   const gasPrice = useGasPrice()
   return (
     <div className="pb-3">
-      <Card>
-        {amountFormat(gasPrice || 0)}
-        {gasPrice?.toString() || 0}
-      </Card>
+      <p>Gas Price: {intFormat(gasPrice || 0, 9)} Gwei</p>
+      
     </div>
   )
 }
@@ -334,8 +329,11 @@ export const GroupButtons = () => {
       tokenProduct.contractPolygon,
       token.contractPolygon,
       parseUnits(status.amountTo, tokenProduct.decimals),
-      parseUnits((Number(status.amountFrom) * 1.005).toFixed(4),token.decimals),
-      { gasPrice: 30000000000, gasLimit: 1500000}
+      parseUnits(
+        (Number(status.amountFrom) * 1.005).toFixed(4),
+        token.decimals,
+      ),
+      { gasPrice: 30000000000, gasLimit: 1500000 },
     )
   }
 
@@ -348,7 +346,7 @@ export const GroupButtons = () => {
         (Number(status.amountFrom) * 0.005).toFixed(4),
         token.decimals,
       ),
-      { gasPrice: 30000000000, gasLimit: 1500000}
+      { gasPrice: 30000000000, gasLimit: 1500000 },
     )
   }
 

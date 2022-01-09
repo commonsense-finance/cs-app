@@ -71,7 +71,11 @@ export function balanceUnFormat(
 }
 
 export function amountFormat(amount: BigNumberish, decimals?: number): string {
-  return Number(formatUnits(amount ? amount : 0)).toFixed(2)
+  return Number(formatUnits(amount ? amount : 0,decimals)).toFixed(2)
+}
+
+export function intFormat(amount: BigNumberish, decimals?: number): string {
+  return Number(formatUnits(amount ? amount : 0,decimals)).toFixed(0)
 }
 
 export function mulFormat(
