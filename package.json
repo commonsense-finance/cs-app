@@ -17,7 +17,7 @@
     "@reduxjs/toolkit": "^1.6.0",
     "@transak/transak-sdk": "^1.0.31",
     "@usedapp/coingecko": "^0.3.24",
-    "@usedapp/core": "^0.5.4",
+    "@usedapp/core": "^0.7.3",
     "@web3-react/injected-connector": "^6.0.7",
     "@web3-react/network-connector": "^6.1.9",
     "@web3-react/walletconnect-connector": "^6.2.4",

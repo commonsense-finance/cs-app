@@ -17,7 +17,6 @@ import { openTransak } from '@components/transak'
 import { selectTheme } from '@redux/slices/theme'
 
 import {
-  getExplorerTransactionLink,
   Notification,
   useEthers,
   useGasPrice,
@@ -485,10 +484,10 @@ export const ShowNotification = () => {
         >
           <div className="py-3">{activeNotification?.icon}</div>
           <a
-            href={getExplorerTransactionLink(
-              activeNotification?.transaction?.hash,
-              137,
-            )}
+            // href={getExplorerTransactionLink(
+            //   activeNotification?.transaction?.hash,
+            //   137,
+            // )}
             target="_blank"
             rel="noopener noreferrer"
           >

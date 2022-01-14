@@ -1,4 +1,3 @@
-
 import { utils } from 'ethers'
 import { Contract } from '@ethersproject/contracts'
 import {
@@ -7,7 +6,6 @@ import {
   useContractCalls,
   useContractFunction,
   useEthers,
-  
 } from '@usedapp/core'
 
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
@@ -18,40 +16,63 @@ import tokenSetABI from '../services/ABI/tokenSet.json'
 
 import { DAI } from '../constants/tokens'
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
-import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
-import { getCoinGeckoTokensPrice } from './coinGecko'
-
 
 const exchangeIssuanceV2Interface = new utils.Interface(exchangeIssuanceV2ABI)
-const exchangeIssuanceV2Contract = new Contract(exchangeIssuanceV2.contractPolygon, exchangeIssuanceV2Interface)
+const exchangeIssuanceV2Contract = new Contract(
+  exchangeIssuanceV2.contractPolygon,
+  exchangeIssuanceV2Interface,
+)
 
-const tokenSetInterface = new utils.Interface(tokenSetABI)
-
-
-export function useApproveSet (contractAddress: string) {
+export function useApproveSet(contractAddress: string) {
   const { library } = useEthers()
-  const tokenSetContract = new Contract(contractAddress, tokenSetABI, library?.getSigner()) 
-  return useContractFunction(tokenSetContract, 'approve', { transactionName: 'CS Approve' })
+  const tokenSetContract = new Contract(
+    contractAddress,
+    tokenSetABI,
+    library?.getSigner(),
+  )
+  return useContractFunction(tokenSetContract, 'approve', {
+    transactionName: 'CS Approve',
+  })
 }
 
-export function useIssueSet () {
+export function useIssueSet() {
   const { library } = useEthers()
-  const exchangeIssuanceContract = new Contract(exchangeIssuanceV2.contractPolygon, exchangeIssuanceV2Interface, library?.getSigner()) 
-  return useContractFunction(exchangeIssuanceContract, 'issueExactSetFromToken', { transactionName: 'CS Issue Set' })
+  const exchangeIssuanceContract = new Contract(
+    exchangeIssuanceV2.contractPolygon,
+    exchangeIssuanceV2Interface,
+    library?.getSigner(),
+  )
+  return useContractFunction(
+    exchangeIssuanceContract,
+    'issueExactSetFromToken',
+    { transactionName: 'CS Issue Set' },
+  )
 }
 
-export function useRedeemSet () {
+export function useRedeemSet() {
   const { library } = useEthers()
-  const exchangeIssuanceContract = new Contract(exchangeIssuanceV2.contractPolygon, exchangeIssuanceV2Interface, library?.getSigner()) 
-  return useContractFunction(exchangeIssuanceContract, 'redeemExactSetForToken', { transactionName: 'CS Redeem Set' })
+  const exchangeIssuanceContract = new Contract(
+    exchangeIssuanceV2.contractPolygon,
+    exchangeIssuanceV2Interface,
+    library?.getSigner(),
+  )
+  return useContractFunction(
+    exchangeIssuanceContract,
+    'redeemExactSetForToken',
+    { transactionName: 'CS Redeem Set' },
+  )
 }
-
 
 export function currencyFormat(
   amount: BigNumberish,
   decimals?: number | string,
 ): string {
-  return '$' + Number(formatUnits(amount ? amount : 0, decimals ? decimals : 18)).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  return (
+    '$' +
+    Number(formatUnits(amount ? amount : 0, decimals ? decimals : 18))
+      .toFixed(2)
+      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+  )
 }
 
 export function balanceFormat(
@@ -67,15 +88,15 @@ export function balanceUnFormat(
   amount: string,
   decimals?: number | string,
 ): BigNumberish {
-  return  parseUnits(amount ? amount : '0', decimals ? decimals : 18)
+  return parseUnits(amount ? amount : '0', decimals ? decimals : 18)
 }
 
 export function amountFormat(amount: BigNumberish, decimals?: number): string {
-  return Number(formatUnits(amount ? amount : 0,decimals)).toFixed(2)
+  return Number(formatUnits(amount ? amount : 0, decimals)).toFixed(2)
 }
 
 export function intFormat(amount: BigNumberish, decimals?: number): string {
-  return Number(formatUnits(amount ? amount : 0,decimals)).toFixed(0)
+  return Number(formatUnits(amount ? amount : 0, decimals)).toFixed(0)
 }
 
 export function mulFormat(
@@ -143,7 +164,6 @@ export function useTokensTotalSupply(tokenList: any[]) {
 }
 
 export function useTokensSetPrice(tokenList: any[]) {
-  
   return useContractCalls(
     tokenList
       ? tokenList.map((token: any) => ({
@@ -161,7 +181,6 @@ export function useTokensSetPrice(tokenList: any[]) {
 }
 
 export function useTokenSetPrice(tokenAddress: string) {
-  
   return useContractCall({
     abi: exchangeIssuanceV2Interface,
     address: exchangeIssuanceV2.contractPolygon,
@@ -170,17 +189,30 @@ export function useTokenSetPrice(tokenAddress: string) {
   })?.[0]
 }
 
-export function useGetSetEstimated(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish, action: string) {
-  return  amount.toString() !== '0' ? useContractCall({
-    abi: exchangeIssuanceV2Interface,
-    address: exchangeIssuanceV2.contractPolygon,
-    method: action === 'Invest' ? 'getEstimatedIssueSetAmount' : 'getAmountInToIssueExactSet',
-    args: [tokenSetAddress, tokenAddress, amount],
-  })?.[0] : 0
+export function useGetSetEstimated(
+  tokenSetAddress: string,
+  tokenAddress: string,
+  amount: BigNumberish,
+  action: string,
+) {
+  return amount.toString() !== '0'
+    ? useContractCall({
+        abi: exchangeIssuanceV2Interface,
+        address: exchangeIssuanceV2.contractPolygon,
+        method:
+          action === 'Invest'
+            ? 'getEstimatedIssueSetAmount'
+            : 'getAmountInToIssueExactSet',
+        args: [tokenSetAddress, tokenAddress, amount],
+      })?.[0]
+    : 0
 }
 
-export function useGetEstimatedIssueSetAmount(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish) {
-  
+export function useGetEstimatedIssueSetAmount(
+  tokenSetAddress: string,
+  tokenAddress: string,
+  amount: BigNumberish,
+) {
   return useContractCall({
     abi: exchangeIssuanceV2Interface,
     address: exchangeIssuanceV2.contractPolygon,
@@ -189,8 +221,11 @@ export function useGetEstimatedIssueSetAmount(tokenSetAddress: string, tokenAddr
   })?.[0]
 }
 
-export function useGetAmountInToIssueExactSet(tokenSetAddress: string, tokenAddress: string, amount: BigNumberish) {
-  
+export function useGetAmountInToIssueExactSet(
+  tokenSetAddress: string,
+  tokenAddress: string,
+  amount: BigNumberish,
+) {
   return useContractCall({
     abi: exchangeIssuanceV2Interface,
     address: exchangeIssuanceV2.contractPolygon,
@@ -235,6 +270,19 @@ export function useComponentsDecimals(tokenList: any[]) {
   )
 }
 
+export function useTokenSetComponentPosition(
+  setAddress: string,
+  componentAddress: string,
+) {
+  const tokenAbi = new utils.Interface(tokenSetABI)
+  return useContractCall({
+    abi: tokenAbi,
+    address: setAddress,
+    method: 'getTotalComponentRealUnits',
+    args: [componentAddress],
+  })?.[0]
+}
+
 export function useComponentsRealPositions(
   setAddress: string,
   tokenList: any[],
@@ -254,7 +302,7 @@ export function useComponentsRealPositions(
 
 export function useTokenSetComponents(setAddress: string) {
   const tokenAbi = new utils.Interface(tokenSetABI)
-  const componentsAddress = useContractCall({
+  return useContractCall({
     abi: tokenAbi,
     address: setAddress,
     method: 'getComponents',
@@ -263,38 +311,30 @@ export function useTokenSetComponents(setAddress: string) {
 
   //console.log('Address -> ',componentsAddress)
 
-  const componentsSymbol = useComponentsSymbol(componentsAddress)
-  const componentsDecimals = useComponentsDecimals(componentsAddress)
-  const componentsRealPosition = useComponentsRealPositions(setAddress,componentsAddress)
-  const componentsPrice = 0//await getCoinGeckoTokensPrice(componentsAddress)
-  
+  // const componentsSymbol = useComponentsSymbol(componentsAddress)
+  // const componentsDecimals = useComponentsDecimals(componentsAddress)
+  // const componentsRealPosition = useComponentsRealPositions(setAddress,componentsAddress)
+  // const componentsPrice = 0//await getCoinGeckoTokensPrice(componentsAddress)
+
   //useCoingeckoTokenPrice(componentsAddress[1],'usd','polygon-pos')
 
-  
   // console.log('symbols -> ',componentsSymbol)
   // console.log('decimals -> ',componentsDecimals)
   // console.log('Real Positions -> ',componentsRealPosition)
 
-  // let componentsPrice: string[] = [] 
+  // let componentsPrice: string[] = []
   // componentsAddress?.map((address: any, idx: Number) => (
   //   componentsPrice.push('51-' + idx)
   // ))
 
-  
-  return componentsAddress?.map((address: any, idx: number) => (
-  {
-    id: idx,
-    symbol: componentsSymbol[idx],
-    image: '',
-    decimals: componentsDecimals[idx]?.[0],
-    position: componentsRealPosition[idx]?.[0],
-    price: 0, //componentsPrice[idx]?.[0],
-    contractPolygon: address,
-  }))
+  // return componentsAddress?.map((address: any, idx: number) => (
+  // {
+  //   id: idx,
+  //   symbol: componentsSymbol[idx],
+  //   image: '',
+  //   decimals: componentsDecimals[idx]?.[0],
+  //   position: componentsRealPosition[idx]?.[0],
+  //   price: 0, //componentsPrice[idx]?.[0],
+  //   contractPolygon: address,
+  // }))
 }
-
-
-
-
-
-

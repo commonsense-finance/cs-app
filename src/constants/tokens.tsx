@@ -3,7 +3,7 @@ export const tokensProduct = [
     id: 0,
     name: 'Common Sense Index',
     symbol: 'CSI',
-    image: '/icons/csi.svg',
+    image: 'https://static.commonsense.finance/csi-token.svg',
     fee: '2%',
     contractPolygon: '0x1fd078168fad608910687b1385d7cf0d31ac64b4',
     contract: '',
@@ -58,83 +58,104 @@ export const tokensProduct = [
   // },
 ]
 
-export const ComponentsTokenProduct = [
-  [
-    {
-      id: 0,
-      symbol: 'WBTC',
-      image: 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png',
-      decimals: 8,
-      position: '25%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 1,
-      symbol: 'WETH',
-      image: 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
-      decimals: 18,
-      position: '25%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 2,
-      symbol: 'LINK',
-      image: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png',
-      decimals: 18,
-      position: '14%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 3,
-      symbol: 'WMATIC',
-      image: 'https://assets.coingecko.com/coins/images/14073/small/matic.png',
-      decimals: 18,
-      position: '13%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 4,
-      symbol: 'UNI',
-      image: 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png',
-      decimals: 18,
-      position: '13%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 5,
-      symbol: 'AAVE',
-      image: 'https://assets.coingecko.com/coins/images/12645/small/AAVE.png',
-      decimals: 18,
-      position: '5%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 6,
-      symbol: 'SUSHI',
-      image: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png',
-      decimals: 18,
-      position: '3%',
-      price: 0,
-      contractPolygon: '',
-    },
-    {
-      id: 7,
-      symbol: 'TEL',
-      image: 'https://assets.coingecko.com/coins/images/1899/small/tel.png',
-      decimals: 18,
-      position: '2%',
-      price: 0,
-      contractPolygon: '',
-    }
-  ]
-]
+// export const ComponentsTokenProduct = [
+//   [
+//     {
+//       id: 0,
+//       symbol: 'WBTC',
+//       image: 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png',
+//       decimals: 8,
+//       position: '25%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 1,
+//       symbol: 'WETH',
+//       image: 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
+//       decimals: 18,
+//       position: '25%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 2,
+//       symbol: 'LINK',
+//       image: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png',
+//       decimals: 18,
+//       position: '14%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 3,
+//       symbol: 'WMATIC',
+//       image: 'https://assets.coingecko.com/coins/images/14073/small/matic.png',
+//       decimals: 18,
+//       position: '13%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 4,
+//       symbol: 'UNI',
+//       image: 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png',
+//       decimals: 18,
+//       position: '13%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 5,
+//       symbol: 'AAVE',
+//       image: 'https://assets.coingecko.com/coins/images/12645/small/AAVE.png',
+//       decimals: 18,
+//       position: '5%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 6,
+//       symbol: 'SUSHI',
+//       image: 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png',
+//       decimals: 18,
+//       position: '3%',
+//       price: 0,
+//       contractPolygon: '',
+//     },
+//     {
+//       id: 7,
+//       symbol: 'TEL',
+//       image: 'https://assets.coingecko.com/coins/images/1899/small/tel.png',
+//       decimals: 18,
+//       position: '2%',
+//       price: 0,
+//       contractPolygon: '',
+//     }
+//   ]
+// ]
 
+// export enum tokensImage {
+//   WBTC = 'WBTC',
+//   WETH = 'ETH',
+//   LINK = 'LINK',
+// }
+
+export enum tokensImage {
+  WBTC = 'https://assets.coingecko.com/coins/images/7598/small/wrapped_bitcoin_wbtc.png',
+  WETH = 'https://assets.coingecko.com/coins/images/2518/small/weth.png',
+  LINK = 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png',
+  WMATIC = 'https://assets.coingecko.com/coins/images/14073/small/matic.png',
+  UNI = 'https://assets.coingecko.com/coins/images/12504/small/uniswap-uni.png',
+  AAVE = 'https://assets.coingecko.com/coins/images/12645/small/AAVE.png',
+  SUSHI = 'https://assets.coingecko.com/coins/images/12271/small/512x512_Logo_no_chop.png',
+  TEL = 'https://assets.coingecko.com/coins/images/1899/small/tel.png',
+  DAI = 'https://assets.coingecko.com/coins/images/9956/small/4943.png',
+  USDT = 'https://assets.coingecko.com/coins/images/325/small/Tether-logo.png',
+  USDC = 'https://assets.coingecko.com/coins/images/6319/small/USD_Coin_icon.png',
+  MATIC = 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png'
+
+}
 
 export const tokens = [
   {

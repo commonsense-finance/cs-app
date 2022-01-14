@@ -1,5 +1,5 @@
 import { selectTheme } from '@redux/slices/theme'
-import { getChainName, shortenAddress, useEtherBalance, useEthers, useLookupAddress } from '@usedapp/core'
+import { shortenAddress, useEtherBalance, useEthers, useLookupAddress } from '@usedapp/core'
 import { Card, Dropdown, Image, Button, Modal } from 'react-bootstrap'
 import { Button as CSButton  } from '@components/csComponents'
 import { useSelector } from 'react-redux'
@@ -98,7 +98,7 @@ export const ConnectedWalletButton = () => {
                 <span className="visually-hidden">unread messages</span>
               </span>
               <span>
-                {getChainName(chainId || 0)}
+                Polygon
               </span>
               </div>
               

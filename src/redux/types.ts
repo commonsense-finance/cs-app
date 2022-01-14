@@ -7,6 +7,7 @@ export interface IContact {
   merge_fields: any
   isLogin: boolean
   action: string
+  enoughBalance: boolean
 }
 
 export interface IToken {

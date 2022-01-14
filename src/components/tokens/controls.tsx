@@ -8,12 +8,18 @@ import {
   balanceFormat,
   currencyFormat,
   mulFormat,
+  useTokenSetComponentPosition,
   useTokenSetComponents,
+  useTokenSetPrice,
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { ComponentsTokenProduct, tokensProduct } from 'src/constants/tokens'
+import { tokensImage, tokensProduct } from 'src/constants/tokens'
 import ComponentsChart from '@components/charts'
+import { useToken, useTokenBalance, useEthers } from '@usedapp/core'
+import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
+import { formatUnits } from '@ethersproject/units'
+import { TokenLogo } from '@components/helpers'
 
 export const TokenHeader = () => {
   const router = useRouter()
@@ -95,11 +101,67 @@ export const TokenAbout = () => {
   )
 }
 
+const TokenComponent = (props: {
+  setAddress: string
+  componentAddress: string
+}) => {
+  const setAddress = props.setAddress
+  const componentAddress = props.componentAddress
+  const { account } = useEthers()
+  const setBalance = formatUnits(useTokenBalance(setAddress, account) || 0)
+  const setPrice = balanceFormat(useTokenSetPrice(setAddress) || 0)
+  const token = useToken(componentAddress)
+  const tokenPrice = Number(
+    useCoingeckoTokenPrice(componentAddress, 'usd', 'polygon-pos'),
+  ).toFixed(2)
+  const tokenPosition = formatUnits(
+    useTokenSetComponentPosition(setAddress, componentAddress) || 0,
+    token?.decimals,
+  )
+  const tokenBalance = Number(tokenPrice) * Number(tokenPosition)
+  const tokenPorcentPosition =
+    ((tokenBalance * 100) / Number(setPrice)).toFixed(2) + '%'
+
+  return (
+    <tr>
+      <td>
+        {<TokenLogo symbol={token?.symbol || ''} />}
+        {token?.symbol}
+      </td>
+      <td className="text-end">{tokenPorcentPosition}</td>
+      <td className="text-end">
+        {'$' + (tokenBalance * Number(setBalance)).toFixed(2)}
+      </td>
+
+      {/* <td>
+                    <img
+                      src={component.image}
+                      alt=""
+                      width="23"
+                      className="me-2 rounded"
+                    ></img>
+                  
+                    {component.symbol}
+                  </td>
+                  <td className="text-end d-none d-md-table-cell">
+                    {component.position}
+                  </td> */}
+    </tr>
+  )
+}
+
 export const TokenComponents = () => {
   const router = useRouter()
   const activeToken = tokensProduct[Number(router?.query?.id)]
-  //const components = useTokenSetComponents(activeToken.contractPolygon)
-  const components = ComponentsTokenProduct[Number(router?.query?.id)]
+  const components = useTokenSetComponents(activeToken.contractPolygon)
+  const { account } = useEthers()
+  const setBalance = formatUnits(
+    useTokenBalance(activeToken.contractPolygon, account) || 0,
+  )
+  const setPrice = balanceFormat(
+    useTokenSetPrice(activeToken.contractPolygon) || 0,
+  )
+
   return (
     <>
       <h4 className="pb-2">Components</h4>
@@ -109,39 +171,32 @@ export const TokenComponents = () => {
             <Table>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Token</th>
-                  {/* <th className="d-none d-md-table-cell">Value per Token</th> */}
-                  <th className="d-none d-md-table-cell text-end">Porcent</th>
-                  {/* <th className="text-end">24hs Change</th> */}
+                  <th>Index Composition</th>
+                  <th className="d-none d-md-table-cell text-end">%</th>
+                  <th className="d-none d-md-table-cell text-end">
+                    Your Balance
+                  </th>
                 </tr>
               </thead>
-
               <tbody className="border-top">
-                {components?.map((component: any) => (
-                  <tr key={component.id}>
-                    <td>{component.id + 1}</td>
-                    <td>
-                      <img
-                        src={component.image}
-                        alt=""
-                        width="23"
-                        className="me-2 rounded"
-                      ></img>
-                      {/* {balanceFormat(component.position, component.decimals) +
-                        ' ' + */}
-                      {component.symbol}
-                    </td>
-                    <td className="text-end d-none d-md-table-cell">
-                      {component.position}
-                    </td>
-                    {/* <td className="text-end d-none d-md-table-cell">
-                      {component.price}
-                    </td>
-                    <td className="text-end">{component.price}</td> */}
-                  </tr>
+                {components?.map((address: string) => (
+                  <TokenComponent
+                    key={address}
+                    setAddress={activeToken.contractPolygon}
+                    componentAddress={address}
+                  />
                 ))}
               </tbody>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th className="d-none d-md-table-cell text-end"></th>
+                  <th className="d-none d-md-table-cell text-end">
+                    {'Total: $' +
+                      (Number(setBalance) * Number(setPrice)).toFixed(2)}
+                  </th>
+                </tr>
+              </thead>
             </Table>
           </Col>
           {/* <Col className="p-4">
@@ -154,6 +209,66 @@ export const TokenComponents = () => {
     </>
   )
 }
+
+// export const TokenComponents = () => {
+//   const router = useRouter()
+//   const activeToken = tokensProduct[Number(router?.query?.id)]
+//   //const components = useTokenSetComponents(activeToken.contractPolygon)
+//   const components = ComponentsTokenProduct[Number(router?.query?.id)]
+//   return (
+//     <>
+//       <h4 className="pb-2">Components</h4>
+//       <Card>
+//         <Row>
+//           <Col>
+//             <Table>
+//               <thead>
+//                 <tr>
+//                   <th>#</th>
+//                   <th>Token</th>
+//                   {/* <th className="d-none d-md-table-cell">Value per Token</th> */}
+//                   <th className="d-none d-md-table-cell text-end">Porcent</th>
+//                   {/* <th className="text-end">24hs Change</th> */}
+//                 </tr>
+//               </thead>
+
+//               <tbody className="border-top">
+//                 {components?.map((component: any) => (
+//                   <tr key={component.id}>
+//                     <td>{component.id + 1}</td>
+//                     <td>
+//                       <img
+//                         src={component.image}
+//                         alt=""
+//                         width="23"
+//                         className="me-2 rounded"
+//                       ></img>
+//                       {/* {balanceFormat(component.position, component.decimals) +
+//                         ' ' + */}
+//                       {component.symbol}
+//                     </td>
+//                     <td className="text-end d-none d-md-table-cell">
+//                       {component.position}
+//                     </td>
+//                     {/* <td className="text-end d-none d-md-table-cell">
+//                       {component.price}
+//                     </td>
+//                     <td className="text-end">{component.price}</td> */}
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </Table>
+//           </Col>
+//           {/* <Col className="p-4">
+//             <div>
+//               <ComponentsChart />
+//             </div>
+//           </Col> */}
+//         </Row>
+//       </Card>
+//     </>
+//   )
+// }
 
 // export const TokenTransactions = () => {
 //   return <h4>Transactions</h4>

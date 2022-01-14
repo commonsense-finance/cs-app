@@ -14,6 +14,7 @@ import {
   setStatus,
   setContactAction,
   setContact,
+  setEnoughBalance,
   setContactConnected,
   getContactByAddress,
   getContactByEmail,
@@ -21,38 +22,37 @@ import {
 import { CheckCircle } from 'react-bootstrap-icons'
 import { IContact } from '@redux/types'
 import { selectTheme } from '@redux/slices/theme'
-import {
-  balanceFormat,
-} from 'src/services/tokenSetv2'
+import { balanceFormat, useTokensBalance } from 'src/services/tokenSetv2'
 import { tokens } from 'src/constants/tokens'
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
-import { BigNumber } from '@ethersproject/bignumber'
+import { TokenLogo } from '@components/helpers'
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber'
 
 //SERVICES
 
-const AddUpdate = async (contact: IContact) => {
-  const action = contact.action == 'Adding' ? 'add' : 'update'
-  try {
-    const res = await fetch('/api/contact/' + action, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(contact),
-    })
-    console.log(res)
-    const newContact = await res.json()
-    console.log(newContact)
+// const AddUpdate = async (contact: IContact) => {
+//   const action = contact.action == 'Adding' ? 'add' : 'update'
+//   try {
+//     const res = await fetch('/api/contact/' + action, {
+//       method: 'post',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(contact),
+//     })
+//     console.log(res)
+//     const newContact = await res.json()
+//     console.log(newContact)
 
-    if (res.status === 200) {
-      alert('You are subscribed!')
-    } else {
-      alert('Sorry, something went wrong.')
-    }
-  } catch (error) {
-    alert(error)
-  }
-}
+//     if (res.status === 200) {
+//       alert('You are subscribed!')
+//     } else {
+//       alert('Sorry, something went wrong.')
+//     }
+//   } catch (error) {
+//     alert(error)
+//   }
+// }
 
 // const updateTag = async (idContact: string, name: string) => {
 //   try {
@@ -78,44 +78,20 @@ const AddUpdate = async (contact: IContact) => {
 // }
 
 // WALLET BUTTON
+
 const WalletButton = () => {
-  const contact = useSelector(selectContact)
   const { account, error, deactivate } = useEthers()
-  const dispatch = useDispatch()
   const [showModal, setShowModal] = useState(false)
   const [activateError, setActivateError] = useState('')
 
   const handleClose = () => setShowModal(false)
   const handleShow = () => setShowModal(true)
 
-  const handleGetContactByAddress = () => {
-    dispatch(getContactByAddress(account || ''))
-  }
-
   useEffect(() => {
     if (error) {
       setActivateError(error.message)
     }
   }, [error])
-
-  useEffect(() => {
-    if (account) {
-      if (contact.isLogin) {
-        if (contact.merge_fields.STATUS === 'Not Connected') {
-          dispatch(setContactConnected(account))
-        }
-      } else {
-        dispatch(setAccount(account))
-        dispatch(setStatus('Connected'))
-        handleGetContactByAddress()
-      }
-    } else {
-      if (!contact.isLogin) {
-        dispatch(setAccount(''))
-        dispatch(setStatus('Not Connected'))
-      }
-    }
-  }, [account])
 
   return (
     <>
@@ -225,37 +201,6 @@ const LoginForm = () => {
   )
 }
 
-export const Login = () => {
-  const theme = useSelector(selectTheme)
-  const contact = useSelector(selectContact)
-  const dispatch = useDispatch()
-
-  const handleStartOnbording = () => {
-    dispatch(setContactAction('add'))
-  }
-  return (
-    <div className="pb-5">
-      <Row>
-        <Col>
-          <h2>1. Log In </h2>
-        </Col>
-        <Col className="text-end">
-          {contact.action !== 'add' && (
-            <Button
-              variant="link"
-              className={`text-${theme.textMode} pt-3`}
-              onClick={handleStartOnbording}
-            >
-              Start Onbording
-            </Button>
-          )}
-        </Col>
-      </Row>
-      <Card>{contact.action == 'add' ? <AddUpdateForm /> : <LoginForm />}</Card>
-    </div>
-  )
-}
-
 const LoginLayout = () => {
   const contact = useSelector(selectContact)
 
@@ -288,6 +233,37 @@ const LoginLayout = () => {
         </Col>
       </Row>
     </>
+  )
+}
+
+export const Login = () => {
+  const theme = useSelector(selectTheme)
+  const contact = useSelector(selectContact)
+  const dispatch = useDispatch()
+
+  const handleStartOnbording = () => {
+    dispatch(setContactAction('add'))
+  }
+  return (
+    <div className="pb-5">
+      <Row>
+        <Col>
+          <h2>1. Log In </h2>
+        </Col>
+        <Col className="text-end">
+          {contact.action !== 'add' && (
+            <Button
+              variant="link"
+              className={`text-${theme.textMode} pt-3`}
+              onClick={handleStartOnbording}
+            >
+              Start Onbording
+            </Button>
+          )}
+        </Col>
+      </Row>
+      <Card>{contact.action == 'add' ? <AddUpdateForm /> : <LoginForm />}</Card>
+    </div>
   )
 }
 
@@ -340,6 +316,7 @@ const tokenTotal = (balance: string, price: string | undefined) => {
 
 const TokenBalance = (token: any) => {
   const { account } = useEthers()
+  const dispatch = useDispatch()
   const balance = balanceFormat(
     useTokenBalance(token.contractPolygon, account) || 0,
   )
@@ -350,27 +327,40 @@ const TokenBalance = (token: any) => {
   )
 
   const total = tokenTotal(balance, price)
-
-  console.log(Number(total))
+  if (Number(total) > 10) dispatch(setEnoughBalance(true))
 
   return (
     <Row>
-      <Col>
-        {token.symbol}: {balance}
+      <Col className="pb-2">
+        <TokenLogo symbol={token?.symbol} />
+        {token.symbol}
       </Col>
-      <Col className='text-end'>{total}</Col>
+      <Col className="text-end">{balance}</Col>
+      <Col className="text-end">${total}</Col>
       <Col>
-      {
-        Number(total) !== 0 &&
-        <Link
-          href={{
-            pathname: '/token/0',
-            query: { id: 0 },
-          }}
-        >
-          <a className="btn-sm me-2">{account ? 'Invest' : 'View'}</a>
-        </Link>
-      }
+        {Number(total) > 10 ? (
+          <>
+            <Link
+              href={{
+                pathname: '/token/0',
+                query: { id: 0 },
+              }}
+            >
+              <a className="btn-sm me-2">{account ? 'Invest' : 'View'}</a>
+            </Link>
+          </>
+        ) : (
+          <Link
+            href={{
+              pathname: '/token/0',
+              query: { id: 0 },
+            }}
+          >
+            <a className="btn-sm me-2">
+              {'Buy '} {token.symbol}
+            </a>
+          </Link>
+        )}
       </Col>
     </Row>
   )
@@ -379,22 +369,54 @@ const TokenBalance = (token: any) => {
 export const Funds = () => {
   const { account } = useEthers()
   const balance = useEtherBalance(account)
+  const contact = useSelector(selectContact)
+  const dispatch = useDispatch()
+
+  const handleGetContactByAddress = () => {
+    dispatch(getContactByAddress(account || ''))
+  }
+
+  useEffect(() => {
+    if (account) {
+      if (contact.isLogin) {
+        if (contact.merge_fields.STATUS === 'Not Connected') {
+          dispatch(setContactConnected(account))
+        }
+      } else {
+        dispatch(setAccount(account))
+        dispatch(setStatus('Connected'))
+        handleGetContactByAddress()
+      }
+    } else {
+      if (!contact.isLogin) {
+        dispatch(setAccount(''))
+        dispatch(setStatus('Not Connected'))
+      }
+    }
+  }, [account])
 
   return (
     <div className="pb-5">
       <h2>3. Funds & Invest</h2>
       <Card>
-        <p className="pb-3">
-          MATIC Balance: {balanceFormat(balance || 0)}{' '}
-          {!balance ? (
-            'Please buy MATIC'
-          ) : (
-            <CheckCircle className="ms-1" size="15px" color="#75bfc0" />
-          )}
-        </p>
-        {tokens.map((token) => (
-          <TokenBalance key={token.id} {...token} />
-        ))}
+        {account ? (
+          <>
+            <p className="pb-4">
+              <TokenLogo symbol={'MATIC'} />
+              MATIC Balance: {balanceFormat(balance || 0)}{' '}
+              {!balance ? (
+                'Please buy MATIC'
+              ) : (
+                <CheckCircle className="ms-1" size="15px" color="#75bfc0" />
+              )}
+            </p>
+            {tokens.map((token) => (
+              <TokenBalance key={token.id} {...token} />
+            ))}
+          </>
+        ) : (
+          <p>Please Connect you Wallet</p>
+        )}
       </Card>
     </div>
   )

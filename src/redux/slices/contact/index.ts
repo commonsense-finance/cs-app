@@ -2,6 +2,9 @@ import { RootState } from '@redux/reducers'
 import { IContact } from '@redux/types'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
+
+//Not Connected, Connected, Enough Balance, Has our Token
+
 const initialState: IContact = {
   id: '',
   email: '',
@@ -12,6 +15,7 @@ const initialState: IContact = {
   },
   isLogin: false,
   action: 'Saved',
+  enoughBalance: false,
 }
 
 // const getContactByEmail = async (email: string) => {
@@ -107,6 +111,32 @@ export const setContactConnected = createAsyncThunk(
   },
 )
 
+export const setStatusContact = createAsyncThunk(
+  'contact/setStatusContact',
+  async (props: {account: string, status: string}, thunkAPI) => {
+    const { contact } = thunkAPI.getState() as RootState
+    const dispatch = thunkAPI.dispatch
+    console.log(contact.merge_fields)
+    try {
+      const res = await fetch('/api/contact/update', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({...contact, merge_fields: {...contact.merge_fields, ADDRESS: props.account, STATUS: props.status},}),
+      })
+      if (res.status === 200) {
+        dispatch(setAccount(props.account))
+        dispatch(setStatus(props.status))
+      } else {
+        alert('Sorry, something went wrong.')
+      }
+    } catch (error) {
+      alert(error)
+    }
+  },
+)
+
 export const getContactByEmail = createAsyncThunk(
   'contact/getContactByEmail',
   async (email: string, thunkAPI) => {
@@ -154,6 +184,7 @@ const contactSlice = createSlice({
       }),
         (state.isLogin = false)
       state.action = 'Saved'
+      state.enoughBalance = false
     },
     setContactState: (state, action) => {
       state.id = action.payload.contact_id
@@ -161,6 +192,7 @@ const contactSlice = createSlice({
       state.merge_fields = action.payload.merge_fields
       state.isLogin = true
       state.action = 'Saved'
+      state.enoughBalance = false
     },
     setEmail: (state, action) => {
       state.email = action.payload
@@ -176,6 +208,9 @@ const contactSlice = createSlice({
     },
     setContactAction: (state, action) => {
       state.action = action.payload
+    },
+    setEnoughBalance: (state, action) => {
+      state.enoughBalance = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -209,6 +244,9 @@ const contactSlice = createSlice({
 
       builder.addCase(setContactConnected.fulfilled, (state, action) => {
    
+      }),
+      builder.addCase(setStatusContact.fulfilled, (state, action) => {
+   
       })
 
   },
@@ -221,6 +259,7 @@ export const {
   setAccount,
   setStatus,
   setContactAction,
+  setEnoughBalance,
 } = contactSlice.actions
 
 export const selectContact = (state: RootState) => state.contact

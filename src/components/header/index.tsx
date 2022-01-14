@@ -5,7 +5,7 @@ import { selectTheme } from '@redux/slices/theme'
 import { Navbar, Nav, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
-import { getChainName, useEthers } from '@usedapp/core'
+import { useEthers } from '@usedapp/core'
 
 export const Header = () => {
   const theme = useSelector(selectTheme)
@@ -38,7 +38,7 @@ export const Header = () => {
                   <span className="me-2 badge rounded-circle bg-success p-1">
                     <span className="visually-hidden">unread messages</span>
                   </span>
-                  <span>{getChainName(chainId || 0)}</span>
+                  <span>Polygon</span>
                 </div>
               </Button>
             )}

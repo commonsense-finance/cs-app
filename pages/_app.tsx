@@ -3,7 +3,7 @@ import '@styles/app.scss'
 import '@styles/global.scss'
 
 import {
-  ChainId,
+  Polygon,
   DAppProvider,
   Config,
 } from '@usedapp/core'
@@ -16,15 +16,16 @@ import { SSRProvider } from '@restart/ui/ssr'
 
 //import { appWithTranslation } from '@i18n'
 
+
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   const config: Config = {
-    readOnlyChainId: ChainId.Polygon,
+    readOnlyChainId: Polygon.chainId,
     readOnlyUrls: {
-      [ChainId.Polygon]:
+      [Polygon.chainId]:
         'https://polygon-mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495',
     },
-    supportedChains: [ChainId.Polygon]
+    networks: [Polygon]
   }
 
   return (
