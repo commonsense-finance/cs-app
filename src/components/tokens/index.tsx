@@ -12,7 +12,7 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { useEthers } from '@usedapp/core'
+import { getExplorerAddressLink, useEthers, Polygon} from '@usedapp/core'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { AddTokenToMetamask } from '@components/metamask'
 
@@ -77,7 +77,7 @@ export const Tokens = () => {
                   </Link>
                   <AddTokenToMetamask />
                   <a
-                    // href={getExplorerAddressLink(token.contractPolygon, 137)}
+                    href={Polygon.getExplorerAddressLink(token.contractPolygon)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
