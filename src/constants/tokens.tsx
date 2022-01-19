@@ -12,8 +12,7 @@ export const tokensProduct = [
     balance: 0,
     total: 0,
     allowance: 0,
-    about:
-      "The Common Sense Index Token (CSI) aims to replicate the profitability of an index composed of the Top 8 cryptocurrencies in the Polygon Network (ERC20) with a market capitalization of over 2 billion. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
+    about: 'CSI_about',
     marketCap: 0,
     totalSupply: 0,
     components: [],

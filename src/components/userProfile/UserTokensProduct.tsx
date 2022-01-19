@@ -12,9 +12,11 @@ import {
 } from 'src/services/tokenSetv2'
 import { tokensProduct } from 'src/constants/tokens'
 import { useEthers } from '@usedapp/core'
+import { useTranslation } from 'next-i18next'
 
 export const UserTokensProduct = () => {
   const theme = useSelector(selectTheme)
+  const { t } = useTranslation()
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
   const { account } = useEthers()
@@ -22,18 +24,18 @@ export const UserTokensProduct = () => {
 
   return (
     <div className={`pb-5`}>
-      <h4 className={`pb-2 text-${theme.textMode}`}>My Investments</h4>
+      <h4 className={`pb-2 text-${theme.textMode}`}>{t("tokensUserList_title")}</h4>
       <Card>
         <Table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Symbol</th>
-              <th className="d-none d-md-table-cell">Name</th>
-              <th className="text-end">Price</th>
-              <th className="text-end">Balance</th>
-              <th className="text-end d-none d-sm-table-cell">Total</th>
-              <th className="text-center d-md-block">Actions</th>
+              <th>{t("token_symbol")}</th>
+              <th className="d-none d-md-table-cell">{t("token_name")}</th>
+              <th className="text-end">{t("token_price")}</th>
+              <th className="text-end">{t("token_balance")}</th>
+              <th className="text-end d-none d-sm-table-cell">{t("token_total")}</th>
+              <th className="text-center d-md-block">{t("token_actions")}</th>
             </tr>
           </thead>
 
@@ -74,8 +76,14 @@ export const UserTokensProduct = () => {
                     {/* <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td> */}
                     {/* <td className='text-end d-none d-sm-table-cell'>${Number(formatUnits(token.total)).toFixed(2)}</td> */}
                     <td className="text-center">
-                      <Link href={'/token/' + token.id + '?action=Withdraw'} passHref>
-                         <a className="btn-sm">Withdraw</a> 
+                    
+                      <Link 
+                        // href={'/tokens/' + token.symbol.toLowerCase() + '?action=Withdraw'} passHref>
+                        href={{
+                          pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
+                          query: { action: 'Withdraw' },
+                        }}>
+                         <a className="btn-sm">{t("btn_withdraw")}</a> 
                         
                       </Link>
                     </td>

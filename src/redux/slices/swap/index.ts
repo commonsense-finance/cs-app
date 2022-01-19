@@ -19,8 +19,8 @@ const initialStateStatus: ISwapStatus = {
   amountTo: '0',
   activeFocus: 'From',
   action: 'Invest',
-  labelFrom: 'From',
-  labelTo: 'To',
+  labelFrom: 'swap_labelFrom',
+  labelTo: 'swap_labelTo',
   transactionStatus: null,
 }
 
@@ -53,8 +53,8 @@ const swapSlice = createSlice({
   reducers: {
     setAction: (state, action) => {
       state.status.action = action.payload
-      state.status.labelFrom = action.payload === 'Invest' ? 'From' : 'To'
-      state.status.labelTo = action.payload === 'Invest' ? 'To' : 'From'
+      state.status.labelFrom = action.payload === 'Invest' ? 'swap_labelFrom' : 'swap_labelTo'
+      state.status.labelTo = action.payload === 'Invest' ? 'swap_labelTo' : 'swap_labelFrom'
     },
     setActiveFocus: (state, action) => {
       state.status.activeFocus = action.payload

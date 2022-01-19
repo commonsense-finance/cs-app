@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import {
   GroupButtons,
+  GroupFooter,
   GroupInputFrom,
   GroupInputTo,
   GroupSelectFrom,
@@ -22,10 +23,11 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
 import { useRouter } from 'next/router'
 import { tokensProduct } from 'src/constants/tokens'
+import { useTranslation } from 'next-i18next'
 
 export const Swap = () => {
   const router = useRouter()
-
+  const { t } = useTranslation()
   const theme = useSelector(selectTheme)
   const { token, tokenProduct, status } = useSelector(selectSwap)
   const dispatch = useDispatch()
@@ -47,11 +49,11 @@ export const Swap = () => {
 
   const estimated =
     auxAmount.toString() === '0' ? BigNumber.from(0) : auxEstimated
-    
+
   useEffect(() => {
-      dispatch(setTokenTo(tokensProduct[Number(router?.query?.id) || 0]))
-    }, [router?.query?.id])
-  
+    dispatch(setTokenTo(tokensProduct[Number(router?.query?.id) || 0]))
+  }, [router?.query?.id])
+
   useEffect(() => {
     dispatch(setAction(router?.query?.action || 'Invest'))
   }, [router?.query?.action])
@@ -78,7 +80,7 @@ export const Swap = () => {
               border-${theme.darkMode ? '0' : '1'}`}
             eventKey="Invest"
           >
-            Invest
+            {t('btn_invest')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
@@ -89,7 +91,7 @@ export const Swap = () => {
             }`}
             eventKey="Withdraw"
           >
-            Withdraw
+            {t('btn_withdraw')}
           </Nav.Link>
         </Nav.Item>
         <Nav.Item className="text-end p-2 ps-3">
@@ -150,6 +152,7 @@ export const Swap = () => {
             <GroupSumary />
             <GroupButtons />
             <TransakButton />
+            <GroupFooter />
           </Col>
         </Row>
       </Form>

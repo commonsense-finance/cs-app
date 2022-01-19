@@ -9,7 +9,7 @@ import { useEthers } from '@usedapp/core'
 
 export const Header = () => {
   const theme = useSelector(selectTheme)
-  const { account, chainId } = useEthers()
+  const { account } = useEthers()
 
   return (
     <>

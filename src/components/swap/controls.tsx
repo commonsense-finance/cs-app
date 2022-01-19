@@ -37,6 +37,7 @@ import {
 } from 'src/services/tokenSetv2'
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
 import { WalletModal } from '@components/wallet/controls'
+import { useTranslation } from 'next-i18next'
 
 export const SelectTokensFrom = () => {
   const { token, tokenList } = useSelector(selectSwap)
@@ -85,9 +86,10 @@ export const SelectTokensTo = () => {
 
 export const GroupSelectFrom = () => {
   const { token, status } = useSelector(selectSwap)
+  const { t } = useTranslation()
   return (
     <Form.Group className="mb-3">
-      <Form.Label className="text-end pt-1">{status.labelFrom}</Form.Label>
+      <Form.Label className="text-end pt-1">{t(status.labelFrom)}</Form.Label>
       <SelectTokensFrom />
       <Form.Label className="pt-2">{token.name}</Form.Label>
     </Form.Group>
@@ -96,9 +98,10 @@ export const GroupSelectFrom = () => {
 
 export const GroupSelectTo = () => {
   const { tokenProduct, status } = useSelector(selectSwap)
+  const { t } = useTranslation()
   return (
     <Form.Group className="mb-3">
-      <Form.Label className="text-end pt-1">{status.labelTo}</Form.Label>
+      <Form.Label className="text-end pt-1">{t(status.labelTo)}</Form.Label>
       <SelectTokensTo />
       <Form.Label className="pt-2">{tokenProduct.name}</Form.Label>
     </Form.Group>
@@ -141,6 +144,7 @@ export const InputAmountTo = () => {
 
 export const GroupInputFrom = () => {
   const { token, status } = useSelector(selectSwap)
+  const { t } = useTranslation()
   const { account } = useEthers()
   const tokenBalance = useTokenBalance(token.contractPolygon, account)
   const tokenPrice = useCoingeckoTokenPrice(
@@ -155,7 +159,7 @@ export const GroupInputFrom = () => {
       className="mb-3 text-end"
     >
       <Form.Label className="pt-1">
-        Balance: {balanceFormat(tokenBalance || 0, token.decimals)}
+        {t('token_balance')}: {balanceFormat(tokenBalance || 0, token.decimals)}
       </Form.Label>
       {status.action === 'Invest' && <MaxButton />}
       <InputAmountFrom />
@@ -168,17 +172,16 @@ export const GroupInputFrom = () => {
 
 export const GroupInputTo = () => {
   const { tokenProduct, status } = useSelector(selectSwap)
+  const { t } = useTranslation()
   const { account } = useEthers()
   const tokenBalance = useTokenBalance(tokenProduct.contractPolygon, account)
   const tokenPrice = useTokenSetPrice(tokenProduct.contractPolygon)
 
   return (
-    <Form.Group
-      // onFocus={() => dispatch(setActiveFocus('To'))}
-      className="mb-3 text-end"
-    >
+    <Form.Group className="mb-3 text-end">
       <Form.Label className="pt-1">
-        Balance: {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
+        {t('token_balance')}:{' '}
+        {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
       </Form.Label>
       {status.action === 'Withdraw' && <MaxButton />}
       <InputAmountTo />
@@ -236,38 +239,13 @@ export const MaxButton = () => {
   )
 }
 
-export const TransakButton = () => {
-  const { account } = useEthers()
-  return (
-    <Button
-      className="align-top"
-      size="sm"
-      variant="link"
-      onClick={() => {
-        openTransak(account)
-      }}
-    >
-      Buy Crypto
-    </Button>
-  )
-}
-
-export const GroupSumary = () => {
-  const { account } = useEthers()
-  const gasPrice = useGasPrice()
-  return (
-    <div className="pb-3">
-      <p>Gas Price: {intFormat(gasPrice || 0, 9)} Gwei</p>
-      
-    </div>
-  )
-}
-
 export const GroupButtons = () => {
   const { token, tokenProduct, status } = useSelector(selectSwap)
+  const { t } = useTranslation()
   const dispatch = useDispatch()
 
   const { account } = useEthers()
+  const gasPrice = useGasPrice()
 
   const selectedToken = status.action === 'Invest' ? token : tokenProduct
 
@@ -316,13 +294,12 @@ export const GroupButtons = () => {
   }, [redeem.state])
 
   const handleApprove = () => {
-    console.log('Approve')
-
     approve.send(
       exchangeIssuanceV2.contractPolygon,
       '115792089237316195423570985008687907853269984665640564039457584007913129639935',
     )
   }
+
   const handleInvest = () => {
     issue.send(
       tokenProduct.contractPolygon,
@@ -332,7 +309,7 @@ export const GroupButtons = () => {
         (Number(status.amountFrom) * 1.005).toFixed(4),
         token.decimals,
       ),
-      { gasPrice: 30000000000, gasLimit: 1500000 },
+      { gasPrice: gasPrice, gasLimit: 1500000 },
     )
   }
 
@@ -363,7 +340,7 @@ export const GroupButtons = () => {
             <Form.Control
               className="btn btn-primary"
               type="button"
-              value={'Connect Wallet'}
+              value={`${t('btn_connectWallet')}`}
               onClick={() => handleShow()}
             />
           </div>
@@ -374,7 +351,7 @@ export const GroupButtons = () => {
             <Form.Control
               className="btn btn-primary"
               type="button"
-              value={`Approve ${selectedToken.symbol}`}
+              value={`${t('btn_approve')} ${selectedToken.symbol}`}
               onClick={() => handleApprove()}
             />
           </div>
@@ -385,7 +362,13 @@ export const GroupButtons = () => {
             <Form.Control
               className="btn btn-primary"
               type="button"
-              value={enoughBalance ? status.action : 'Enough Balance'}
+              value={
+                enoughBalance
+                  ? status.action === 'Invest'
+                    ? `${t('btn_invest')}`
+                    : `${t('btn_withdraw')}`
+                  : `${t('btn_enoughBalance')}`
+              }
               disabled={!enoughAllowance || !enoughBalance || !enoughInput}
               onClick={() =>
                 status.action === 'Invest' ? handleInvest() : handleWithdraw()
@@ -397,6 +380,56 @@ export const GroupButtons = () => {
       </Form.Group>
       <WalletModal showModal={showModal} handleClose={handleClose} />
     </>
+  )
+}
+
+export const TransakButton = () => {
+  const { account } = useEthers()
+  const { t } = useTranslation()
+  return (
+    <div className="pb-3">
+      <Button
+        variant="link"
+        onClick={() => {
+          openTransak(account)
+        }}
+      >
+        {t('btn_butCrypto')}
+      </Button>
+    </div>
+  )
+}
+
+export const GroupSumary = () => {
+  const gasPrice = useGasPrice()
+  const { t } = useTranslation()
+  return (
+    <div className="pb-3">
+      <p>
+        {t('gas_price')}: {intFormat(gasPrice || 0, 9)} Gwei
+      </p>
+    </div>
+  )
+}
+
+export const GroupFooter = () => {
+  const { t } = useTranslation()
+  return (
+    <div className="pb-3">
+      <p>
+        <small>
+          {t('disclaimer')}
+          <a
+            href={'https://www.commonsense.finance/comisiones-riesgos'}
+            target="_blank"
+            rel="noopener noreferrer"
+            className='ms-2'
+          >
+            <BoxArrowUpRight />
+          </a>
+        </small>
+      </p>
+    </div>
   )
 }
 

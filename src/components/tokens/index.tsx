@@ -12,30 +12,32 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { getExplorerAddressLink, useEthers, Polygon} from '@usedapp/core'
+import { useEthers, Polygon} from '@usedapp/core'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { AddTokenToMetamask } from '@components/metamask'
+import { useTranslation } from 'next-i18next'
 
 export const Tokens = () => {
   const theme = useSelector(selectTheme)
+  const { t } = useTranslation()
   const { account } = useEthers()
   const tokensProductTotalSupply = useTokensTotalSupply(tokensProduct)
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
   return (
     <div className="pb-5">
-      <h4 className={`pb-2 text-${theme.textMode}`}>Investments Tokens</h4>
+      <h4 className={`pb-2 text-${theme.textMode}`}>{t("tokensList_title")}</h4>
       <Card>
         <Table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Symbol</th>
-              <th className="d-none d-md-table-cell">Name</th>
-              <th className="text-end d-none d-sm-table-cell">Price</th>
-              <th className="text-end d-none d-sm-table-cell">Market Cap</th>
-              <th className="text-end">Fees</th>
-              <th className="text-center">Actions</th>
+              <th>{t("token_symbol")}</th>
+              <th className="d-none d-md-table-cell">{t("token_name")}</th>
+              <th className="text-end d-none d-sm-table-cell">{t("token_price")}</th>
+              <th className="text-end d-none d-sm-table-cell">{t("token_marketCap")}</th>
+              <th className="text-end">{t("token_fees")}</th>
+              <th className="text-center">{t("token_actions")}</th>
             </tr>
           </thead>
           <tbody className="border-top">
@@ -66,14 +68,20 @@ export const Tokens = () => {
                 </td>
                 <td className="text-end">{token.fee}</td>
                 <td className="text-center">
-                  <Link
+                  {/* <Link
                     href={{
                       pathname: '/token/[id]',
                       query: { id: token.id },
                     }}
+                  > */}
+                  <Link
+                    href={{
+                      pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
+                      
+                    }}
                   >
                     {/* <Button className="btn-sm me-2">Invest</Button> */}
-                    <a className="btn-sm">{account ? 'Invest' : 'View'}</a>
+                    <a className="btn-sm">{account ? t('btn_invest') : t('btn_view')}</a>
                   </Link>
                   <AddTokenToMetamask />
                   <a

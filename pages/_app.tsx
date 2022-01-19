@@ -1,6 +1,7 @@
 import { AppProps } from 'next/app'
 import '@styles/app.scss'
 import '@styles/global.scss'
+import { appWithTranslation } from 'next-i18next'
 
 import {
   Polygon,
@@ -41,4 +42,5 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   )
 }
 
-export default MyApp
+//export default MyApp
+export default appWithTranslation(MyApp)

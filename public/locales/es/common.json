@@ -1,0 +1,52 @@
+{
+  "hello": "Hola",
+  "greet": "Hola, {{name}}!",
+  "world": "Hola mundo",
+  "documentation": "Ver Documentación",
+  "language": {
+    "es": "Castellano",
+    "en": "English"
+  },
+
+  "gas_price": "Precio del Gas",
+
+  "btn_connectWallet": "Conectar Billetera",
+  "btn_learnMore": "Saber más...",
+  "btn_view": "Ver",
+  "btn_approve": "Aprobar",
+  "btn_invest": "Invertir",
+  "btn_withdraw": "Retirar",
+  "btn_enoughBalance": "Balance Insuficiente",
+  "btn_butCrypto": "Comprar Crypto",
+
+  "token_symbol": "Símbolo",	
+  "token_name": "Nombre",
+  "token_price": "Precio",
+  "token_balance": "Balance",
+  "token_total": "Total",
+  "token_marketCap": "Capitalización", 
+  "token_totalSupply": "Circulación Total", 
+  "token_fees": "Comisión Anual",	
+  "token_actions": "Acciones",
+  "token_about": "Descripción",
+  "token_components": "Componentes",
+  "components_name": "Composición",
+  "components_porcent": "%",
+  "components_balance": "Tu Balance",
+  "components_total": "Total",
+
+  "CSI_about": "El token Common Sense Index (CSI) tiene como objetivo replicar la rentabilidad de un índice compuesto por las 8 principales criptomonedas en la red de Polygon (ERC20) con una capitalización de mercado de más de 2 mil millones. El peso de cada activo está limitado al 25% y el peso de cada categoría está limitada al 50%. El rebalanceo se realiza trimestralmente.",
+
+  "hero_title": "Inversión en Crypto simplificada",
+  "hero_text": "Ayudamos a personas como tú a tener los mismo retornos que los frikies mediante 'All in One' tokens.",
+
+  "swap_labelFrom": "de",
+  "swap_labelTo": "a",
+
+  "userProfile_text": "Tu CommonSense Total",
+  "tokensUserList_title": "Mis Inversiones",
+  "tokensList_title": "Tokens Indexados",
+
+  "disclaimer": "Advertencia: La inversión en criptoactivos no está regulada, puede no ser adecuada para inversores minoristas y perderse la totalidad del importe invertido. Es importante leer y comprender los riesgos de esta inversión que se explican detalladamente haciendo click en el siguiente enlace."
+
+}

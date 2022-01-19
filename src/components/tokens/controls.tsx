@@ -20,10 +20,13 @@ import { useToken, useTokenBalance, useEthers } from '@usedapp/core'
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
 import { formatUnits } from '@ethersproject/units'
 import { TokenLogo } from '@components/helpers'
+import { useTranslation } from 'next-i18next'
+import { selectActiveToken } from '@redux/slices/tokens'
 
 export const TokenHeader = () => {
   const router = useRouter()
-  const activeToken = tokensProduct[Number(router?.query?.id)]
+  const { t } = useTranslation()
+  const activeToken = useSelector(selectActiveToken) //tokensProduct[Number(router?.query?.id)]
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
   return (
@@ -35,12 +38,12 @@ export const TokenHeader = () => {
         height="27"
         className="me-2 rounded pb-1"
       />
-      <h4 className="d-inline">{activeToken?.symbol}</h4>
-      <h2 className="pb-3">{activeToken?.name}</h2>
-      <p>Price</p>
+      <h4 className="d-inline">{activeToken.symbol}</h4>
+      <h2 className="pb-3">{activeToken.name}</h2>
+      <p>{t('token_price')}</p>
       <h1>
-        {tokensProductPrice?.[activeToken?.id] &&
-          currencyFormat(tokensProductPrice[activeToken?.id]![0])}
+        {tokensProductPrice?.[activeToken.id] &&
+          currencyFormat(tokensProductPrice[activeToken.id]![0])}
       </h1>
     </>
   )
@@ -48,7 +51,9 @@ export const TokenHeader = () => {
 
 export const TokenStats = () => {
   const router = useRouter()
-  const activeToken = tokensProduct[Number(router?.query?.id)]
+  const { t } = useTranslation()
+  //const activeToken = tokensProduct[Number(router?.query?.id)]
+  const activeToken = useSelector(selectActiveToken)
 
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
   const tokensProductTotalSupply = useTokensTotalSupply(tokensProduct)
@@ -58,13 +63,13 @@ export const TokenStats = () => {
       <Row className="pb-4">
         <Col className="col-sm-4 col-12 pb-2">
           <Card>
-            <p>Market Cap</p>
+            <p>{t('token_marketCap')}</p>
             <h3>
-              {tokensProductTotalSupply?.[activeToken?.id] &&
+              {tokensProductTotalSupply?.[activeToken.id] &&
                 currencyFormat(
                   mulFormat(
-                    tokensProductTotalSupply[activeToken?.id]![0],
-                    tokensProductPrice[activeToken?.id]![0],
+                    tokensProductTotalSupply[activeToken.id]![0],
+                    tokensProductPrice[activeToken.id]![0],
                   ),
                 )}
             </h3>
@@ -72,17 +77,17 @@ export const TokenStats = () => {
         </Col>
         <Col className="col-sm-4 col-12 pb-2">
           <Card>
-            <p>Total Supply</p>
+            <p>{t('token_totalSupply')}</p>
             <h3>
-              {tokensProductTotalSupply?.[activeToken?.id] &&
-                amountFormat(tokensProductTotalSupply[activeToken?.id]![0])}
+              {tokensProductTotalSupply?.[activeToken.id] &&
+                amountFormat(tokensProductTotalSupply[activeToken.id]![0])}
             </h3>
           </Card>
         </Col>
         <Col className="col-sm-4 col-12 pb-2">
           <Card>
-            <p>Annual Fees </p>
-            <h3>{activeToken?.fee}</h3>
+            <p>{t('token_fees')}</p>
+            <h3>{activeToken.fee}</h3>
           </Card>
         </Col>
       </Row>
@@ -92,11 +97,13 @@ export const TokenStats = () => {
 
 export const TokenAbout = () => {
   const router = useRouter()
-  const activeToken = tokensProduct[Number(router?.query?.id)]
+  const { t } = useTranslation()
+  //const activeToken = tokensProduct[Number(router?.query?.id)]
+  const activeToken = useSelector(selectActiveToken)
   return (
     <>
-      <h4 className="pb-2">About</h4>
-      <p className="pb-4">{activeToken?.about}</p>
+      <h4 className="pb-2">{t('token_about')}</h4>
+      <p className="pb-4">{t(activeToken.about)}</p>
     </>
   )
 }
@@ -132,27 +139,15 @@ const TokenComponent = (props: {
       <td className="text-end">
         {'$' + (tokenBalance * Number(setBalance)).toFixed(2)}
       </td>
-
-      {/* <td>
-                    <img
-                      src={component.image}
-                      alt=""
-                      width="23"
-                      className="me-2 rounded"
-                    ></img>
-                  
-                    {component.symbol}
-                  </td>
-                  <td className="text-end d-none d-md-table-cell">
-                    {component.position}
-                  </td> */}
     </tr>
   )
 }
 
 export const TokenComponents = () => {
   const router = useRouter()
-  const activeToken = tokensProduct[Number(router?.query?.id)]
+  const { t } = useTranslation()
+  //const activeToken = tokensProduct[Number(router?.query?.id)]
+  const activeToken = useSelector(selectActiveToken)
   const components = useTokenSetComponents(activeToken.contractPolygon)
   const { account } = useEthers()
   const setBalance = formatUnits(
@@ -164,18 +159,16 @@ export const TokenComponents = () => {
 
   return (
     <>
-      <h4 className="pb-2">Components</h4>
+      <h4 className="pb-2">{t('token_components')}</h4>
       <Card>
         <Row>
           <Col>
             <Table>
               <thead>
                 <tr>
-                  <th>Index Composition</th>
-                  <th className="d-none d-md-table-cell text-end">%</th>
-                  <th className="d-none d-md-table-cell text-end">
-                    Your Balance
-                  </th>
+                  <th>{t('components_name')}</th>
+                  <th className="d-none d-md-table-cell text-end">{t('components_porcent')}</th>
+                  <th className="d-none d-md-table-cell text-end">{t('components_balance')}</th>
                 </tr>
               </thead>
               <tbody className="border-top">
@@ -187,13 +180,12 @@ export const TokenComponents = () => {
                   />
                 ))}
               </tbody>
-              <thead>
+              <thead className="border-top">
                 <tr>
                   <th></th>
-                  <th className="d-none d-md-table-cell text-end"></th>
+                  <th className="d-none d-md-table-cell text-end">{t('components_total')}</th>
                   <th className="d-none d-md-table-cell text-end">
-                    {'Total: $' +
-                      (Number(setBalance) * Number(setPrice)).toFixed(2)}
+                    {'$'+(Number(setBalance) * Number(setPrice)).toFixed(2)}
                   </th>
                 </tr>
               </thead>

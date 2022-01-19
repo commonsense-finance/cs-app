@@ -1,4 +1,11 @@
-import { GitHubIcon, InstagramIcon, LinkedinIcon, MediumIcon, TwitterIcon } from '@components/Icons/'
+import { ChangeLocale } from '@components/helpers'
+import {
+  GitHubIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  MediumIcon,
+  TwitterIcon,
+} from '@components/Icons/'
 import { selectTheme } from '@redux/slices/theme'
 import { useSelector } from 'react-redux'
 
@@ -48,7 +55,7 @@ export const Footer = () => {
             <InstagramIcon />
           </a>
         </li>
-        
+
         <li className="mx-2">
           <a
             href="https://commonsense-finance.medium.com/"
@@ -61,6 +68,8 @@ export const Footer = () => {
         </li>
       </ul>
       <div>© 2021 Common Sense, Inc</div>
+
+      <ChangeLocale />
     </div>
   )
 }

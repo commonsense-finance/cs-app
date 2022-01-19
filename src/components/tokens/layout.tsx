@@ -9,28 +9,8 @@ import {
 } from '@components'
 
 import { selectTheme } from '@redux/slices/theme'
-import ComponentsChart from '@components/charts'
 import { useMediaQuery } from 'react-responsive'
 import { useEffect, useState } from 'react'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-export const getStaticProps = async (props: { locale: any }) => ({
-  props: {
-    ...await serverSideTranslations(props.locale, ['common']),
-    id: null
-  }
-})
-
-// export async function getStaticProps() {
-//   return { props: { id: null } }
-// }
-
-export async function getStaticPaths() {
-  return {
-    paths: [{ params: { id: '0' } }],
-    fallback: false,
-  }
-}
 
 const DesktopLayout = () => {
   const theme = useSelector(selectTheme)
@@ -74,7 +54,7 @@ const DefaultLayout = () => {
   )
 }
 
-const Token = () => {
+const TokensLayout = () => {
   const isDesktop = useMediaQuery({ minWidth: 992 })
 
   const [desktopLayout, setDesktopLayout] = useState(true)
@@ -84,6 +64,6 @@ const Token = () => {
   }, [isDesktop])
 
   return <>{desktopLayout ? <DesktopLayout /> : <DefaultLayout />}</>
-} 
+}
 
-export default Token
+export default TokensLayout

@@ -4,6 +4,7 @@ import { Header, Footer, Top } from '@components'
 import { selectTheme } from '@redux/slices/theme'
 import { Container } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 export default function Layout(props: { children: JSX.Element }) {
   const theme = useSelector(selectTheme)
@@ -51,3 +52,5 @@ export default function Layout(props: { children: JSX.Element }) {
     </>
   )
 }
+
+

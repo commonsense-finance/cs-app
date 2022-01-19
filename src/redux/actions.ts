@@ -24,3 +24,5 @@ export {
   getContactByAddress,
   getContactByEmail,
 } from '@redux/slices/contact'
+
+export { setActiveToken } from '@redux/slices/tokens'

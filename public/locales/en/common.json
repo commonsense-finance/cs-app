@@ -4,7 +4,48 @@
   "world": "World",
   "documentation": "Go To Documentation",
   "language": {
-    "tr": "🇹🇷 Türkçe",
-    "en": "🇺🇸 English"
-  }
+    "es": "Castellano",
+    "en": "English"
+  },
+
+  "gas_price": "Gas Price",
+
+  "btn_connectWallet": "Connect Wallet",
+  "btn_learnMore": "Learn More",
+  "btn_view": "View",
+  "btn_approve": "Approve",
+  "btn_invest": "Invest",
+  "btn_withdraw": "Withdraw",
+  "btn_enoughBalance": "Enough Balance",
+  "btn_butCrypto": "Buy Crypto",
+
+  "token_symbol": "Symbol",	
+  "token_name": "Name",
+  "token_price": "Price",
+  "token_balance": "Balance",
+  "token_total": "Total",
+  "token_marketCap": "Market Cap",
+  "token_totalSupply": "Total Supply",  	
+  "token_fees": "Annual Fees",	
+  "token_actions": "Actions",
+  "token_about": "About",
+  "token_components": "Components",
+  "components_name": "Index Composition",
+  "components_porcent": "%",
+  "components_balance": "Your Balance",
+  "components_total": "Total",
+
+  "CSI_about": "The Common Sense Index Token (CSI) aims to replicate the profitability of an index composed of the Top 8 cryptocurrencies in the Polygon Network (ERC20) with a market capitalization of over 2 billion. The weight of each asset is limited to 25% and the weight of each category is limited to 50%. Rebalancing is done quarterly.",
+
+  "hero_title": "Investing in crypto, simplified",
+  "hero_text": "We're helping people like you to have the same returns as geeks through 'All in One' tokens.",
+
+  "swap_labelFrom": "From",
+  "swap_labelTo": "To",
+
+  "userProfile_text": "My CommonSense Total",
+  "tokensUserList_title": "My Investments",
+  "tokensList_title": "Index Tokens",
+
+  "disclaimer": "Disclaimer"
 }
