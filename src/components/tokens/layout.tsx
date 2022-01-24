@@ -13,13 +13,12 @@ import { useMediaQuery } from 'react-responsive'
 import { useEffect, useState } from 'react'
 
 const DesktopLayout = () => {
-  const theme = useSelector(selectTheme)
   return (
     <>
-      <Container className={`text-${theme.textMode} py-4`}>
+      <Container className={`py-4`}>
         <TokenHeader />
       </Container>
-      <Container className={`text-${theme.textMode} pb-5`}>
+      <Container className={`pb-5`}>
         <Row className="pb-5">
           <Col className="col-md-7 col-xl-8">
             <TokenStats />
@@ -40,7 +39,7 @@ const DefaultLayout = () => {
   const theme = useSelector(selectTheme)
   return (
     <>
-      <Container className={`text-${theme.textMode} py-4`}>
+      <Container className={`py-4`}>
         <TokenHeader />
         <div className="py-4">
           <Swap />

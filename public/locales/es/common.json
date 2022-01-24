@@ -9,8 +9,10 @@
   },
 
   "gas_price": "Precio del Gas",
+  "account": "Cuenta",
 
   "btn_connectWallet": "Conectar Billetera",
+  "btn_disconnectWallet": "Desconectar",
   "btn_learnMore": "Saber más...",
   "btn_view": "Ver",
   "btn_approve": "Aprobar",

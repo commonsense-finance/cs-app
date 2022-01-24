@@ -16,9 +16,9 @@ interface ITheme {
 }
 
 const initialState: ITheme = {
-  darkMode: true,
-  textMode: 'light',  
-  bgMode: 'dark',
+  darkMode: false,
+  textMode: 'dark',  
+  bgMode: 'light',
   bgColor: defaultBgDarkColor,
   bgSoftColor: defaultBgDarkSoftColor,
 };

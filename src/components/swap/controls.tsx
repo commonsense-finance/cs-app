@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import { Form, Modal, Spinner } from 'react-bootstrap'
 import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
 import { selectSwap } from '@redux/slices/swap'
 import {
@@ -39,11 +39,26 @@ import { exchangeIssuanceV2 } from 'src/constants/contracts'
 import { WalletModal } from '@components/wallet/controls'
 import { useTranslation } from 'next-i18next'
 
+import {
+  Button,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  Select,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from '@chakra-ui/react'
+
 export const SelectTokensFrom = () => {
   const { token, tokenList } = useSelector(selectSwap)
   const dispatch = useDispatch()
   return (
-    <Form.Select
+    <Select
+      variant="filled"
       key={token.id}
       value={token.id}
       onChange={(e) => {
@@ -57,7 +72,7 @@ export const SelectTokensFrom = () => {
           </option>
         )
       })}
-    </Form.Select>
+    </Select>
   )
 }
 
@@ -66,7 +81,8 @@ export const SelectTokensTo = () => {
   const dispatch = useDispatch()
 
   return (
-    <Form.Select
+    <Select
+      variant="filled"
       key={tokenProduct.id}
       value={tokenProduct.id}
       onChange={(e) => {
@@ -80,7 +96,7 @@ export const SelectTokensTo = () => {
           </option>
         )
       })}
-    </Form.Select>
+    </Select>
   )
 }
 
@@ -88,11 +104,11 @@ export const GroupSelectFrom = () => {
   const { token, status } = useSelector(selectSwap)
   const { t } = useTranslation()
   return (
-    <Form.Group className="mb-3">
-      <Form.Label className="text-end pt-1">{t(status.labelFrom)}</Form.Label>
+    <FormControl>
+      <FormLabel>{t(status.labelFrom)}</FormLabel>
       <SelectTokensFrom />
-      <Form.Label className="pt-2">{token.name}</Form.Label>
-    </Form.Group>
+      <FormHelperText>{token.name}</FormHelperText>
+    </FormControl>
   )
 }
 
@@ -100,11 +116,11 @@ export const GroupSelectTo = () => {
   const { tokenProduct, status } = useSelector(selectSwap)
   const { t } = useTranslation()
   return (
-    <Form.Group className="mb-3">
-      <Form.Label className="text-end pt-1">{t(status.labelTo)}</Form.Label>
+    <FormControl>
+      <FormLabel>{t(status.labelTo)}</FormLabel>
       <SelectTokensTo />
-      <Form.Label className="pt-2">{tokenProduct.name}</Form.Label>
-    </Form.Group>
+      <FormHelperText>{tokenProduct.name}</FormHelperText>
+    </FormControl>
   )
 }
 
@@ -112,16 +128,14 @@ export const InputAmountFrom = () => {
   const { status } = useSelector(selectSwap)
   const dispatch = useDispatch()
   return (
-    <Form.Control
-      className="text-end"
-      type="number"
-      placeholder=""
-      value={status.amountFrom}
-      onChange={(e) => {
-        status.action === 'Invest' &&
-          dispatch(setAmoutFrom(e.currentTarget.value))
-      }}
-    />
+    <NumberInput precision={5} variant="filled" value={status.amountFrom}>
+      <NumberInputField
+        onChange={(e) => {
+          status.action === 'Invest' &&
+            dispatch(setAmoutFrom(e.currentTarget.value))
+        }}
+      />
+    </NumberInput>
   )
 }
 
@@ -129,16 +143,14 @@ export const InputAmountTo = () => {
   const { status } = useSelector(selectSwap)
   const dispatch = useDispatch()
   return (
-    <Form.Control
-      className="text-end"
-      type="number"
-      placeholder=""
-      value={status.amountTo}
-      onChange={(e) => {
-        status.action === 'Withdraw' &&
-          dispatch(setAmoutTo(e.currentTarget.value))
-      }}
-    />
+    <NumberInput precision={5} variant="filled" value={status.amountTo}>
+      <NumberInputField
+        onChange={(e) => {
+          status.action === 'Withdraw' &&
+            dispatch(setAmoutTo(e.currentTarget.value))
+        }}
+      />
+    </NumberInput>
   )
 }
 
@@ -154,19 +166,14 @@ export const GroupInputFrom = () => {
   )
 
   return (
-    <Form.Group
-      // onFocus={() => dispatch(setActiveFocus('From'))}
-      className="mb-3 text-end"
-    >
-      <Form.Label className="pt-1">
+    <FormControl>
+      <FormLabel>
         {t('token_balance')}: {balanceFormat(tokenBalance || 0, token.decimals)}
-      </Form.Label>
-      {status.action === 'Invest' && <MaxButton />}
+        {status.action === 'Invest' && <MaxButton />}
+      </FormLabel>
       <InputAmountFrom />
-      <Form.Label className="pt-2">
-        ${Number(tokenPrice || 0).toFixed(2)}
-      </Form.Label>
-    </Form.Group>
+      <FormHelperText>${Number(tokenPrice || 0).toFixed(2)}</FormHelperText>
+    </FormControl>
   )
 }
 
@@ -178,17 +185,17 @@ export const GroupInputTo = () => {
   const tokenPrice = useTokenSetPrice(tokenProduct.contractPolygon)
 
   return (
-    <Form.Group className="mb-3 text-end">
-      <Form.Label className="pt-1">
+    <FormControl>
+      <FormLabel>
         {t('token_balance')}:{' '}
         {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
-      </Form.Label>
-      {status.action === 'Withdraw' && <MaxButton />}
+        {status.action === 'Withdraw' && <MaxButton />}
+      </FormLabel>
       <InputAmountTo />
-      <Form.Label className="pt-2">
+      <FormHelperText>
         {currencyFormat(tokenPrice || 0, tokenProduct.decimals)}
-      </Form.Label>
-    </Form.Group>
+      </FormHelperText>
+    </FormControl>
   )
 }
 
@@ -226,7 +233,6 @@ export const MaxButton = () => {
 
   return (
     <Button
-      className="align-top"
       size="sm"
       variant="link"
       disabled={!account}
@@ -423,7 +429,7 @@ export const GroupFooter = () => {
             href={'https://www.commonsense.finance/comisiones-riesgos'}
             target="_blank"
             rel="noopener noreferrer"
-            className='ms-2'
+            className="ms-2"
           >
             <BoxArrowUpRight />
           </a>

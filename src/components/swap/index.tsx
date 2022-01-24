@@ -24,6 +24,7 @@ import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
 import { useRouter } from 'next/router'
 import { tokensProduct } from 'src/constants/tokens'
 import { useTranslation } from 'next-i18next'
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 
 export const Swap = () => {
   const router = useRouter()
@@ -66,36 +67,61 @@ export const Swap = () => {
 
   return (
     <div>
-      <Nav
-        justify
-        className={`mb-2 border-0 `}
-        variant="tabs"
-        activeKey={status.action}
-        onSelect={(selectedKey) => dispatch(setAction(selectedKey))}
+      <Tabs
+        onChange={(index: number) =>
+          dispatch(setAction(index === 0 ? 'Invest' : 'Withdraw'))
+        }
+        index={status.action === 'Invest' ? 0 : 1}
       >
-        <Nav.Item>
-          <Nav.Link
-            className={`bg-${status.action === 'Invest' && theme.bgMode} 
-              text-${status.action === 'Invest' && theme.textMode} 
-              border-${theme.darkMode ? '0' : '1'}`}
-            eventKey="Invest"
-          >
-            {t('btn_invest')}
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link
-            className={`bg-${status.action === 'Withdraw' && theme.bgMode} 
-              text-${status.action === 'Withdraw' && theme.textMode} border-${
-              theme.darkMode ? '0' : '1'
-            }`}
-            eventKey="Withdraw"
-          >
-            {t('btn_withdraw')}
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item className="text-end p-2 ps-3">
-          {status.transactionStatus?.status === 'Mining' && (
+        <TabList>
+          <Tab>{t('btn_invest')}</Tab>
+          <Tab>{t('btn_withdraw')}</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel>
+            <Row>
+              <Col className="col-5">
+                <GroupSelectFrom />
+              </Col>
+              <Col className="col-7">
+                <GroupInputFrom />
+              </Col>
+              <Col className="col-5">
+                <GroupSelectTo />
+              </Col>
+              <Col className="col-7">
+                <GroupInputTo />
+              </Col>
+            </Row>
+          </TabPanel>
+          <TabPanel>
+            <Row>
+              <Col className="col-5">
+                <GroupSelectTo />
+              </Col>
+              <Col className="col-7">
+                <GroupInputTo />
+              </Col>
+              <Col className="col-5">
+                <GroupSelectFrom />
+              </Col>
+              <Col className="col-7">
+                <GroupInputFrom />
+              </Col>
+            </Row>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
+      <Row>
+        <Col>
+          <GroupSumary />
+          <GroupButtons />
+          <TransakButton />
+          <GroupFooter />
+        </Col>
+      </Row>
+
+      {/* {status.transactionStatus?.status === 'Mining' && (
             <>
               <Spinner
                 variant="primary"
@@ -106,56 +132,8 @@ export const Swap = () => {
                 aria-hidden="true"
               />
             </>
-          )}
-        </Nav.Item>
-      </Nav>
+          )} */}
 
-      <Form>
-        <Row
-          className={`g-2 p-3 rounded shadow-sm bg-${theme.bgMode} ${
-            !theme.darkMode && 'border'
-          }`}
-        >
-          {status.action === 'Invest' ? (
-            <>
-              <Col className="col-5">
-                <GroupSelectFrom />
-              </Col>
-              <Col className="col-7">
-                <GroupInputFrom />
-              </Col>
-              <Col className="col-5">
-                <GroupSelectTo />
-              </Col>
-              <Col className="col-7">
-                <GroupInputTo />
-              </Col>
-            </>
-          ) : (
-            <>
-              <Col className="col-5">
-                <GroupSelectTo />
-              </Col>
-              <Col className="col-7">
-                <GroupInputTo />
-              </Col>
-              <Col className="col-5">
-                <GroupSelectFrom />
-              </Col>
-              <Col className="col-7">
-                <GroupInputFrom />
-              </Col>
-            </>
-          )}
-
-          <Col>
-            <GroupSumary />
-            <GroupButtons />
-            <TransakButton />
-            <GroupFooter />
-          </Col>
-        </Row>
-      </Form>
       <ShowNotification />
     </div>
   )

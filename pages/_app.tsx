@@ -2,12 +2,9 @@ import { AppProps } from 'next/app'
 import '@styles/app.scss'
 import '@styles/global.scss'
 import { appWithTranslation } from 'next-i18next'
+import { ChakraProvider } from '@chakra-ui/react'
 
-import {
-  Polygon,
-  DAppProvider,
-  Config,
-} from '@usedapp/core'
+import { Polygon, DAppProvider, Config } from '@usedapp/core'
 
 import { Provider } from 'react-redux'
 import store from '@redux/store'
@@ -17,27 +14,27 @@ import { SSRProvider } from '@restart/ui/ssr'
 
 //import { appWithTranslation } from '@i18n'
 
-
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
-
   const config: Config = {
     readOnlyChainId: Polygon.chainId,
     readOnlyUrls: {
       [Polygon.chainId]:
         'https://polygon-mainnet.infura.io/v3/1fd55ba87e074d1db0a7a50f872a4495',
     },
-    networks: [Polygon]
+    networks: [Polygon],
   }
 
   return (
     <SSRProvider>
-      <DAppProvider config={config}>
+      <ChakraProvider>
+        <DAppProvider config={config}>
           <Provider store={store}>
             <Layout>
               <Component {...pageProps} />
             </Layout>
           </Provider>
-      </DAppProvider>
+        </DAppProvider>
+      </ChakraProvider>
     </SSRProvider>
   )
 }

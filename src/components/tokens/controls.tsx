@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux'
 import { Col, Row } from 'react-bootstrap'
-import { Table, Card } from '@components/csComponents'
 
-import { useRouter } from 'next/router'
 import {
   amountFormat,
   balanceFormat,
@@ -14,7 +12,7 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { tokensImage, tokensProduct } from 'src/constants/tokens'
+import { tokensProduct } from 'src/constants/tokens'
 import ComponentsChart from '@components/charts'
 import { useToken, useTokenBalance, useEthers } from '@usedapp/core'
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
@@ -23,36 +21,60 @@ import { TokenLogo } from '@components/helpers'
 import { useTranslation } from 'next-i18next'
 import { selectActiveToken } from '@redux/slices/tokens'
 
+import {
+  Heading,
+  HStack,
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Text,
+  Stat,
+  StatLabel,
+  StatNumber,
+  StatHelpText,
+  StatArrow,
+  StatGroup,
+} from '@chakra-ui/react'
+
 export const TokenHeader = () => {
-  const router = useRouter()
   const { t } = useTranslation()
-  const activeToken = useSelector(selectActiveToken) //tokensProduct[Number(router?.query?.id)]
+  const activeToken = useSelector(selectActiveToken)
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
   return (
     <>
-      <img
-        src={activeToken.image}
-        alt=""
-        width="27"
-        height="27"
-        className="me-2 rounded pb-1"
-      />
-      <h4 className="d-inline">{activeToken.symbol}</h4>
-      <h2 className="pb-3">{activeToken.name}</h2>
-      <p>{t('token_price')}</p>
-      <h1>
+      <HStack>
+        <img
+          src={activeToken.image}
+          alt=""
+          width="27"
+          height="27"
+          className="me-2 rounded pb-1"
+        />
+        <Heading as="h4" pb={2}>
+          {activeToken.symbol}
+        </Heading>
+      </HStack>
+      <Heading as="h2" pb={2}>
+        {activeToken.name}
+      </Heading>
+      <Text>{t('token_price')}</Text>
+      <Heading as="h1" pb={2}>
         {tokensProductPrice?.[activeToken.id] &&
           currencyFormat(tokensProductPrice[activeToken.id]![0])}
-      </h1>
+      </Heading>
     </>
   )
 }
 
 export const TokenStats = () => {
-  const router = useRouter()
   const { t } = useTranslation()
-  //const activeToken = tokensProduct[Number(router?.query?.id)]
   const activeToken = useSelector(selectActiveToken)
 
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
@@ -62,9 +84,9 @@ export const TokenStats = () => {
     <>
       <Row className="pb-4">
         <Col className="col-sm-4 col-12 pb-2">
-          <Card>
-            <p>{t('token_marketCap')}</p>
-            <h3>
+          <Stat>
+            <StatLabel>{t('token_marketCap')}</StatLabel>
+            <StatNumber>
               {tokensProductTotalSupply?.[activeToken.id] &&
                 currencyFormat(
                   mulFormat(
@@ -72,23 +94,23 @@ export const TokenStats = () => {
                     tokensProductPrice[activeToken.id]![0],
                   ),
                 )}
-            </h3>
-          </Card>
+            </StatNumber>
+          </Stat>
         </Col>
         <Col className="col-sm-4 col-12 pb-2">
-          <Card>
-            <p>{t('token_totalSupply')}</p>
-            <h3>
+          <Stat>
+            <StatLabel>{t('token_totalSupply')}</StatLabel>
+            <StatNumber>
               {tokensProductTotalSupply?.[activeToken.id] &&
                 amountFormat(tokensProductTotalSupply[activeToken.id]![0])}
-            </h3>
-          </Card>
+            </StatNumber>
+          </Stat>
         </Col>
         <Col className="col-sm-4 col-12 pb-2">
-          <Card>
-            <p>{t('token_fees')}</p>
-            <h3>{activeToken.fee}</h3>
-          </Card>
+          <Stat>
+            <StatLabel>{t('token_fees')}</StatLabel>
+            <StatNumber>{activeToken.fee}</StatNumber>
+          </Stat>
         </Col>
       </Row>
     </>
@@ -96,15 +118,15 @@ export const TokenStats = () => {
 }
 
 export const TokenAbout = () => {
-  const router = useRouter()
   const { t } = useTranslation()
-  //const activeToken = tokensProduct[Number(router?.query?.id)]
   const activeToken = useSelector(selectActiveToken)
   return (
-    <>
-      <h4 className="pb-2">{t('token_about')}</h4>
-      <p className="pb-4">{t(activeToken.about)}</p>
-    </>
+    <Box pb={7}>
+      <Heading as="h4" pb={4}>
+        {t('token_about')}
+      </Heading>
+      <Text>{t(activeToken.about)}</Text>
+    </Box>
   )
 }
 
@@ -130,23 +152,21 @@ const TokenComponent = (props: {
     ((tokenBalance * 100) / Number(setPrice)).toFixed(2) + '%'
 
   return (
-    <tr>
-      <td>
-        {<TokenLogo symbol={token?.symbol || ''} />}
-        {token?.symbol}
-      </td>
-      <td className="text-end">{tokenPorcentPosition}</td>
-      <td className="text-end">
-        {'$' + (tokenBalance * Number(setBalance)).toFixed(2)}
-      </td>
-    </tr>
+    <Tr>
+      <Td>
+        <HStack>
+          {<TokenLogo symbol={token?.symbol || ''} />}
+          <Text>{token?.symbol}</Text>
+        </HStack>
+      </Td>
+      <Td isNumeric>{tokenPorcentPosition}</Td>
+      <Td isNumeric>{'$' + (tokenBalance * Number(setBalance)).toFixed(2)}</Td>
+    </Tr>
   )
 }
 
 export const TokenComponents = () => {
-  const router = useRouter()
   const { t } = useTranslation()
-  //const activeToken = tokensProduct[Number(router?.query?.id)]
   const activeToken = useSelector(selectActiveToken)
   const components = useTokenSetComponents(activeToken.contractPolygon)
   const { account } = useEthers()
@@ -159,45 +179,38 @@ export const TokenComponents = () => {
 
   return (
     <>
-      <h4 className="pb-2">{t('token_components')}</h4>
-      <Card>
-        <Row>
-          <Col>
-            <Table>
-              <thead>
-                <tr>
-                  <th>{t('components_name')}</th>
-                  <th className="d-none d-md-table-cell text-end">{t('components_porcent')}</th>
-                  <th className="d-none d-md-table-cell text-end">{t('components_balance')}</th>
-                </tr>
-              </thead>
-              <tbody className="border-top">
-                {components?.map((address: string) => (
-                  <TokenComponent
-                    key={address}
-                    setAddress={activeToken.contractPolygon}
-                    componentAddress={address}
-                  />
-                ))}
-              </tbody>
-              <thead className="border-top">
-                <tr>
-                  <th></th>
-                  <th className="d-none d-md-table-cell text-end">{t('components_total')}</th>
-                  <th className="d-none d-md-table-cell text-end">
-                    {'$'+(Number(setBalance) * Number(setPrice)).toFixed(2)}
-                  </th>
-                </tr>
-              </thead>
-            </Table>
-          </Col>
-          {/* <Col className="p-4">
-            <div>
-              <ComponentsChart />
-            </div>
-          </Col> */}
-        </Row>
-      </Card>
+      <Heading as="h4" pb={4}>
+        {t('token_components')}
+      </Heading>
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>{t('components_name')}</Th>
+            <Th isNumeric>{t('components_porcent')}</Th>
+            <Th isNumeric>{t('components_balance')}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {components?.map((address: string) => (
+            <TokenComponent
+              key={address}
+              setAddress={activeToken.contractPolygon}
+              componentAddress={address}
+            />
+          ))}
+        </Tbody>
+        <Thead>
+          <Tr>
+            <Th></Th>
+            <Th className="d-none d-md-table-cell text-end">
+              {t('components_total')}
+            </Th>
+            <Th className="d-none d-md-table-cell text-end">
+              {'$' + (Number(setBalance) * Number(setPrice)).toFixed(2)}
+            </Th>
+          </Tr>
+        </Thead>
+      </Table>
     </>
   )
 }

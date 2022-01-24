@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectTheme } from '@redux/slices/theme'
 import Link from 'next/link'
-import { Button, Card, Table } from '@components/csComponents'
+import { Button, Card } from '@components/csComponents'
 import {
   balanceFormat,
   currencyFormat,
@@ -13,9 +13,22 @@ import {
 import { tokensProduct } from 'src/constants/tokens'
 import { useEthers } from '@usedapp/core'
 import { useTranslation } from 'next-i18next'
+import {
+  Heading,
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  HStack,
+  Text,
+} from '@chakra-ui/react'
 
 export const UserTokensProduct = () => {
-  const theme = useSelector(selectTheme)
   const { t } = useTranslation()
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
@@ -24,9 +37,74 @@ export const UserTokensProduct = () => {
 
   return (
     <div className={`pb-5`}>
-      <h4 className={`pb-2 text-${theme.textMode}`}>{t("tokensUserList_title")}</h4>
-      <Card>
-        <Table>
+      <Heading as="h4" pb={2}>
+        {t('tokensUserList_title')}
+      </Heading>
+
+      <Table variant="simple">
+        {/* <TableCaption>Imperial to metric conversion factors</TableCaption> */}
+        <Thead>
+          <Tr>
+            <Th>{t('token_symbol')}</Th>
+            <Th>{t('token_name')}</Th>
+            <Th isNumeric>{t('token_price')}</Th>
+            <Th isNumeric>{t('token_balance')}</Th>
+            <Th isNumeric>{t('token_total')}</Th>
+            <Th alignContent={'center'}>{t('token_actions')}</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {tokensProduct?.map(
+            (token, idx) =>
+              tokensProductBalance?.[idx] &&
+              tokensProductBalance?.[idx]?.toString() != '0' && (
+                <Tr key={idx}>
+                  <Td>
+                    <HStack>
+                      <img
+                        src={token.image}
+                        alt=""
+                        width="25"
+                        className="me-2 rounded"
+                      ></img>
+                      <Text>{token.symbol}</Text>
+                    </HStack>
+                  </Td>
+                  <Td>{token.name}</Td>
+                  <Td isNumeric>
+                    {tokensProductPrice?.[idx] &&
+                      currencyFormat(tokensProductPrice[idx]![0])}
+                  </Td>
+                  <Td isNumeric>
+                    {tokensProductBalance?.[idx] &&
+                      balanceFormat(tokensProductBalance[idx]![0])}
+                  </Td>
+                  <Td isNumeric>
+                    {tokensProductBalance?.[idx] &&
+                      currencyFormat(
+                        mulFormat(
+                          tokensProductPrice[idx]![0],
+                          tokensProductBalance[idx]![0],
+                        ),
+                      )}
+                  </Td>
+                  <Td align="left">
+                    <Link
+                      //href={'/tokens/' + token.symbol.toLowerCase() + '?action=Withdraw'} passHref
+                      href={{
+                        pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
+                        query: { action: 'Withdraw' },
+                      }}
+                    >
+                      <a className="btn-sm">{t('btn_withdraw')}</a>
+                    </Link>
+                  </Td>
+                </Tr>
+              ),
+          )}
+        </Tbody>
+      </Table>
+      {/* <Table>
           <thead>
             <tr>
               <th>#</th>
@@ -72,13 +150,13 @@ export const UserTokensProduct = () => {
                           ),
                         )}
                     </td>
-                    {/* <td className='text-end'>${Number(formatUnits(token.price)).toFixed(2)}</td> */}
-                    {/* <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td> */}
-                    {/* <td className='text-end d-none d-sm-table-cell'>${Number(formatUnits(token.total)).toFixed(2)}</td> */}
+                    <td className='text-end'>${Number(formatUnits(token.price)).toFixed(2)}</td>
+                    <td className='text-end'>{Number(formatUnits(token.balance)).toFixed(4)}</td>
+                    <td className='text-end d-none d-sm-table-cell'>${Number(formatUnits(token.total)).toFixed(2)}</td>
                     <td className="text-center">
                     
                       <Link 
-                        // href={'/tokens/' + token.symbol.toLowerCase() + '?action=Withdraw'} passHref>
+                        href={'/tokens/' + token.symbol.toLowerCase() + '?action=Withdraw'} passHref>
                         href={{
                           pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
                           query: { action: 'Withdraw' },
@@ -91,10 +169,7 @@ export const UserTokensProduct = () => {
                 ),
             )}
           </tbody>
-        </Table>
-      </Card>
+        </Table> */}
     </div>
   )
 }
-
-

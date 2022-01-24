@@ -12,14 +12,13 @@ import { useSelector } from 'react-redux'
 export const Footer = () => {
   const theme = useSelector(selectTheme)
   return (
-    <div className={`text-center py-4 text-${theme.textMode}`}>
+    <div className={`text-center py-4`}>
       <ul className="d-flex justify-content-center list-unstyled p-0 m-0">
-        <li className={`mx-2 `}>
+        <li className={`mx-2`}>
           <a
             href="https://github.com/commonsense-finance"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-${theme.textMode}`}
           >
             <GitHubIcon />
           </a>
@@ -29,7 +28,6 @@ export const Footer = () => {
             href="https://twitter.com/Commonsense_fin"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-${theme.textMode}`}
           >
             <TwitterIcon />
           </a>
@@ -40,7 +38,6 @@ export const Footer = () => {
             href="https://www.linkedin.com/company/common-sense-defi"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-${theme.textMode}`}
           >
             <LinkedinIcon />
           </a>
@@ -50,7 +47,6 @@ export const Footer = () => {
             href="https://www.instagram.com/commonsense_finance/"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-${theme.textMode}`}
           >
             <InstagramIcon />
           </a>
@@ -61,7 +57,6 @@ export const Footer = () => {
             href="https://commonsense-finance.medium.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className={`text-${theme.textMode}`}
           >
             <MediumIcon />
           </a>

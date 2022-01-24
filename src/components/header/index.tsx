@@ -1,19 +1,60 @@
-
 import { SwitchTheme, Activities, Wallet } from '@components'
-import { CSLogo } from '@components/Icons/'
+import { CSLogo, MenuIcon } from '@components/Icons/'
 import { selectTheme } from '@redux/slices/theme'
 import { Navbar, Nav, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
 import { useEthers } from '@usedapp/core'
+import { Flex, Box } from '@chakra-ui/react'
+import { useState } from 'react'
 
 export const Header = () => {
   const theme = useSelector(selectTheme)
   const { account } = useEthers()
+  const [show, setShow] = useState(false)
+  const toggleMenu = () => setShow(!show)
 
   return (
     <>
-      <Navbar
+      <Flex
+        pt={1}
+        as="nav"
+        align="center"
+        justify="space-between"
+        wrap="wrap"
+        w="100%"
+      >
+        <Box>
+        <Link href="/">
+            <a>
+              <CSLogo />
+            </a>
+          </Link>
+        </Box>
+        
+        <Box display={{ base: 'block', md: 'none' }} onClick={toggleMenu}>
+          <MenuIcon width={'25'} height={'25'}/>
+        </Box>
+
+        <Box
+          display={{ base: show ? 'block' : 'none', md: 'block' }}
+          flexBasis={{ base: '100%', md: 'auto' }}
+        >
+          <Flex
+            align="center"
+            
+            justify={['center', 'space-between', 'flex-end', 'flex-end']}
+            direction={['column', 'row', 'row', 'row']}
+            pt={[4, 4, 0, 0]}
+          > 
+            <SwitchTheme />
+            <Wallet />
+          </Flex>
+        </Box>
+        
+      </Flex>
+
+      {/* <Navbar
         collapseOnSelect
         expand="lg"
         className={`navbar-${theme.bgMode} bg-transparence`}
@@ -44,11 +85,11 @@ export const Header = () => {
             )}
           </Nav>
           <Nav>
-            {/* <Activities /> */}
+             <Activities /> 
             <Wallet />
           </Nav>
         </Navbar.Collapse>
-      </Navbar>
+      </Navbar> */}
     </>
   )
 }

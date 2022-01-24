@@ -83,16 +83,12 @@ export const AddTokenToMetamask = () => {
   }
 
   return (
-
-     
-      <Button variant="link" className="btn-sm" onClick={handleAddCSIToken}>
-        <Image
-          className="me-2"
-          style={{ width: '20px' }}
-          src="/icons/metamask-fox.svg"
-          max-width="50px"
-        />
-      </Button>
-    
+    <Button variant="link" className="btn-sm" onClick={handleAddCSIToken}>
+      <Image
+        style={{ width: '20px' }}
+        src="/icons/metamask-fox.svg"
+        max-width="50px"
+      />
+    </Button>
   )
 }

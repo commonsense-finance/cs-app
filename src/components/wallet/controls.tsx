@@ -1,7 +1,27 @@
 import { selectTheme } from '@redux/slices/theme'
-import { shortenAddress, useEtherBalance, useEthers, useLookupAddress } from '@usedapp/core'
-import { Card, Dropdown, Image, Button, Modal } from 'react-bootstrap'
-import { Button as CSButton  } from '@components/csComponents'
+import {
+  shortenAddress,
+  useEtherBalance,
+  useEthers,
+  useLookupAddress,
+} from '@usedapp/core'
+import { Image, Modal } from 'react-bootstrap'
+
+import {
+  Button,
+  Spacer,
+  HStack,
+  Text,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  Portal,
+} from '@chakra-ui/react'
 import { useSelector } from 'react-redux'
 import { balanceFormat } from 'src/services/tokenSetv2'
 
@@ -11,6 +31,7 @@ import {
   walletconnect,
   walletlink,
 } from '../../services/connectors'
+import { useTranslation } from 'next-i18next'
 
 // export const AccountButton = () => {
 //   const { account, deactivate, activateBrowserWallet } = useEthers()
@@ -19,7 +40,7 @@ import {
 
 //   const [activateError, setActivateError] = useState('')
 //   const { error } = useEthers()
-  
+
 //   useEffect(() => {
 //     if (error) {
 //       setActivateError(error.message)
@@ -48,83 +69,92 @@ import {
 // }
 
 export const ConnectedWalletButton = () => {
-  const { account, deactivate, chainId } = useEthers()
+  const { account, deactivate } = useEthers()
+  const { t } = useTranslation()
   const balance = useEtherBalance(account)
   const ens = useLookupAddress()
   const theme = useSelector(selectTheme)
   return (
     <>
-      <Dropdown align="end">
-        <Dropdown.Toggle
-          className="border rounded-pill"
-          variant={theme.bgMode}
-          id="dropdown-basic"
-        >
-          <Image
-            className="me-2"
-            style={{ width: '20px' }}
-            src="/icons/placeholder.png"
-            max-width="50px"
-            roundedCircle
-          />
-          {ens ?? shortenAddress(account || '')}
-        </Dropdown.Toggle>
+      <Popover placement="bottom-start">
+        <PopoverTrigger>
+          <Button colorScheme="orange">
+            <Image
+              className="me-2"
+              style={{ width: '20px' }}
+              src="/icons/placeholder.png"
+              max-width="50px"
+              roundedCircle
+            />
+            {ens ?? shortenAddress(account || '')}
+          </Button>
+        </PopoverTrigger>
+        <Portal>
+          <PopoverContent>
+            <PopoverArrow />
+            <PopoverHeader>
+              <strong>{t('account')}</strong>
+            </PopoverHeader>
+            <PopoverCloseButton />
+            <PopoverBody>
+              <HStack py="3">
+                <Image
+                  className="me-2"
+                  style={{ width: '40px' }}
+                  src="/icons/placeholder.png"
+                  max-width="50px"
+                  roundedCircle
+                />
+                <Text>{ens ?? shortenAddress(account || '')}</Text>
+              </HStack>
 
-        <Dropdown.Menu className={`border-0 bg-transparent`}>
-          <Card className={`border-1 text-${theme.textMode} bg-${theme.bgMode}`} style={{ width: '19rem' }}>
-            <Card.Header>
-              <span className="float-start">
-                <strong>Account</strong>
-              </span>
-              
-            </Card.Header>
-            <Card.Body  style={{ backgroundColor: theme.bgSoftColor }}>
-              <Image
-                className="me-2"
-                style={{ width: '40px' }}
-                src="/icons/placeholder.png"
-                max-width="50px"
-                roundedCircle
-              />
-              {ens ?? shortenAddress(account || '')}
-              <div className="pt-3">Balance</div>
-              <strong>
-                {balanceFormat(balance || 0)}
-              </strong>
-            </Card.Body>
-            <Card.Footer>
-              <div className="d-inline align-middle">
-              <span className="me-2 badge rounded-circle bg-success p-1">
-                <span className="visually-hidden">unread messages</span>
-              </span>
-              <span>
-                Polygon
-              </span>
-              </div>
-              
-              <Button
-                className="btn-sm float-end"
-                variant="info"
-                onClick={() => {
-                  deactivate()
-                }}
-              >
-                Disconnect
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Dropdown.Menu>
-      </Dropdown>
+              <Text>{t('token_balance')}</Text>
+              <Text>
+                <strong>{balanceFormat(balance || 0)}</strong>
+              </Text>
+            </PopoverBody>
+            <PopoverFooter>
+              <HStack>
+                <div className="d-inline align-middle">
+                  <span className="me-2 badge rounded-circle bg-success p-1">
+                    <span className="visually-hidden">unread messages</span>
+                  </span>
+                  <span>Polygon</span>
+                </div>
+                <Spacer />
+                <Button
+                  colorScheme="orange"
+                  size="xs"
+                  variant="solid"
+                  onClick={() => {
+                    deactivate()
+                  }}
+                >
+                  {t('btn_disconnectWallet')}
+                </Button>
+              </HStack>
+            </PopoverFooter>
+          </PopoverContent>
+        </Portal>
+      </Popover>
     </>
   )
 }
 
 export const DisconnectedWalletBotton = (props: { handleShow: any }) => {
   const theme = useSelector(selectTheme)
+  const { t } = useTranslation()
   return (
-    <CSButton onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
-        Connect Wallet
-    </CSButton>
+    // <CSButton onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
+    //     {t('btn_connectWallet')}
+    // </CSButton>
+    <Button
+      colorScheme="orange"
+      variant="solid"
+      onClick={() => props.handleShow()}
+    >
+      {t('btn_connectWallet')}
+    </Button>
   )
 }
 
@@ -138,13 +168,14 @@ export const WalletModal = (props: {
     <Modal show={props.showModal} onHide={props.handleClose}>
       <Modal.Header
         className={`bg-${theme.bgMode} text-${theme.textMode}`}
-        //style={{ background: theme.bgColor,  }} 
-        closeButton>
+        //style={{ background: theme.bgColor,  }}
+        closeButton
+      >
         <Modal.Title>Select a wallet provider</Modal.Title>
       </Modal.Header>
-      <Modal.Body 
+      <Modal.Body
         className={`text-center bg-${theme.bgMode} text-${theme.textMode}`}
-        >
+      >
         <Button
           className={`me-2`}
           variant={theme.bgMode}
@@ -196,9 +227,7 @@ export const WalletModal = (props: {
           WalletLink
         </Button>
       </Modal.Body>
-      <Modal.Footer
-        className={`bg-${theme.bgMode} text-${theme.textMode}`}
-      >
+      <Modal.Footer className={`bg-${theme.bgMode} text-${theme.textMode}`}>
         <Button variant="info" onClick={props.handleClose}>
           Close
         </Button>

@@ -1,4 +1,4 @@
-import { Button, Card, Table } from '@components/csComponents'
+import { Button, Card } from '@components/csComponents'
 
 import Link from 'next/link'
 
@@ -12,10 +12,25 @@ import {
   useTokensSetPrice,
   useTokensTotalSupply,
 } from 'src/services/tokenSetv2'
-import { useEthers, Polygon} from '@usedapp/core'
+import { useEthers, Polygon } from '@usedapp/core'
 import { BoxArrowUpRight } from 'react-bootstrap-icons'
 import { AddTokenToMetamask } from '@components/metamask'
 import { useTranslation } from 'next-i18next'
+
+import {
+  Heading,
+  HStack,
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  Text,
+} from '@chakra-ui/react'
 
 export const Tokens = () => {
   const theme = useSelector(selectTheme)
@@ -26,62 +41,59 @@ export const Tokens = () => {
 
   return (
     <div className="pb-5">
-      <h4 className={`pb-2 text-${theme.textMode}`}>{t("tokensList_title")}</h4>
-      <Card>
-        <Table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>{t("token_symbol")}</th>
-              <th className="d-none d-md-table-cell">{t("token_name")}</th>
-              <th className="text-end d-none d-sm-table-cell">{t("token_price")}</th>
-              <th className="text-end d-none d-sm-table-cell">{t("token_marketCap")}</th>
-              <th className="text-end">{t("token_fees")}</th>
-              <th className="text-center">{t("token_actions")}</th>
-            </tr>
-          </thead>
-          <tbody className="border-top">
-            {tokensProduct?.map((token, idx) => (
-              <tr key={idx}>
-                <td>
+      <Heading as="h4" pb={2}>
+        {t('tokensList_title')}
+      </Heading>
+
+      <Table>
+        <Thead>
+          <Tr>
+            <Th>{t('token_symbol')}</Th>
+            <Th>{t('token_name')}</Th>
+            <Th isNumeric>{t('token_price')}</Th>
+            <Th isNumeric>{t('token_marketCap')}</Th>
+            <Th isNumeric>{t('token_fees')}</Th>
+            <Th>{t('token_actions')}</Th>
+          </Tr>
+        </Thead>
+        <Tbody className="border-top">
+          {tokensProduct?.map((token, idx) => (
+            <Tr key={idx}>
+              <Td>
+                <HStack>
                   <img
                     src={token.image}
                     alt=""
                     width="25"
                     className="me-2 rounded"
                   ></img>
-                </td>
-                <td>{token.symbol}</td>
-                <td className="d-none d-md-table-cell">{token.name}</td>
-                <td className="text-end d-none d-sm-table-cell">
-                  {tokensProductPrice?.[idx] &&
-                    currencyFormat(tokensProductPrice[idx]![0])}
-                </td>
-                <td className="text-end d-none d-sm-table-cell">
-                  {tokensProductTotalSupply?.[idx] &&
-                    currencyFormat(
-                      mulFormat(
-                        tokensProductTotalSupply[idx]![0],
-                        tokensProductPrice[idx]![0],
-                      ),
-                    )}
-                </td>
-                <td className="text-end">{token.fee}</td>
-                <td className="text-center">
-                  {/* <Link
-                    href={{
-                      pathname: '/token/[id]',
-                      query: { id: token.id },
-                    }}
-                  > */}
+                  <Text>{token.symbol}</Text>
+                </HStack>
+              </Td>
+              <Td>{token.name}</Td>
+              <Td isNumeric>
+                {tokensProductPrice?.[idx] &&
+                  currencyFormat(tokensProductPrice[idx]![0])}
+              </Td>
+              <Td className="text-end d-none d-sm-table-cell">
+                {tokensProductTotalSupply?.[idx] &&
+                  currencyFormat(
+                    mulFormat(
+                      tokensProductTotalSupply[idx]![0],
+                      tokensProductPrice[idx]![0],
+                    ),
+                  )}
+              </Td>
+              <Td isNumeric>{token.fee}</Td>
+              <Td>
+                <HStack>
                   <Link
                     href={{
                       pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
-                      
                     }}
                   >
                     {/* <Button className="btn-sm me-2">Invest</Button> */}
-                    <a className="btn-sm">{account ? t('btn_invest') : t('btn_view')}</a>
+                    <a>{account ? t('btn_invest') : t('btn_view')}</a>
                   </Link>
                   <AddTokenToMetamask />
                   <a
@@ -91,12 +103,12 @@ export const Tokens = () => {
                   >
                     <BoxArrowUpRight />
                   </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Card>
+                </HStack>
+              </Td>
+            </Tr>
+          ))}
+        </Tbody>
+      </Table>
     </div>
   )
 }

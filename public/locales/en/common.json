@@ -9,8 +9,10 @@
   },
 
   "gas_price": "Gas Price",
+  "account": "Account",
 
   "btn_connectWallet": "Connect Wallet",
+  "btn_disconnectWallet": "Disconnect",
   "btn_learnMore": "Learn More",
   "btn_view": "View",
   "btn_approve": "Approve",
