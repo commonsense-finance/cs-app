@@ -21,7 +21,7 @@ export const Hero = () => {
         <Heading pb="4" as="h1" size="3xl">
           {t('hero_title')}
         </Heading>
-        <Text fontSize="xs">{t('hero_text')}{'Que onda?'}</Text>
+        <Text fontSize="xs">{t('hero_text')}</Text>
         <HStack pb="4">
           <Button onClick={handleShow} variant="outline" colorScheme="orange">
             {t('btn_connectWallet')}
