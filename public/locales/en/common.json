@@ -9,6 +9,7 @@
   },
 
   "gas_price": "Gas Price",
+  "account" : "Account",
 
   "btn_connectWallet": "Connect Wallet",
   "btn_learnMore": "Learn More",
@@ -18,6 +19,10 @@
   "btn_withdraw": "Withdraw",
   "btn_enoughBalance": "Enough Balance",
   "btn_butCrypto": "Buy Crypto",
+  "btn_close": "Close",
+  "btn_disconnect": "Disconnect",
+
+  "walletModal_title": "Select a wallet provider",
 
   "token_symbol": "Symbol",	
   "token_name": "Name",
@@ -47,5 +52,6 @@
   "tokensUserList_title": "My Investments",
   "tokensList_title": "Index Tokens",
 
-  "disclaimer": "Disclaimer"
+  "disclaimer-header": "Disclaimer",
+  "disclaimer-body": "La inversión en criptoactivos no está regulada, puede no ser adecuada para inversores minoristas y perderse la totalidad del importe invertido. Es importante leer y comprender los riesgos de esta inversión que se explican detalladamente haciendo click en el siguiente enlace."
 }

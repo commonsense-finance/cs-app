@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Modal, Spinner } from 'react-bootstrap'
+import { Accordion, Button, Form, Modal, Spinner } from 'react-bootstrap'
 import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
 import { selectSwap } from '@redux/slices/swap'
 import {
@@ -309,7 +309,10 @@ export const GroupButtons = () => {
         (Number(status.amountFrom) * 1.005).toFixed(4),
         token.decimals,
       ),
-      { gasPrice: gasPrice, gasLimit: 1500000 },
+      // {
+      //   gasPrice: gasPrice,
+      //   gasLimit: 1500000
+      // },
     )
   }
 
@@ -322,7 +325,12 @@ export const GroupButtons = () => {
         (Number(status.amountFrom) * 0.005).toFixed(4),
         token.decimals,
       ),
-      { gasPrice: 30000000000, gasLimit: 1500000 },
+      // {
+      //   gasPrice: 30000000000,
+      //   gasLimit: 1500000,
+      //   maxFeePerGas: gasPrice,
+      //   maxPriorityFeePerGas: 30000000000
+      // },
     )
   }
 
@@ -416,19 +424,22 @@ export const GroupFooter = () => {
   const { t } = useTranslation()
   return (
     <div className="pb-3">
-      <p>
-        <small>
-          {t('disclaimer')}
-          <a
-            href={'https://www.commonsense.finance/comisiones-riesgos'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className='ms-2'
-          >
-            <BoxArrowUpRight />
-          </a>
-        </small>
-      </p>
+      <Accordion flush>
+        <Accordion.Item eventKey="0">
+          <Accordion.Header>
+            {t('disclaimer-header')}{' '}
+            <a
+              href={'https://www.commonsense.finance/comisiones-riesgos'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ms-2"
+            >
+              <BoxArrowUpRight />
+            </a>
+          </Accordion.Header>
+          <Accordion.Body>{t('disclaimer-body')}</Accordion.Body>
+        </Accordion.Item>
+      </Accordion>
     </div>
   )
 }

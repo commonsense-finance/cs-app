@@ -16,11 +16,11 @@ interface ITheme {
 }
 
 const initialState: ITheme = {
-  darkMode: true,
-  textMode: 'light',  
-  bgMode: 'dark',
-  bgColor: defaultBgDarkColor,
-  bgSoftColor: defaultBgDarkSoftColor,
+  darkMode: false,
+  textMode: 'dark',  
+  bgMode: 'light',
+  bgColor: defaultBgColor,
+  bgSoftColor: defaultBgSoftColor,
 };
 
 const themeSlice = createSlice({

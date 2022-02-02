@@ -11,6 +11,7 @@ import {
   walletconnect,
   walletlink,
 } from '../../services/connectors'
+import { useTranslation } from 'next-i18next'
 
 // export const AccountButton = () => {
 //   const { account, deactivate, activateBrowserWallet } = useEthers()
@@ -48,10 +49,11 @@ import {
 // }
 
 export const ConnectedWalletButton = () => {
-  const { account, deactivate, chainId } = useEthers()
+  const { account, deactivate } = useEthers()
   const balance = useEtherBalance(account)
   const ens = useLookupAddress()
   const theme = useSelector(selectTheme)
+  const { t } = useTranslation()
   return (
     <>
       <Dropdown align="end">
@@ -74,7 +76,7 @@ export const ConnectedWalletButton = () => {
           <Card className={`border-1 text-${theme.textMode} bg-${theme.bgMode}`} style={{ width: '19rem' }}>
             <Card.Header>
               <span className="float-start">
-                <strong>Account</strong>
+                <strong>{t('account')}</strong>
               </span>
               
             </Card.Header>
@@ -109,7 +111,7 @@ export const ConnectedWalletButton = () => {
                   deactivate()
                 }}
               >
-                Disconnect
+                {t('btn_disconnect')}
               </Button>
             </Card.Footer>
           </Card>
@@ -120,10 +122,11 @@ export const ConnectedWalletButton = () => {
 }
 
 export const DisconnectedWalletBotton = (props: { handleShow: any }) => {
+  const { t } = useTranslation()
   const theme = useSelector(selectTheme)
   return (
     <CSButton onClick={() => props.handleShow()} className={`bg-${theme.bgMode} text-${theme.textMode}`}>
-        Connect Wallet
+        {t('btn_connectWallet')}
     </CSButton>
   )
 }
@@ -134,13 +137,14 @@ export const WalletModal = (props: {
 }) => {
   const { activateBrowserWallet } = useEthers()
   const theme = useSelector(selectTheme)
+  const { t } = useTranslation()
   return (
     <Modal show={props.showModal} onHide={props.handleClose}>
       <Modal.Header
         className={`bg-${theme.bgMode} text-${theme.textMode}`}
         //style={{ background: theme.bgColor,  }} 
-        closeButton>
-        <Modal.Title>Select a wallet provider</Modal.Title>
+        closeButton> 
+        <Modal.Title>{t('walletModal_title')}</Modal.Title>
       </Modal.Header>
       <Modal.Body 
         className={`text-center bg-${theme.bgMode} text-${theme.textMode}`}
@@ -200,7 +204,7 @@ export const WalletModal = (props: {
         className={`bg-${theme.bgMode} text-${theme.textMode}`}
       >
         <Button variant="info" onClick={props.handleClose}>
-          Close
+          {t('btn_close')}
         </Button>
       </Modal.Footer>
     </Modal>
