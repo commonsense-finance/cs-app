@@ -13,6 +13,7 @@ import {
   useTokenSetPrice,
   useTokensSetPrice,
   useTokensTotalSupply,
+  useTokenTotalSupply,
 } from 'src/services/tokenSetv2'
 import { tokensImage, tokensProduct } from 'src/constants/tokens'
 import ComponentsChart from '@components/charts'
@@ -26,8 +27,8 @@ import { selectActiveToken } from '@redux/slices/tokens'
 export const TokenHeader = () => {
   const router = useRouter()
   const { t } = useTranslation()
-  const activeToken = useSelector(selectActiveToken) //tokensProduct[Number(router?.query?.id)]
-  const tokensProductPrice = useTokensSetPrice(tokensProduct)
+  const activeToken = useSelector(selectActiveToken) //tokensProduct[Number(router?.query?.id)
+  const tokenProductPrice = useTokenSetPrice(activeToken.contractPolygon)
 
   return (
     <>
@@ -42,8 +43,9 @@ export const TokenHeader = () => {
       <h2 className="pb-3">{activeToken.name}</h2>
       <p>{t('token_price')}</p>
       <h1>
-        {tokensProductPrice?.[activeToken.id] &&
-          currencyFormat(tokensProductPrice[activeToken.id]![0])}
+        {/* {tokensProductPrice?.[activeToken.id] &&
+          currencyFormat(tokensProductPrice[activeToken.id]![0])} */
+          currencyFormat(tokenProductPrice) }
       </h1>
     </>
   )
@@ -55,8 +57,8 @@ export const TokenStats = () => {
   //const activeToken = tokensProduct[Number(router?.query?.id)]
   const activeToken = useSelector(selectActiveToken)
 
-  const tokensProductPrice = useTokensSetPrice(tokensProduct)
-  const tokensProductTotalSupply = useTokensTotalSupply(tokensProduct)
+  const tokenProductPrice = useTokenSetPrice(activeToken.contractPolygon)
+  const tokenProductTotalSupply = useTokenTotalSupply(activeToken.contractPolygon)
 
   return (
     <>
@@ -65,12 +67,9 @@ export const TokenStats = () => {
           <Card>
             <p>{t('token_marketCap')}</p>
             <h3>
-              {tokensProductTotalSupply?.[activeToken.id] &&
+              {
                 currencyFormat(
-                  mulFormat(
-                    tokensProductTotalSupply[activeToken.id]![0],
-                    tokensProductPrice[activeToken.id]![0],
-                  ),
+                  mulFormat(tokenProductTotalSupply,tokenProductPrice)
                 )}
             </h3>
           </Card>
@@ -79,8 +78,8 @@ export const TokenStats = () => {
           <Card>
             <p>{t('token_totalSupply')}</p>
             <h3>
-              {tokensProductTotalSupply?.[activeToken.id] &&
-                amountFormat(tokensProductTotalSupply[activeToken.id]![0])}
+              {
+                amountFormat(tokenProductTotalSupply)}
             </h3>
           </Card>
         </Col>

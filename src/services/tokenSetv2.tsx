@@ -163,6 +163,15 @@ export function useTokensTotalSupply(tokenList: any[]) {
   )
 }
 
+export function useTokenTotalSupply(tokenAddress: string) {
+  return useContractCall({
+          abi: ERC20Interface,
+          address: tokenAddress,
+          method: 'totalSupply',
+          args: [],
+        })?.[0]
+}
+
 export function useTokensSetPrice(tokenList: any[]) {
   return useContractCalls(
     tokenList
