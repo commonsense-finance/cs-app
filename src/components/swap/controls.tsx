@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Modal, Spinner } from 'react-bootstrap'
-import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
 import { selectSwap } from '@redux/slices/swap'
 import {
   setTokenFrom,
@@ -11,6 +9,11 @@ import {
   setAmoutTo,
   setTransactionStatus,
 } from '../../redux/actions'
+
+import { Form, Modal, Spinner } from 'react-bootstrap'
+import { CheckCircle, XCircle, BoxArrowUpRight } from 'react-bootstrap-icons'
+
+
 
 import { formatUnits, parseUnits } from '@ethersproject/units'
 import { openTransak } from '@components/transak'
@@ -24,7 +27,9 @@ import {
   useTokenAllowance,
   useTokenBalance,
 } from '@usedapp/core'
+
 import { useCoingeckoTokenPrice } from '@usedapp/coingecko'
+
 import {
   amountFormat,
   balanceFormat,
@@ -35,7 +40,9 @@ import {
   useRedeemSet,
   useTokenSetPrice,
 } from 'src/services/tokenSetv2'
+
 import { exchangeIssuanceV2 } from 'src/constants/contracts'
+
 import { WalletModal } from '@components/wallet/controls'
 import { useTranslation } from 'next-i18next'
 
@@ -51,7 +58,19 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Flex,
+  Spacer,
+  Box,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  HStack,
+  Link,
+  Text
 } from '@chakra-ui/react'
+
 
 export const SelectTokensFrom = () => {
   const { token, tokenList } = useSelector(selectSwap)
@@ -167,10 +186,14 @@ export const GroupInputFrom = () => {
 
   return (
     <FormControl>
-      <FormLabel>
-        {t('token_balance')}: {balanceFormat(tokenBalance || 0, token.decimals)}
+      <Flex>
+
+        <FormHelperText pb={2}>
+          {t('token_balance')}: {balanceFormat(tokenBalance || 0, token.decimals)}
+        </FormHelperText>
+        <Spacer />
         {status.action === 'Invest' && <MaxButton />}
-      </FormLabel>
+      </Flex>
       <InputAmountFrom />
       <FormHelperText>${Number(tokenPrice || 0).toFixed(2)}</FormHelperText>
     </FormControl>
@@ -186,11 +209,14 @@ export const GroupInputTo = () => {
 
   return (
     <FormControl>
-      <FormLabel>
-        {t('token_balance')}:{' '}
-        {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
+      <Flex>
+        <FormHelperText pb={2}>
+          {t('token_balance')}:{' '}
+          {balanceFormat(tokenBalance || 0, tokenProduct.decimals)}
+        </FormHelperText>
+        <Spacer />
         {status.action === 'Withdraw' && <MaxButton />}
-      </FormLabel>
+      </Flex>
       <InputAmountTo />
       <FormHelperText>
         {currencyFormat(tokenPrice || 0, tokenProduct.decimals)}
@@ -258,13 +284,13 @@ export const GroupButtons = () => {
   const enoughInput =
     status.action === 'Invest'
       ? parseUnits(
-          status.amountFrom ? status.amountFrom : '0',
-          token.decimals,
-        ).gt(0)
+        status.amountFrom ? status.amountFrom : '0',
+        token.decimals,
+      ).gt(0)
       : parseUnits(
-          status.amountTo ? status.amountTo : '0',
-          tokenProduct.decimals,
-        ).gt(0)
+        status.amountTo ? status.amountTo : '0',
+        tokenProduct.decimals,
+      ).gt(0)
 
   const allowanceAmount = useTokenAllowance(
     selectedToken.contractPolygon,
@@ -339,51 +365,27 @@ export const GroupButtons = () => {
 
   return (
     <>
-      <Form.Group className="mb-3">
-        {/* CONNECTED BUTTON */}
-        {!account && (
-          <div className="pb-2">
-            <Form.Control
-              className="btn btn-primary"
-              type="button"
-              value={`${t('btn_connectWallet')}`}
-              onClick={() => handleShow()}
-            />
-          </div>
-        )}
-        {/* APPROVE BUTTON */}
-        {!enoughAllowance && (
-          <div className="pb-2">
-            <Form.Control
-              className="btn btn-primary"
-              type="button"
-              value={`${t('btn_approve')} ${selectedToken.symbol}`}
-              onClick={() => handleApprove()}
-            />
-          </div>
-        )}
-        {/* INVEST AND WITHDRAW BUTTON */}
-        {account && (
-          <div className="pb-2">
-            <Form.Control
-              className="btn btn-primary"
-              type="button"
-              value={
-                enoughBalance
-                  ? status.action === 'Invest'
-                    ? `${t('btn_invest')}`
-                    : `${t('btn_withdraw')}`
-                  : `${t('btn_enoughBalance')}`
-              }
-              disabled={!enoughAllowance || !enoughBalance || !enoughInput}
-              onClick={() =>
-                status.action === 'Invest' ? handleInvest() : handleWithdraw()
-              }
-            />
-          </div>
-        )}
-        {/* <div>{approve.state.status}</div> */}
-      </Form.Group>
+      {/* CONNECTED BUTTON */}
+      {!account && (
+        <Button colorScheme='csGreen' onClick={() => handleShow()}>{t('btn_connectWallet')}</Button>
+      )}
+
+      {/* APPROVE BUTTON */}
+      {!enoughAllowance && (
+        <Button colorScheme='csGreen' onClick={() => handleApprove()}>{`${t('btn_approve')} ${selectedToken.symbol}`}</Button>
+      )}
+
+      {/* INVEST AND WITHDRAW BUTTON */}
+      {account && (
+        <Button 
+          colorScheme='csGreen' 
+          onClick={() => status.action === 'Invest' ? handleInvest() : handleWithdraw()} 
+          disabled={!enoughAllowance || !enoughBalance || !enoughInput}>
+          {enoughBalance ? status.action === 'Invest' ? `${t('btn_invest')}` : `${t('btn_withdraw')}` : `${t('btn_enoughBalance')}`}
+        </Button>
+      )}
+      {/* <div>{approve.state.status}</div> */}
+
       <WalletModal showModal={showModal} handleClose={handleClose} />
     </>
   )
@@ -410,32 +412,36 @@ export const GroupSumary = () => {
   const gasPrice = useGasPrice()
   const { t } = useTranslation()
   return (
-    <div className="pb-3">
-      <p>
-        {t('gas_price')}: {intFormat(gasPrice || 0, 9)} Gwei
-      </p>
-    </div>
+    <Text fontSize='6xl'>
+      {t('gas_price')}: {intFormat(gasPrice || 0, 9)} Gwei
+    </Text>
   )
 }
 
 export const GroupFooter = () => {
   const { t } = useTranslation()
   return (
-    <div className="pb-3">
-      <p>
-        <small>
-          {t('disclaimer')}
-          <a
-            href={'https://www.commonsense.finance/comisiones-riesgos'}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ms-2"
-          >
-            <BoxArrowUpRight />
-          </a>
-        </small>
-      </p>
-    </div>
+    <Accordion allowToggle>
+      <AccordionItem>
+        <AccordionButton>
+          <Box flex='1' textAlign='left'>
+            <Text>{t('disclaimer_title')}</Text>
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
+        <AccordionPanel pb={5}>
+          <HStack >
+            <Box >
+              <Text>{t('disclaimer')}</Text>
+              <Link href='https://www.commonsense.finance/comisiones-riesgos' isExternal>
+                <BoxArrowUpRight />
+              </Link>
+            </Box>
+
+          </HStack>
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   )
 }
 

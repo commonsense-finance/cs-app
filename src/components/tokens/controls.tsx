@@ -179,9 +179,9 @@ export const TokenComponents = () => {
 
   return (
     <>
-      <Heading as="h4" pb={4}>
+      {/* <Heading as="h4" pb={4}>
         {t('token_components')}
-      </Heading>
+      </Heading> */}
       <Table>
         <Thead>
           <Tr>

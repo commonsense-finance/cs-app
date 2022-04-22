@@ -8,7 +8,7 @@
     "en": "English"
   },
 
-  "gas_price": "Precio del Gas",
+  "gas_price": "Gas",
   "account": "Cuenta",
 
   "btn_connectWallet": "Conectar Billetera",
@@ -39,8 +39,8 @@
 
   "CSI_about": "El token Common Sense Index (CSI) tiene como objetivo replicar la rentabilidad de un índice compuesto por las 8 principales criptomonedas en la red de Polygon (ERC20) con una capitalización de mercado de más de 2 mil millones. El peso de cada activo está limitado al 25% y el peso de cada categoría está limitada al 50%. El rebalanceo se realiza trimestralmente.",
 
-  "hero_title": "Inversión en Crypto simplificada",
-  "hero_text": "Ayudamos a personas como tú a tener los mismo retornos que los frikies mediante 'All in One' tokens.",
+  "hero_title": "Inversión en crypto con sentido común.",
+  "hero_text": "Ayudamos a particulares y a empresas a invertir aprovechando todo el potencial de la finanzas descentralizadas.",
 
   "swap_labelFrom": "de",
   "swap_labelTo": "a",
@@ -49,6 +49,7 @@
   "tokensUserList_title": "Mis Inversiones",
   "tokensList_title": "Tokens Indexados",
 
-  "disclaimer": "Advertencia: La inversión en criptoactivos no está regulada, puede no ser adecuada para inversores minoristas y perderse la totalidad del importe invertido. Es importante leer y comprender los riesgos de esta inversión que se explican detalladamente haciendo click en el siguiente enlace."
+  "disclaimer_title": "Advertencia",
+  "disclaimer": "La inversión en criptoactivos no está regulada, puede no ser adecuada para inversores minoristas y perderse la totalidad del importe invertido. Es importante leer y comprender los riesgos de esta inversión que se explican detalladamente haciendo click en el siguiente enlace."
 
 }

@@ -24,7 +24,8 @@ import { balanceFormat, useGetSetEstimated } from 'src/services/tokenSetv2'
 import { useRouter } from 'next/router'
 import { tokensProduct } from 'src/constants/tokens'
 import { useTranslation } from 'next-i18next'
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+
+import { Tabs, TabList, TabPanels, Tab, TabPanel, SimpleGrid } from '@chakra-ui/react'
 
 export const Swap = () => {
   const router = useRouter()
@@ -37,9 +38,9 @@ export const Swap = () => {
     status.action === 'Invest'
       ? parseUnits(status.amountFrom ? status.amountFrom : '0', token.decimals)
       : parseUnits(
-          status.amountTo ? status.amountTo : '0',
-          tokenProduct.decimals,
-        )
+        status.amountTo ? status.amountTo : '0',
+        tokenProduct.decimals,
+      )
 
   const auxEstimated = useGetSetEstimated(
     tokenProduct.contractPolygon,
@@ -68,6 +69,7 @@ export const Swap = () => {
   return (
     <div>
       <Tabs
+        colorScheme={'csGreen'}
         onChange={(index: number) =>
           dispatch(setAction(index === 0 ? 'Invest' : 'Withdraw'))
         }
@@ -79,47 +81,30 @@ export const Swap = () => {
         </TabList>
         <TabPanels>
           <TabPanel>
-            <Row>
-              <Col className="col-5">
-                <GroupSelectFrom />
-              </Col>
-              <Col className="col-7">
-                <GroupInputFrom />
-              </Col>
-              <Col className="col-5">
-                <GroupSelectTo />
-              </Col>
-              <Col className="col-7">
-                <GroupInputTo />
-              </Col>
-            </Row>
+            <SimpleGrid columns={2} spacing={4}>
+              <GroupSelectFrom />
+              <GroupInputFrom />
+              <GroupSelectTo />
+              <GroupInputTo />
+            </SimpleGrid>
           </TabPanel>
           <TabPanel>
-            <Row>
-              <Col className="col-5">
-                <GroupSelectTo />
-              </Col>
-              <Col className="col-7">
-                <GroupInputTo />
-              </Col>
-              <Col className="col-5">
-                <GroupSelectFrom />
-              </Col>
-              <Col className="col-7">
-                <GroupInputFrom />
-              </Col>
-            </Row>
+            <SimpleGrid columns={2} spacing={4}>
+              <GroupSelectTo />
+              <GroupInputTo />
+              <GroupSelectFrom />
+              <GroupInputFrom />
+            </SimpleGrid>
           </TabPanel>
         </TabPanels>
       </Tabs>
-      <Row>
-        <Col>
-          <GroupSumary />
-          <GroupButtons />
-          <TransakButton />
-          <GroupFooter />
-        </Col>
-      </Row>
+      <SimpleGrid p={4} columns={1} spacing={4}>
+        <GroupSumary />
+        <GroupButtons />
+        <TransakButton />
+      </SimpleGrid>
+      <GroupFooter />
+
 
       {/* {status.transactionStatus?.status === 'Mining' && (
             <>

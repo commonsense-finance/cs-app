@@ -8,7 +8,7 @@
     "en": "English"
   },
 
-  "gas_price": "Gas Price",
+  "gas_price": "Gas",
   "account": "Account",
 
   "btn_connectWallet": "Connect Wallet",
@@ -49,5 +49,6 @@
   "tokensUserList_title": "My Investments",
   "tokensList_title": "Index Tokens",
 
-  "disclaimer": "Disclaimer"
+  "disclaimer_title": "Disclaimer",
+  "disclaimer": "La inversión en criptoactivos no está regulada, puede no ser adecuada para inversores minoristas y perderse la totalidad del importe invertido. Es importante leer y comprender los riesgos de esta inversión que se explican detalladamente haciendo click en el siguiente enlace."
 }

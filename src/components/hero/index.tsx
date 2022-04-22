@@ -23,9 +23,11 @@ export const Hero = () => {
         </Heading>
         <Text fontSize="xs">{t('hero_text')}</Text>
         <HStack pb="4">
-          <Button onClick={handleShow} variant="outline" colorScheme="orange">
+         
+          <Button onClick={handleShow}  colorScheme={'csGreen'}>
             {t('btn_connectWallet')}
           </Button>
+          
           <Button rightIcon={<ArrowUpRight />}>{t('btn_learnMore')}</Button>
         </HStack>
         <WalletModal showModal={showModal} handleClose={handleClose} />

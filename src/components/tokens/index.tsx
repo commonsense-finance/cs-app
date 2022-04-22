@@ -30,85 +30,95 @@ import {
   Td,
   TableCaption,
   Text,
+  TableContainer,
+  useColorMode
 } from '@chakra-ui/react'
 
 export const Tokens = () => {
-  const theme = useSelector(selectTheme)
+  const { colorMode } = useColorMode()
   const { t } = useTranslation()
   const { account } = useEthers()
   const tokensProductTotalSupply = useTokensTotalSupply(tokensProduct)
   const tokensProductPrice = useTokensSetPrice(tokensProduct)
 
   return (
-    <div className="pb-5">
+    <>
       <Heading as="h4" pb={2}>
         {t('tokensList_title')}
       </Heading>
 
-      <Table>
-        <Thead>
-          <Tr>
-            <Th>{t('token_symbol')}</Th>
-            <Th>{t('token_name')}</Th>
-            <Th isNumeric>{t('token_price')}</Th>
-            <Th isNumeric>{t('token_marketCap')}</Th>
-            <Th isNumeric>{t('token_fees')}</Th>
-            <Th>{t('token_actions')}</Th>
-          </Tr>
-        </Thead>
-        <Tbody className="border-top">
-          {tokensProduct?.map((token, idx) => (
-            <Tr key={idx}>
-              <Td>
-                <HStack>
-                  <img
-                    src={token.image}
-                    alt=""
-                    width="25"
-                    className="me-2 rounded"
-                  ></img>
-                  <Text>{token.symbol}</Text>
-                </HStack>
-              </Td>
-              <Td>{token.name}</Td>
-              <Td isNumeric>
-                {tokensProductPrice?.[idx] &&
-                  currencyFormat(tokensProductPrice[idx]![0])}
-              </Td>
-              <Td className="text-end d-none d-sm-table-cell">
-                {tokensProductTotalSupply?.[idx] &&
-                  currencyFormat(
-                    mulFormat(
-                      tokensProductTotalSupply[idx]![0],
-                      tokensProductPrice[idx]![0],
-                    ),
-                  )}
-              </Td>
-              <Td isNumeric>{token.fee}</Td>
-              <Td>
-                <HStack>
-                  <Link
-                    href={{
-                      pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
-                    }}
-                  >
-                    {/* <Button className="btn-sm me-2">Invest</Button> */}
-                    <a>{account ? t('btn_invest') : t('btn_view')}</a>
-                  </Link>
-                  <AddTokenToMetamask />
-                  <a
-                    href={Polygon.getExplorerAddressLink(token.contractPolygon)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <BoxArrowUpRight />
-                  </a>
-                </HStack>
-              </Td>
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
-    </div>
+      <Box w='100%' p={4} borderRadius='md'>
+
+
+        <TableContainer>
+
+          <Table colorScheme='csGreen'>
+            <Thead>
+              <Tr>
+                <Th>{t('token_symbol')}</Th>
+                <Th>{t('token_name')}</Th>
+                <Th isNumeric>{t('token_price')}</Th>
+                <Th isNumeric>{t('token_marketCap')}</Th>
+                <Th isNumeric>{t('token_fees')}</Th>
+                <Th>{t('token_actions')}</Th>
+              </Tr>
+            </Thead>
+            <Tbody className="border-top">
+              {tokensProduct?.map((token, idx) => (
+                <Tr key={idx}>
+                  <Td>
+                    <HStack>
+                      <img
+                        src={token.image}
+                        alt=""
+                        width="25"
+                        className="me-2 rounded"
+                      ></img>
+                      <Text>{token.symbol}</Text>
+                    </HStack>
+                  </Td>
+                  <Td>{token.name}</Td>
+                  <Td isNumeric>
+                    {tokensProductPrice?.[idx] &&
+                      currencyFormat(tokensProductPrice[idx]![0])}
+                  </Td>
+                  <Td className="text-end d-none d-sm-table-cell">
+                    {tokensProductTotalSupply?.[idx] &&
+                      currencyFormat(
+                        mulFormat(
+                          tokensProductTotalSupply[idx]![0],
+                          tokensProductPrice[idx]![0],
+                        ),
+                      )}
+                  </Td>
+                  <Td isNumeric>{token.fee}</Td>
+                  <Td>
+                    <HStack>
+                      <Link
+                        href={{
+                          pathname: '/tokens/' + `${token.symbol.toLowerCase()}`,
+                        }}
+                      >
+                        {/* <Button className="btn-sm me-2">Invest</Button> */}
+                        <a>{account ? t('btn_invest') : t('btn_view')}</a>
+                      </Link>
+                      <AddTokenToMetamask />
+                      <a
+                        href={Polygon.getExplorerAddressLink(token.contractPolygon)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <BoxArrowUpRight />
+                      </a>
+                    </HStack>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </>
+
   )
 }

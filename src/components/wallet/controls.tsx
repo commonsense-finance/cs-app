@@ -20,8 +20,9 @@ import {
   PopoverFooter,
   PopoverArrow,
   PopoverCloseButton,
-  Portal,
+  Portal
 } from '@chakra-ui/react'
+
 import { useSelector } from 'react-redux'
 import { balanceFormat } from 'src/services/tokenSetv2'
 
@@ -76,9 +77,11 @@ export const ConnectedWalletButton = () => {
   const theme = useSelector(selectTheme)
   return (
     <>
+    
       <Popover placement="bottom-start">
         <PopoverTrigger>
-          <Button colorScheme="orange">
+        
+          <Button colorScheme="csGreen">
             <Image
               className="me-2"
               style={{ width: '20px' }}
@@ -88,7 +91,9 @@ export const ConnectedWalletButton = () => {
             />
             {ens ?? shortenAddress(account || '')}
           </Button>
+        
         </PopoverTrigger>
+       
         <Portal>
           <PopoverContent>
             <PopoverArrow />
@@ -137,6 +142,7 @@ export const ConnectedWalletButton = () => {
           </PopoverContent>
         </Portal>
       </Popover>
+     
     </>
   )
 }
@@ -149,8 +155,8 @@ export const DisconnectedWalletBotton = (props: { handleShow: any }) => {
     //     {t('btn_connectWallet')}
     // </CSButton>
     <Button
-      colorScheme="orange"
-      variant="solid"
+      colorScheme={'csGreen'}
+      variant="outline"
       onClick={() => props.handleShow()}
     >
       {t('btn_connectWallet')}

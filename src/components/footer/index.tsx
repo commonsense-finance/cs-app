@@ -62,7 +62,7 @@ export const Footer = () => {
           </a>
         </li>
       </ul>
-      <div>© 2021 Common Sense, Inc</div>
+      <div>© 2022 Common Sense Technologies SL</div>
 
       <ChangeLocale />
     </div>

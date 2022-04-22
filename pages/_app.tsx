@@ -3,6 +3,7 @@ import '@styles/app.scss'
 import '@styles/global.scss'
 import { appWithTranslation } from 'next-i18next'
 import { ChakraProvider } from '@chakra-ui/react'
+import { theme } from '@styles/theme'
 
 import { Polygon, DAppProvider, Config } from '@usedapp/core'
 
@@ -13,6 +14,7 @@ import Layout from './layout'
 import { SSRProvider } from '@restart/ui/ssr'
 
 //import { appWithTranslation } from '@i18n'
+
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const config: Config = {
@@ -26,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <SSRProvider>
-      <ChakraProvider>
+      <ChakraProvider theme={theme}>
         <DAppProvider config={config}>
           <Provider store={store}>
             <Layout>

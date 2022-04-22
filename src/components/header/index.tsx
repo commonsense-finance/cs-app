@@ -5,7 +5,7 @@ import { Navbar, Nav, Button } from 'react-bootstrap'
 import { useSelector } from 'react-redux'
 import Link from 'next/link'
 import { useEthers } from '@usedapp/core'
-import { Flex, Box } from '@chakra-ui/react'
+import { Flex, Box, HStack } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export const Header = () => {
@@ -25,15 +25,15 @@ export const Header = () => {
         w="100%"
       >
         <Box>
-        <Link href="/">
+          <Link href="/">
             <a>
               <CSLogo />
             </a>
           </Link>
         </Box>
-        
+
         <Box display={{ base: 'block', md: 'none' }} onClick={toggleMenu}>
-          <MenuIcon width={'25'} height={'25'}/>
+          <MenuIcon width={'25'} height={'25'} />
         </Box>
 
         <Box
@@ -42,16 +42,18 @@ export const Header = () => {
         >
           <Flex
             align="center"
-            
+
             justify={['center', 'space-between', 'flex-end', 'flex-end']}
             direction={['column', 'row', 'row', 'row']}
             pt={[4, 4, 0, 0]}
-          > 
-            <SwitchTheme />
-            <Wallet />
+          >
+            <HStack pb="4">
+              <SwitchTheme />
+              <Wallet />
+            </HStack>
           </Flex>
         </Box>
-        
+
       </Flex>
 
       {/* <Navbar
